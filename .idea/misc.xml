@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_logout_foreground.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/outline_add_24.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/outline_article_24.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/outline_done_outline_24.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/round_button_background.xml" value="0.19072965306675913" />
+        <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1203125" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1160081053698075" />
+        <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.1160081053698075" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1987782792100447" />
+        <entry key="app/src/main/res/layout/fragment_news.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.1160081053698075" />
+        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/login_activity.xml" value="0.18734996927709277" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.13615289829937183" />
+        <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.23487179487179488" />
+        <entry key="app/src/main/res/menu/main.xml" value="0.16111111111111112" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+</project>

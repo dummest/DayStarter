@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "618097949759",
+    "project_id": "daystarter-a023a",
+    "storage_bucket": "daystarter-a023a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618097949759:android:3860c433b0d0222ad0cc8a",
+        "android_client_info": {
+          "package_name": "com.example.daystarter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618097949759-vlml3huduav5pal9lhsk7hb4bd72bmam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.daystarter",
+            "certificate_hash": "b74cee160788bbbdc9c8dd8dfcf99f36e6b231bd"
+          }
+        },
+        {
+          "client_id": "618097949759-i770cqak2dat4d6h72qjfe004hjv73ga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzywogg1xo9lkRyX7W60ohwJ23XMb3KhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618097949759-i770cqak2dat4d6h72qjfe004hjv73ga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
