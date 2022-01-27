@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.daystarter.LoginActivity;
 import com.example.daystarter.R;
 import com.example.daystarter.SignUpActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,11 +28,10 @@ public class HomeFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(v.getContext(), SignUpActivity.class);
+                Intent intent = new Intent(v.getContext(), LoginActivity.class);
                 startActivity(intent);
             }
         });
-
         return v;
     }
 }

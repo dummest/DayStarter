@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,22 +25,21 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         Button button = findViewById(R.id.signUpButton);
         button.setOnClickListener(onClickListener);
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        try {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-        }
-        catch (NullPointerException ne){
-
-        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -54,10 +54,9 @@ public class SignUpActivity extends AppCompatActivity {
     };
 
     private void signUp() {
-        String email = String.valueOf(((EditText)findViewById(R.id.emailEditText)).getText());
-        String password = String.valueOf(((EditText)findViewById(R.id.passwordEditText)).getText());
-        String passwordCheck = String.valueOf(((EditText)findViewById(R.id.passwordCheckEditText)).getText());
-
+        String email = String.valueOf(((EditText)findViewById(R.id.signUpEmailEditText)).getText());
+        String password = String.valueOf(((EditText)findViewById(R.id.signUpPasswordEditText)).getText());
+        String passwordCheck = String.valueOf(((EditText)findViewById(R.id.signUpPasswordCheckEditText)).getText());
         if(password.equals(passwordCheck)) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -66,6 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         showToast("회원가입 완료.");
+                        finish();
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure");
                         showToast(task.getException().toString());
