@@ -6,14 +6,26 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <TextView
+        android:id="@+id/signUpTextView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:text="LoginActivity"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="34sp" />
+
     <EditText
         android:id="@+id/loginEmailEditText"
+        android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"/>
 
     <EditText
         android:id="@+id/loginPasswordEditText"
+        android:hint="Password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword" />
@@ -29,5 +41,7 @@
         android:id="@+id/moveToSignUpButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Up" />
+        android:text="Sign Up"
+        android:background="@drawable/round_button_background"
+        android:layout_marginHorizontal="30dp"/>
 </LinearLayout>
