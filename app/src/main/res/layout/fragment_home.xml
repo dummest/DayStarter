@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     tools:context=".ui.home.HomeFragment">
-    <!--
+
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
@@ -21,11 +21,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    -->
-    <Button
-        android:layout_gravity="center"
-        android:id="@+id/signUpTestButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="signUpTest"/>
+
 </LinearLayout>

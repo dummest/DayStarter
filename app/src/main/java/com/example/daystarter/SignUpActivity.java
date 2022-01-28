@@ -28,10 +28,6 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() == null){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
 
         Button button = findViewById(R.id.signUpButton);
         button.setOnClickListener(onClickListener);
