@@ -1,7 +1,11 @@
 package com.example.daystarter;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -26,6 +30,13 @@ import com.example.daystarter.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -35,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private Button signOutButton;
     View headerView;
     FirebaseUser user;
+    Bitmap profileBitmap;
 
     private static String TAG = "MainActivity";
 
@@ -73,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onClick(View view) {
                 signOut();
-                userInvalidate();
+                updateUI();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onResume() {
         super.onResume();
-        userInvalidate();
+        updateUI();
     }
 
     @Override
@@ -107,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    private void userInvalidate(){
+    private void updateUI(){
         ImageView profileImageView;
         TextView emailTextView;
 
@@ -116,19 +128,53 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.d(TAG, "유저 이메일 = " + user.getEmail());
 
             profileImageView = headerView.findViewById(R.id.profilePhoto);
-            profileImageView.setImageURI(user.getPhotoUrl());
+
+            if(user.getPhotoUrl()!=null) {
+                Thread profileThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: start");
+                        profileBitmap = getImageBitmap(user.getPhotoUrl().toString());
+                    }
+                });
+
+                profileThread.start();
+                try {
+                    Log.d(TAG, "updateUI: join");
+                    profileThread.join();
+                    profileImageView.setImageBitmap(profileBitmap);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             emailTextView = headerView.findViewById(R.id.emailTextView);
             emailTextView.setText(user.getEmail());
 
             signOutButton.setVisibility(View.VISIBLE);
         }
-        else{
-            signOutButton.setVisibility(View.GONE);
-        }
     }
 
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
+    }
+
+    private Bitmap getImageBitmap(String url) {
+        Bitmap bm = null;
+        try {
+            Log.d(TAG, "getImageBitmap: " + url);
+            URL aURL = new URL(url);
+            URLConnection conn = aURL.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bm = BitmapFactory.decodeStream(bis);
+            bis.close();
+            is.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error getting bitmap", e);
+        }
+        return bm;
     }
 
 }
