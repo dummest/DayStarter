@@ -12,10 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -53,25 +57,59 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        DrawerLayout drawer = binding.drawerLayout;
-        navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        DrawerLayout drawer = binding.drawerLayout; //drawer = 메뉴
+        navigationView = binding.navView; //navigation = 메뉴 내부 선택지들
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_news, R.id.nav_todo, R.id.nav_weather)
+                R.id.nav_home, R.id.nav_personal_schedule, R.id.nav_group_schedule, R.id.nav_news, R.id.nav_weather)
                 .setOpenableLayout(drawer)
                 .build();
+
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                switch (destination.getId()) {
+                    case R.id.nav_personal_schedule:
+                    case R.id.nav_group_schedule:
+                        binding.appBarMain.fab.setVisibility(View.VISIBLE);
+                        binding.appBarMain.fab.invalidate();
+                        Log.d(TAG, "onDestinationChanged: "+ destination.getLabel());
+                        break;
+                    default:
+                        binding.appBarMain.fab.setVisibility(View.GONE);
+                        binding.appBarMain.fab.invalidate();
+                        Log.d(TAG, "onDestinationChanged: "+ destination.getLabel());
+                        break;
+                }
+            }
+        });
+
+        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text;
+                switch (navigationView.getCheckedItem().getItemId()) {
+                    case R.id.nav_personal_schedule:
+                        text = "개인 스케줄 추가";
+                        break;
+                    case R.id.nav_group_schedule:
+                        text = "그룹 스케줄";
+                        break;
+                    default:
+                        text = "오류";
+                }
+                Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
         headerView = navigationView.getHeaderView(0);//헤더뷰 (전연변수로 접근)
 

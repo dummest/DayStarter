@@ -13,6 +13,8 @@
     <string name="menu_todo">ToDo</string>
     <string name="menu_news">News</string>
     <string name="menu_weather">Weather</string>
+    <string name="menu_personal_schedule">Personal Schedule</string>
+    <string name="menu_group_schedule">Group Schedule</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

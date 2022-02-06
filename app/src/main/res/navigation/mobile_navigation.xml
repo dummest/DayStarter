@@ -12,16 +12,30 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_news"
-        android:name="com.example.daystarter.ui.news.NewsFragment"
-        android:label="@string/menu_news"
-        tools:layout="@layout/fragment_news" />
-
-    <fragment
         android:id="@+id/nav_todo"
         android:name="com.example.daystarter.ui.todo.TodoFragment"
         android:label="@string/menu_todo"
         tools:layout="@layout/fragment_todo" />
+
+    <fragment
+        android:id="@+id/nav_personal_schedule"
+        android:name="com.example.daystarter.ui.todo.PersonalScheduleFragment"
+        android:label="@string/menu_personal_schedule"
+        tools:layout="@layout/fragment_personal_schedule"
+        />
+
+    <fragment
+        android:id="@+id/nav_group_schedule"
+        android:name="com.example.daystarter.ui.todo.GroupScheduleFragment"
+        android:label="@string/menu_group_schedule"
+        tools:layout="@layout/fragment_group_schedule"
+        />
+
+    <fragment
+        android:id="@+id/nav_news"
+        android:name="com.example.daystarter.ui.news.NewsFragment"
+        android:label="@string/menu_news"
+        tools:layout="@layout/fragment_news" />
 
     <fragment
         android:id="@+id/nav_weather"
