@@ -50,4 +50,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    //jitpack must
+    implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
 }

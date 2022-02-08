@@ -17,5 +17,6 @@ public class TodoFragment extends Fragment {
         View v;
         v = inflater.inflate(R.layout.fragment_todo, container, false);
         return v;
+        //useless
     }
 }
