@@ -52,6 +52,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    //jitpack must
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
+
+    //jitpack must be at bottom
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
 }

@@ -4,18 +4,23 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.13541666666666666" />
+        <entry key="app/src/main/res/drawable/gray_round_layout.xml" value="0.13541666666666666" />
         <entry key="app/src/main/res/drawable/ic_logout_foreground.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/outline_add_24.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/outline_article_24.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/outline_attach_file_24.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/drawable/outline_done_outline_24.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/outline_menu_24.xml" value="0.11875" />
         <entry key="app/src/main/res/drawable/round_button_background.xml" value="0.19072965306675913" />
+        <entry key="app/src/main/res/drawable/round_layout.xml" value="0.13839927135197938" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.13645833333333332" />
+        <entry key="app/src/main/res/drawable/top_white_round_layout.xml" value="0.13541666666666666" />
         <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.19293478260869565" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.10082191465451316" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12395472057720758" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.3679620033826042" />
+        <entry key="app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.2877701138402083" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.19787042080417436" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.1160081053698075" />
         <entry key="app/src/main/res/layout/fragment_group_schedule.xml" value="0.1" />

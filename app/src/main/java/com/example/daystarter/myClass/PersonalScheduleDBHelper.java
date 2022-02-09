@@ -63,7 +63,8 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
             long startTime = cursor.getLong(2);
             long endTime = cursor.getLong(3);
             String memo = cursor.getString(4);
-            ScheduleData scheduleData = new ScheduleData(id, title, startTime, endTime, memo);
+            String imgPath = cursor.getString(5);
+            ScheduleData scheduleData = new ScheduleData(id, title, startTime, endTime, memo, imgPath);
             dataList.add(scheduleData);
         }
         return dataList;

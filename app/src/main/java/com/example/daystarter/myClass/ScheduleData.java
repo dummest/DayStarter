@@ -1,25 +1,30 @@
 package com.example.daystarter.myClass;
 
+import java.net.URI;
+
 public class ScheduleData {
     private int scheduleId;
     private String title;
     private long startTime;
     private long endTime;
     private String memo;
+    private String imgPath;
 
-    public ScheduleData(String title, long startTime, long endTime, String memo) {
+    public ScheduleData(String title, long startTime, long endTime, String memo, String imgPath) {
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
+        this.imgPath = imgPath;
     }
 
-    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo) {
+    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo, String imgPath) {
         this.scheduleId = scheduleId;
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
+        this.imgPath = imgPath;
     }
 
     public String getTitle() {
@@ -52,5 +57,13 @@ public class ScheduleData {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }

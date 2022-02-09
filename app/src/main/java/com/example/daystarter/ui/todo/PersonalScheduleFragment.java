@@ -1,5 +1,6 @@
 package com.example.daystarter.ui.todo;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,20 +11,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.daystarter.MainActivity;
 import com.example.daystarter.R;
-import com.example.daystarter.databinding.ActivityMainBinding;
 import com.example.daystarter.databinding.FragmentPersonalScheduleBinding;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.snackbar.SnackbarContentLayout;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+
 public class PersonalScheduleFragment extends Fragment {
     private FragmentPersonalScheduleBinding binding;
-
     private static final String TAG = "PersonalScheduleFragment";
+
+    int year;
+    int month;
+    int day;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,17 +36,26 @@ public class PersonalScheduleFragment extends Fragment {
         calendar.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                year = calendar.getSelectedDate().getYear();
+                month = calendar.getSelectedDate().getMonth();
+                day = calendar.getSelectedDate().getDay();
                 Log.d(TAG, "onDateSelected: ");
             }
         });
+        calendar.setSelectedDate(CalendarDay.today());
+        year = calendar.getSelectedDate().getYear();
+        month = calendar.getSelectedDate().getMonth();
+        day = calendar.getSelectedDate().getDay();
 
         binding.personalScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int year = calendar.getSelectedDate().getYear();
-                int month = calendar.getSelectedDate().getMonth();
-                int day = calendar.getSelectedDate().getDay();
-                Snackbar.make(view, "" + year + "/" + month + "/" + day, Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(view, "" + year + "/" + month + "/" + day, Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), WritablePersonalScheduleActivity.class);
+                intent.putExtra("year", year);
+                intent.putExtra("month", month);
+                intent.putExtra("day", day);
+                startActivity(intent);
             }
         });
 
