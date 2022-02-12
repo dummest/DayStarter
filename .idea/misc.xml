@@ -15,6 +15,7 @@
         <entry key="app/src/main/res/drawable/round_layout.xml" value="0.13839927135197938" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/top_white_round_layout.xml" value="0.13541666666666666" />
+        <entry key="app/src/main/res/drawable/white_round_layout.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.19293478260869565" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.10082191465451316" />
@@ -33,7 +34,8 @@
         <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.1" />
         <entry key="app/src/main/res/layout/login_activity.xml" value="0.18734996927709277" />
         <entry key="app/src/main/res/layout/mav_layout.xml" value="0.1203125" />
-        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/mcv_layout.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.31554545275640317" />
         <entry key="app/src/main/res/layout/personal_schedule_coordinatorlayout.xml" value="0.1203125" />
         <entry key="app/src/main/res/layout/schedule_coordinatorlayout.xml" value="0.10260416666666666" />
         <entry key="app/src/main/res/layout/sign_up_activity.xml" value="0.1" />

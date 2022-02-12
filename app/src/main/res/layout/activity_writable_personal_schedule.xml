@@ -43,6 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:layout_marginBottom="20dp"
                         android:weightSum="7"
                         >
                         <TextView
@@ -79,6 +80,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:layout_marginBottom="20dp"
                         android:weightSum="7">
                         <TextView
                             android:layout_width="match_parent"
@@ -187,7 +189,7 @@
             style="?android:attr/borderlessButtonStyle"
             />
         <Button
-            android:id="@+id/sava_button"
+            android:id="@+id/save_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
