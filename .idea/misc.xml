@@ -21,10 +21,10 @@
         <entry key="app/src/main/res/drawable/white_round_layout.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.19293478260869565" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.10082191465451316" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.13472498966116273" />
-        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.3679620033826042" />
-        <entry key="app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.25017468955800637" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2690641243995562" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.15031369632290031" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.15641301357332135" />
+        <entry key="app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.1" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.19787042080417436" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.1160081053698075" />
         <entry key="app/src/main/res/layout/fragment_group_schedule.xml" value="0.1" />

@@ -177,7 +177,8 @@
         android:layout_weight="9"
         android:weightSum="2"
         android:orientation="horizontal"
-        android:paddingHorizontal="10dp">
+        android:paddingHorizontal="10dp"
+        android:backgroundTint="?android:attr/statusBarColor">
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_button"
             android:layout_width="match_parent"
@@ -187,8 +188,9 @@
             android:text="취소"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp"
+            app:cornerRadius="@dimen/round_button_radius"
             />
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/save_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -197,6 +199,7 @@
             android:text="저장"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp"
+            app:cornerRadius="@dimen/round_button_radius"
             />
     </LinearLayout>
 </LinearLayout>

@@ -30,19 +30,20 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:backgroundTint="?android:attr/statusBarColor"
         android:text="Login" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/moveToSignUpButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        android:background="@drawable/round_button_background"
+        android:backgroundTint="?android:attr/statusBarColor"
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="50dp"/>
 

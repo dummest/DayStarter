@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.daystarter.databinding.ActivityLoginBinding;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,34 +44,31 @@ import java.util.concurrent.TimeUnit;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 100;
+    ActivityLoginBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
 
-        Button signInButton = findViewById(R.id.loginButton);
-        Button moveToSignUpButton = findViewById(R.id.moveToSignUpButton);
-        SignInButton googleSignInButton = findViewById(R.id.googleSignInButton);
 
-
-
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
+        binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 googleSignIn();
             }
         });
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signIn();
             }
         });
 
-        moveToSignUpButton.setOnClickListener(new View.OnClickListener() {
+        binding.moveToSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
@@ -86,8 +84,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn(){
-        String email = String.valueOf(((EditText)findViewById(R.id.loginEmailEditText)).getText());
-        String password = String.valueOf(((EditText)findViewById(R.id.loginPasswordEditText)).getText());
+        String email = binding.loginEmailEditText.toString();
+        String password = binding.loginPasswordEditText.toString();
 
         if(email.length() > 0 && password.length() > 0) {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
