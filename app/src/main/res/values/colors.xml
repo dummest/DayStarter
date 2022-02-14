@@ -8,7 +8,7 @@
 
 
 
-
+    <color name="invisible">#00FFFFFF</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_gray">#ECECEC</color>
     <color name="black">#FF000000</color>

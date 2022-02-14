@@ -17,6 +17,10 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 
 public class PersonalScheduleFragment extends Fragment {
     private FragmentPersonalScheduleBinding binding;
@@ -47,14 +51,19 @@ public class PersonalScheduleFragment extends Fragment {
         month = calendar.getSelectedDate().getMonth();
         day = calendar.getSelectedDate().getDay();
 
+
+
         binding.personalScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "" + year + "/" + month + "/" + day, Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), WritablePersonalScheduleActivity.class);
-                intent.putExtra("year", year);
-                intent.putExtra("month", month);
-                intent.putExtra("day", day);
+                intent.putExtra("beforeYear", year);
+                intent.putExtra("beforeMonth", month);
+                intent.putExtra("beforeDay", day);
+                Calendar calendar1 = new GregorianCalendar();
+                intent.putExtra("beforeHour", calendar1.get(Calendar.HOUR_OF_DAY));
+                intent.putExtra("beforeMinute", calendar1.get(Calendar.MINUTE));
                 startActivity(intent);
             }
         });
