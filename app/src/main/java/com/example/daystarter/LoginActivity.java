@@ -54,28 +54,26 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        binding.googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                googleSignIn();
-            }
-        });
-
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
-
-        binding.moveToSignUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
+        binding.googleSignInButton.setOnClickListener(onClickListener);
+        binding.loginButton.setOnClickListener(onClickListener);
+        binding.moveToSignUpButton.setOnClickListener(onClickListener);
     }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.googleSignInButton:
+                    googleSignIn();
+                    break;
+                case R.id.loginButton:
+                    signIn();
+                case R.id.moveToSignUpButton:
+                    Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                    startActivity(intent);
+            }
+        }
+    };
 
     @Override
     protected void onStart() {
@@ -162,8 +160,9 @@ public class LoginActivity extends AppCompatActivity {
     private void goMain(FirebaseUser user){
         if(user != null) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
             finish();
+            overridePendingTransition(R.anim.none, R.anim.view_go_down);
+            startActivity(intent);
         }
         else{
             showToast("user is null");

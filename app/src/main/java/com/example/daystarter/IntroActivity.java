@@ -33,7 +33,7 @@ public class IntroActivity extends AppCompatActivity {
                     intent = new Intent(IntroActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
-                overridePendingTransition(R.anim.view_come_from_up, R.anim.none);
+                overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
         }, 1000);
     }

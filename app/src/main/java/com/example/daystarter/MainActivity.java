@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
         });
     }
@@ -192,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
+        GoogleSignIn.getClient(getBaseContext(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
     private Bitmap getImageBitmap(String url) {
