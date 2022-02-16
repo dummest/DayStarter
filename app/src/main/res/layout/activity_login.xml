@@ -19,6 +19,7 @@
     <EditText
         android:id="@+id/loginEmailEditText"
         android:hint="Email"
+        android:autofillHints="emailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"/>
@@ -26,6 +27,7 @@
     <EditText
         android:id="@+id/loginPasswordEditText"
         android:hint="Password"
+        android:autofillHints="password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword" />

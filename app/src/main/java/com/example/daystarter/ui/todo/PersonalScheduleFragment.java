@@ -1,9 +1,12 @@
 package com.example.daystarter.ui.todo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -14,6 +17,8 @@ import android.view.ViewGroup;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.FragmentPersonalScheduleBinding;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
@@ -35,21 +40,25 @@ public class PersonalScheduleFragment extends Fragment {
         binding = FragmentPersonalScheduleBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
 
-        MaterialCalendarView calendar = v.findViewById(R.id.calendar);
+        MaterialCalendarView mcv = binding.mcvLayout.calendar;
 
-        calendar.setOnDateChangedListener(new OnDateSelectedListener() {
+        binding.mcvLayout.calendar.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                year = calendar.getSelectedDate().getYear();
-                month = calendar.getSelectedDate().getMonth();
-                day = calendar.getSelectedDate().getDay();
+                year = mcv.getSelectedDate().getYear();
+                month = mcv.getSelectedDate().getMonth();
+                day = mcv.getSelectedDate().getDay();
                 Log.d(TAG, "onDateSelected: ");
             }
         });
-        calendar.setSelectedDate(CalendarDay.today());
-        year = calendar.getSelectedDate().getYear();
-        month = calendar.getSelectedDate().getMonth();
-        day = calendar.getSelectedDate().getDay();
+
+        mcv.addDecorator(new DayDecorator(getContext()));
+
+        mcv.setSelectedDate(CalendarDay.today());
+
+        year = mcv.getSelectedDate().getYear();
+        month = mcv.getSelectedDate().getMonth();
+        day = mcv.getSelectedDate().getDay();
 
 
 
@@ -71,6 +80,28 @@ public class PersonalScheduleFragment extends Fragment {
 
 
         return v;
+    }
+
+    private static class DayDecorator implements DayViewDecorator {
+
+        private final Drawable drawable;
+
+        public DayDecorator(Context context) {
+            drawable = ContextCompat.getDrawable(context, R.drawable.mcv_selector);
+        }
+
+        // true를 리턴 시 모든 요일에 내가 설정한 드로어블이 적용된다
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return true;
+        }
+
+        // 일자 선택 시 내가 정의한 드로어블이 적용되도록 한다
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.setSelectionDrawable(drawable);
+//            view.addSpan(new StyleSpan(Typeface.BOLD));   // 달력 안의 모든 숫자들이 볼드 처리됨
+        }
     }
 
     @Override
