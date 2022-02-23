@@ -14,10 +14,11 @@
     <color name="dark_gray">#191919</color>
     <color name="gray">#808080</color>
     <color name="light_orange">#BFFAC457</color>
-
-    <color name="light_blue">#6EC0FF</color>
-    <color name="blue">@android:color/holo_blue_dark</color>
+    <color name="light_blue">#82B1FF</color>
+    <color name="blue">#1E88E5</color>
     <color name="dark_blue">#3F51B5</color>
     <color name="ic_logout_background">#BEBEBE</color>
+    <color name="red">#F44336</color>
+    <color name="green">#64DD17</color>
 
 </resources>
