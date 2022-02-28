@@ -3,5 +3,4 @@
     android:enterFadeDuration="@android:integer/config_shortAnimTime">
     <item android:state_checked="true"
         android:drawable="@drawable/selector_shape"/>
-    <item android:drawable="@android:color/transparent" />
 </selector>

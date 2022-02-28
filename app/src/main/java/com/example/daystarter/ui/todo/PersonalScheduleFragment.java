@@ -55,7 +55,6 @@ public class PersonalScheduleFragment extends Fragment {
 
         MaterialCalendarView mcv = binding.mcvViewGroup.calendar;
         mcv.setSelectedDate(CalendarDay.today());
-
         mcv.setOnDateChangedListener(new OnDateSelectedListener() {
             /*
                     Note: 자바에서 Calendar는 Month가 0부터 시작하지만(영어권에서는 달을 숫자가 아닌 영어로 부름 ex)March
@@ -73,7 +72,6 @@ public class PersonalScheduleFragment extends Fragment {
                 new SaturdayDecorator(),
                 new SundayDecorator(),
                 new TodayDecorator());
-
 
         binding.personalScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +120,21 @@ public class PersonalScheduleFragment extends Fragment {
         PersonalScheduleDBHelper dbHelper = new PersonalScheduleDBHelper(context);
         ArrayList<ScheduleData> list = dbHelper.getScheduleList(time);
         adapter = new ScheduleRecyclerViewAdapter(list, context);
+        adapter.setOnItemClickListener(new ScheduleRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                ScheduleData data = adapter.getItem(position);
+                Intent intent = new Intent(context, WritablePersonalScheduleActivity.class);
+                intent.putExtra("scheduleId", data.getScheduleId());
+                intent.putExtra("title", data.getTitle());
+                intent.putExtra("beforeLong", data.getStartTime());
+                intent.putExtra("afterLong", data.getEndTime());
+                intent.putExtra("memo", data.getMemo());
+                intent.putExtra("address", data.getAddress());
+                intent.putExtra("imgPath", data.getImgPath());
+                context.startActivity(intent);
+            }
+        });
         /*
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL;", null);
@@ -205,7 +218,6 @@ public class PersonalScheduleFragment extends Fragment {
     private class TodayDecorator implements DayViewDecorator{
         @Override
         public boolean shouldDecorate(CalendarDay day) {
-            Log.d(TAG, "shouldDecorate: " + day.getYear() + day.getMonth() + day.getDay() + ", " + CalendarDay.today().getYear() + CalendarDay.today().getMonth() + CalendarDay.today().getDay());
             return day.equals(CalendarDay.today());
         }
 

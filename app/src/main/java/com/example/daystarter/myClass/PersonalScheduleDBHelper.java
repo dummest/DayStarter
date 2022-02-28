@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
@@ -23,7 +24,7 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
     public PersonalScheduleDBHelper(Context context){
         super(context, DB_NAME, null, 1);
     }
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분", Locale.getDefault());
     public void setQuery(String query) {
         this.query = query;
     }
@@ -101,8 +102,8 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "getScheduleList: before = " + time + ", after = " + calendar.getTimeInMillis());
         Log.d(TAG, "start = " + sdf.format(new Date(time)));
         //time <= 검색범위 < calendar.getTimeinMillis()
-        // TODO: 2022/02/21 rawQuery String 배열 이유 알고 long끼리 비교하여 날짜에 해당하는 레코드 찾 
-        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE startTime >= ? AND endTime < ?", new String[]{Long.toString(time), Long.toString(calendar.getTimeInMillis())});
+
+        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE (startTime >= ? AND startTime < ?) OR (endTime >= ? AND endTime < ?) Order BY startTime asc", new String[]{Long.toString(time), Long.toString(calendar.getTimeInMillis()), Long.toString(time), Long.toString(calendar.getTimeInMillis())});
 
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);

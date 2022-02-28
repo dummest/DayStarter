@@ -47,27 +47,15 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
     }
     public void setFirst(){
         Intent intent = getIntent();
-        /*
-                beforeCalendar = new GregorianCalendar(
-                intent.getIntExtra("beforeYear", 2022),
-                intent.getIntExtra("beforeMonth", 1),
-                intent.getIntExtra("beforeDay", 1),
-                intent.getIntExtra("beforeHour", 0),
-                intent.getIntExtra("beforeMinute", 0));
-
-                afterCalendar = new GregorianCalendar(
-                intent.getIntExtra("afterYear", beforeCalendar.get(Calendar.YEAR)),
-                intent.getIntExtra("afterMonth", beforeCalendar.get(Calendar.MONTH)),
-                intent.getIntExtra("afterDay", beforeCalendar.get(Calendar.DAY_OF_MONTH)),
-                intent.getIntExtra("afterHour", beforeCalendar.get(Calendar.HOUR)),
-                intent.getIntExtra("afterMinute", beforeCalendar.get(Calendar.MINUTE)));
-    */
+        scheduleId = intent.getIntExtra("scheduleId", -1);
+        binding.titleEditText.setText(intent.getStringExtra("title"));
         beforeCalendar.setTimeInMillis(intent.getLongExtra("beforeLong", Calendar.getInstance().getTimeInMillis()));
         afterCalendar.setTimeInMillis(intent.getLongExtra("afterLong", beforeCalendar.getTimeInMillis()));
-        scheduleId = intent.getIntExtra("scheduleId", -1);
-
         setBeforeDate(beforeCalendar);
         setAfterDate(afterCalendar);
+        binding.memoEditText.setText(intent.getStringExtra("memo"));
+        binding.locationEditText.setText(intent.getStringExtra("address"));
+        binding.attachFileTextView.setText(intent.getStringExtra("imgPath"));
     }
 
     public void setBeforeDate(Calendar calendar) {
