@@ -19,12 +19,13 @@ import java.util.Locale;
 public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
     private static final String TAG = "myDBHelper";
     private static final String DB_NAME = "PersonalSchedule.db";
-
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분", Locale.getDefault());
     private String query = "";
+
     public PersonalScheduleDBHelper(Context context){
         super(context, DB_NAME, null, 1);
     }
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분", Locale.getDefault());
+
     public void setQuery(String query) {
         this.query = query;
     }
@@ -65,9 +66,6 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
                 new Object[]{title, startTime, endTime, memo, address, imgPath});
         db.close();
         Date date = new Date(startTime);
-
-
-        Log.d(TAG, "데이터 시작 날짜: " + sdf.format(date));
     }
 
     public void updateSchedule(ScheduleData data){
@@ -99,11 +97,9 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         calendar.setTimeInMillis(time);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-        Log.d(TAG, "getScheduleList: before = " + time + ", after = " + calendar.getTimeInMillis());
-        Log.d(TAG, "start = " + sdf.format(new Date(time)));
         //time <= 검색범위 < calendar.getTimeinMillis()
 
-        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE (startTime >= ? AND startTime < ?) OR (endTime >= ? AND endTime < ?) Order BY startTime asc", new String[]{Long.toString(time), Long.toString(calendar.getTimeInMillis()), Long.toString(time), Long.toString(calendar.getTimeInMillis())});
+        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE (startTime <= ? AND endTime >= ?) OR (startTime < ? AND endTIme > ?) Order BY startTime asc", new String[]{Long.toString(time), Long.toString(time), Long.toString(calendar.getTimeInMillis()), Long.toString(calendar.getTimeInMillis())});
 
         while (cursor.moveToNext()){
             int id = cursor.getInt(0);
@@ -116,7 +112,6 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
 
             ScheduleData scheduleData = new ScheduleData(id, title, startTime, endTime, memo, address, imgPath);
             dataList.add(scheduleData);
-            Log.d(TAG, "getScheduleList: dataList.add");
         }
         return dataList;
     }

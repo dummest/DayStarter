@@ -9,7 +9,6 @@
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:mcv_showOtherDates="defaults"
         app:mcv_calendarMode="month"
         app:mcv_dateTextAppearance="?android:attr/textColor"
         app:mcv_headerTextAppearance="?android:attr/textColor"

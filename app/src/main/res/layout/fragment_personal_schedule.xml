@@ -16,6 +16,11 @@
             <include
                 android:id="@+id/mcv_view_group"
                 layout="@layout/mcv_layout"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"
+                />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/schedule_recycler_view"
                 android:layout_width="match_parent"

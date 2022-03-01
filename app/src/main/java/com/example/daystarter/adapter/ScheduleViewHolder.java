@@ -32,7 +32,7 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder{
             public boolean onLongClick(View view) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    itemClickListener.onItemClick(itemView, position);
+                    itemLongClickListener.onItemLongClick(itemView, position);
                 }
                 return true;
             }

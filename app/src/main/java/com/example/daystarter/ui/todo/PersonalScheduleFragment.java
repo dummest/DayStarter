@@ -47,14 +47,19 @@ public class PersonalScheduleFragment extends Fragment {
     Context context;
     private static final String TAG = "PersonalScheduleFragment";
     ScheduleRecyclerViewAdapter adapter;
+    MaterialCalendarView mcv;
+    Calendar SelectedCalendar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentPersonalScheduleBinding.inflate(inflater, container, false);
 
-        MaterialCalendarView mcv = binding.mcvViewGroup.calendar;
-        mcv.setSelectedDate(CalendarDay.today());
+        ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
+        ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
+        mcv = binding.mcvViewGroup.calendar;
+
+        setFirst();
         mcv.setOnDateChangedListener(new OnDateSelectedListener() {
             /*
                     Note: 자바에서 Calendar는 Month가 0부터 시작하지만(영어권에서는 달을 숫자가 아닌 영어로 부름 ex)March
@@ -62,32 +67,22 @@ public class PersonalScheduleFragment extends Fragment {
                     */
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                Calendar calendar = new GregorianCalendar(date.getYear(), date.getMonth()-1, date.getDay());
-                listViewLoad(calendar.getTimeInMillis());
+                SelectedCalendar = new GregorianCalendar(date.getYear(), date.getMonth()-1, date.getDay());
+                listViewLoad(SelectedCalendar.getTimeInMillis());
             }
         });
-
         mcv.addDecorators(
                 new DaySelector(getContext()),
                 new SaturdayDecorator(),
                 new SundayDecorator(),
                 new TodayDecorator());
+        ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
+        ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
+
 
         binding.personalScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                //Snackbar.make(view, "" + year + "/" + month + "/" + day, Snackbar.LENGTH_SHORT).show();
-                Intent intent = new Intent(getContext(), WritablePersonalScheduleActivity.class);
-                intent.putExtra("beforeYear", year);
-                intent.putExtra("beforeMonth", month);
-                intent.putExtra("beforeDay", day);
-                Calendar calendar1 = new GregorianCalendar();
-                intent.putExtra("beforeHour", calendar1.get(Calendar.HOUR_OF_DAY));
-                intent.putExtra("beforeMinute", calendar1.get(Calendar.MINUTE));
-                startActivity(intent);
-
-                 */
                 Intent intent = new Intent(getContext(), WritablePersonalScheduleActivity.class);
                 Calendar calendar = new GregorianCalendar();
 
@@ -115,6 +110,14 @@ public class PersonalScheduleFragment extends Fragment {
         });
         return binding.getRoot();
     }
+    //초기설정, mcv의 처음 선택을 오늘로, 리스트뷰도 불러옴
+    public void setFirst(){
+        CalendarDay today = CalendarDay.today();
+        mcv.setSelectedDate(today);
+        SelectedCalendar = new GregorianCalendar(today.getYear(), today.getMonth()-1, today.getDay());
+        listViewLoad(SelectedCalendar.getTimeInMillis());
+    }
+
 
     public void listViewLoad(long time){
         PersonalScheduleDBHelper dbHelper = new PersonalScheduleDBHelper(context);
@@ -135,32 +138,33 @@ public class PersonalScheduleFragment extends Fragment {
                 context.startActivity(intent);
             }
         });
-        /*
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL;", null);
-        while(cursor.moveToNext()){
-            int id = cursor.getInt(0);
-            String title = cursor.getString(1);
-            long startTime = cursor.getLong(2);
-            long endTime = cursor.getLong(3);
-            String memo = cursor.getString(4);
-            String address = cursor.getString(5);
-            String imgPath = cursor.getString(6);
-            adapter.addItem(new ScheduleData(id, title, startTime, endTime, memo, address, imgPath));
-        }
-         */
+
+        adapter.setOnItemLongClickListener(new ScheduleRecyclerViewAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int position) {
+                ScheduleData data = adapter.getItem(position);
+                dbHelper.deleteSchedule(data.getScheduleId());
+                listViewLoad(SelectedCalendar.getTimeInMillis());
+            }
+        });
+
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         adapter.notifyDataSetChanged();
         binding.scheduleRecyclerView.setAdapter(adapter);
         binding.scheduleRecyclerView.setLayoutManager(manager);
         binding.scheduleRecyclerView.invalidate();
-        Log.d(TAG, "listViewLoad: " + adapter.getItemCount());
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        listViewLoad(SelectedCalendar.getTimeInMillis());
     }
 
     ///////////////////////////mcv Decorator/////////////////////////////
@@ -202,7 +206,7 @@ public class PersonalScheduleFragment extends Fragment {
     }
 
     private class SundayDecorator implements DayViewDecorator{
-        //sunday decorator(make text blue)
+        //sunday decorator(make text red)
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             int sunday = day.getDate().with(DayOfWeek.SUNDAY).getDayOfMonth();

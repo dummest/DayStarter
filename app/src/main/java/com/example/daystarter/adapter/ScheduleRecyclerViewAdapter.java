@@ -21,7 +21,7 @@ import java.util.Locale;
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
     private ArrayList<ScheduleData> mData;
     private Context context;
-    SimpleDateFormat dateText = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+    SimpleDateFormat dateText = new SimpleDateFormat("MM월 dd일 HH:mm", Locale.getDefault());
     SimpleDateFormat timeText = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     public ScheduleRecyclerViewAdapter(ArrayList<ScheduleData> data, Context context) {
@@ -44,7 +44,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleVi
         ScheduleViewHolder svh = new ScheduleViewHolder(view, itemClickListener, itemLongClickListener);
         return svh;
     }
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     public interface OnItemLongClickListener{
         void onItemLongClick(View view, int position);
     }
@@ -65,13 +65,16 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleVi
     public void setOnItemClickListener(OnItemClickListener ClickListener){
         itemClickListener = ClickListener;
     }
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     // onBindViewHolder : position 에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
     @Override
     public void onBindViewHolder(@NonNull ScheduleViewHolder holder, int position) {
         ScheduleData data = mData.get(position);
-        holder.mainText.setText(data.getTitle());
 
+        if(data.getTitle().length() == 0)
+            holder.mainText.setText("내 일정");
+        else
+            holder.mainText.setText(data.getTitle());
         Calendar startCalendar = new GregorianCalendar();
         startCalendar.setTimeInMillis(data.getStartTime());
         Calendar endCalendar = new GregorianCalendar();
