@@ -8,24 +8,31 @@ public class ScheduleData {
     private long startTime;
     private long endTime;
     private String memo;
+    private String address;
     private String imgPath;
 
-    public ScheduleData(String title, long startTime, long endTime, String memo, String imgPath) {
+    public ScheduleData(){}
+
+    public ScheduleData(String title, long startTime, long endTime, String memo, String address, String imgPath) {
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
+        this.address = address;
         this.imgPath = imgPath;
     }
 
-    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo, String imgPath) {
+    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo, String address, String imgPath) {
         this.scheduleId = scheduleId;
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
+        this.address = address;
         this.imgPath = imgPath;
     }
+
+    public int getScheduleId() { return scheduleId; }
 
     public String getTitle() {
         return title;
@@ -58,6 +65,10 @@ public class ScheduleData {
     public void setMemo(String memo) {
         this.memo = memo;
     }
+
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
 
     public String getImgPath() {
         return imgPath;

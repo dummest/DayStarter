@@ -17,6 +17,7 @@
 
     <EditText
         android:id="@+id/signUpEmailEditText"
+        android:autofillHints="emailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
@@ -25,6 +26,7 @@
 
     <EditText
         android:id="@+id/signUpPasswordEditText"
+        android:autofillHints="password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password (More than 8 characters)"
@@ -33,6 +35,7 @@
 
     <EditText
         android:id="@+id/signUpPasswordCheckEditText"
+        android:autofillHints="password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password Check"
