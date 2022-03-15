@@ -8,12 +8,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.daystarter.ui.setting.setting;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.appbar.AppBarLayout;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = binding.navView; //navigation = 메뉴 내부 선택지들
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_personal_schedule, R.id.nav_group_schedule, R.id.nav_news, R.id.nav_weather)
+                R.id.nav_home, R.id.nav_personal_schedule, R.id.nav_group_schedule, R.id.nav_news, R.id.nav_weather,R.id.nav_alarm)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -149,6 +151,17 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, setting.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+        }
+
 
     @Override
     public boolean onSupportNavigateUp() {

@@ -42,4 +42,22 @@
         android:name="com.example.daystarter.ui.weather.WeatherFragment"
         android:label="@string/menu_weather"
         tools:layout="@layout/fragment_weather" />
+    <fragment
+        android:id="@+id/nav_alarm"
+        android:name="com.example.daystarter.ui.alarm.alarmslist.AlarmsListFragment"
+        android:label="Alarm"
+        tools:layout="@layout/fragment_alarm" >
+        <action
+            android:id="@+id/action_alarmsListFragment_to_createAlarmFragment"
+            app:destination="@id/createAlarmFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createAlarmFragment"
+        android:name="com.example.daystarter.ui.alarm.createalarm.CreateAlarmFragment"
+        android:label="CreateAlarmFragment" >
+        <action
+            android:id="@+id/action_createAlarmFragment_to_alarmsListFragment"
+            app:destination="@id/nav_alarm" />
+    </fragment>
 </navigation>
