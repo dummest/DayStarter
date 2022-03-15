@@ -4,6 +4,35 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.13541666666666666" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/drawable/ic_alarm_black_24dp.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_alarm.xml" value="0.144" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_intro.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_ring.xml" value="0.2" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/alarm_main.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_alarm.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_createalarm.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_home.xml" value="0.1265625" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_listalarms.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_weather.xml" value="0.1265625" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/item_alarm.xml" value="0.12" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/roud_theme.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/menu/activity_main_drawer.xml" value="0.11197916666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/menu/main.xml" value="0.2" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.128125" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_intro.xml" value="0.24479166666666666" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_login.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_main.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_ring.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_sign_up.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/content_main.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_alarm.xml" value="0.1480978260869565" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_createalarm.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_home.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_listalarms.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/item_alarm.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/menu/activity_main_drawer.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/drawable/button_ripple_effect.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/gray_round_layout.xml" value="0.13541666666666666" />
         <entry key="app/src/main/res/drawable/ic_logout_foreground.xml" value="0.13645833333333332" />

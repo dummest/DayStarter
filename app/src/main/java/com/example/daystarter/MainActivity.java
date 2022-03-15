@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = binding.navView; //navigation = 메뉴 내부 선택지들
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_personal_schedule, R.id.nav_group_schedule, R.id.nav_news, R.id.nav_weather)
+                R.id.nav_home, R.id.nav_personal_schedule, R.id.nav_group_schedule, R.id.nav_news, R.id.nav_weather, R.id.nav_alarm)
                 .setOpenableLayout(drawer)
                 .build();
 

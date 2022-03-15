@@ -18,6 +18,5 @@
     <color name="light_blue">#6EC0FF</color>
     <color name="blue">@android:color/holo_blue_dark</color>
     <color name="dark_blue">#3F51B5</color>
-    <color name="ic_logout_background">#BEBEBE</color>
 
 </resources>

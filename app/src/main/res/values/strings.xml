@@ -16,6 +16,25 @@
     <string name="menu_personal_schedule">Personal Schedule</string>
     <string name="menu_group_schedule">Group Schedule</string>
 
+    <string name ="menu_alarm">Alarm</string>
+    <string name ="ad_pm">오전/오후</string>
+    <string name ="alarm_hour">몇시</string>
+    <string name ="alarm_min">몇분</string>
+    <string name="alarm_month">몇월</string>
+    <string name="alarm_day">몇일</string>
+
+    <string name="mondayBox">월</string>
+    <string name="tuesdayBox">화</string>
+    <string name="wednesdayBox">수</string>
+    <string name="thursdayBox">목</string>
+    <string name="fridayBox">금</string>
+    <string name="saturdayBox">토</string>
+    <string name="sundayBox">일</string>
+    <string name="alarm_every">매일</string>
+    <string name="alarm_save">저장</string>
+    <string name="alarm_delete">취소</string>
+    <string name="close_alarm">알람종료</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
