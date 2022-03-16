@@ -122,7 +122,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
         else if(view.getId() == R.id.save_button){
             ScheduleData data = new ScheduleData(
                     scheduleId,
-                    binding.titleEditText.getText().toString(),
+                    binding.titleEditText.getText().toString().trim(),
                     beforeCalendar.getTimeInMillis(),
                     afterCalendar.getTimeInMillis(),
                     binding.memoEditText.getText().toString(),

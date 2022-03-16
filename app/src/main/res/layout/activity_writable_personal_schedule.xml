@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/primary_round_layout"
+                android:padding="10dp"
                 android:layout_marginBottom="@dimen/layout_margin">
                 <EditText
                     android:id="@+id/titleEditText"
