@@ -4,40 +4,62 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.13541666666666666" />
-        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1787037037037037" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/drawable/ic_alarm_black_24dp.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_alarm.xml" value="0.144" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_intro.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/activity_ring.xml" value="0.2" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/alarm_main.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_alarm.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_createalarm.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_home.xml" value="0.1265625" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_listalarms.xml" value="0.264" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/fragment_weather.xml" value="0.1265625" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/item_alarm.xml" value="0.12" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/layout/roud_theme.xml" value="0.23489583333333333" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/menu/activity_main_drawer.xml" value="0.11197916666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/menu/main.xml" value="0.2" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarter/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.128125" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_intro.xml" value="0.24479166666666666" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_login.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_main.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_ring.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_sign_up.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/content_main.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_alarm.xml" value="0.1480978260869565" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_createalarm.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_home.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/fragment_listalarms.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/layout/item_alarm.xml" value="0.24365942028985507" />
+        <entry key="..\:/Users/gkahs/AndroidStudioProjects/DayStarteres/app/src/main/res/menu/activity_main_drawer.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/drawable/button_ripple_effect.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/gray_round_layout.xml" value="0.13541666666666666" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/drawable/ic_logout_foreground.xml" value="0.13645833333333332" />
-        <entry key="app/src/main/res/drawable/mcv_selector.xml" value="0.13333333333333333" />
         <entry key="app/src/main/res/drawable/outline_add_24.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/outline_article_24.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/outline_attach_file_24.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/drawable/outline_done_outline_24.xml" value="0.13645833333333332" />
-        <entry key="app/src/main/res/drawable/outline_home_24.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/drawable/outline_menu_24.xml" value="0.11875" />
-        <entry key="app/src/main/res/drawable/outline_wb_sunny_24.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/drawable/primary_round_layout.xml" value="0.13645833333333332" />
         <entry key="app/src/main/res/drawable/round_button_background.xml" value="0.19072965306675913" />
         <entry key="app/src/main/res/drawable/round_layout.xml" value="0.13839927135197938" />
         <entry key="app/src/main/res/drawable/secondary_round_layout.xml" value="0.13645833333333332" />
-        <entry key="app/src/main/res/drawable/selector_shape.xml" value="0.13333333333333333" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.13645833333333332" />
-        <entry key="app/src/main/res/drawable/today_decorator.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/drawable/top_white_round_layout.xml" value="0.13541666666666666" />
         <entry key="app/src/main/res/drawable/white_round_layout.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.19293478260869565" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2690641243995562" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15031369632290031" />
-        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.22407670388776432" />
-        <entry key="app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.22315570284892197" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.15641301357332135" />
+        <entry key="app/src/main/res/layout/activity_writable_personal_schedule.xml" value="0.1" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.19787042080417436" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.1160081053698075" />
         <entry key="app/src/main/res/layout/fragment_group_schedule.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1987782792100447" />
         <entry key="app/src/main/res/layout/fragment_news.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_personal_schedule.xml" value="0.136" />
+        <entry key="app/src/main/res/layout/fragment_personal_schedule.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_schedule.xml" value="0.10625" />
         <entry key="app/src/main/res/layout/fragment_test.xml" value="0.10625" />
         <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.1160081053698075" />
@@ -48,7 +70,6 @@
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.1848299562075068" />
         <entry key="app/src/main/res/layout/personal_schedule_coordinatorlayout.xml" value="0.1203125" />
         <entry key="app/src/main/res/layout/schedule_coordinatorlayout.xml" value="0.10260416666666666" />
-        <entry key="app/src/main/res/layout/schedule_list_item.xml" value="0.20385948975303528" />
         <entry key="app/src/main/res/layout/sign_up_activity.xml" value="0.1" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.1" />
         <entry key="app/src/main/res/menu/main.xml" value="0.16111111111111112" />
