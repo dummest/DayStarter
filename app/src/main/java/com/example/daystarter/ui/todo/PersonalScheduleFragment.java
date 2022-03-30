@@ -1,6 +1,8 @@
 package com.example.daystarter.ui.todo;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.adapter.ScheduleListViewAdapter;
@@ -136,6 +139,7 @@ public class PersonalScheduleFragment extends Fragment {
         PersonalScheduleDBHelper dbHelper = new PersonalScheduleDBHelper(context);
         ArrayList<ScheduleData> list = dbHelper.getScheduleList(time);
         adapter = new ScheduleRecyclerViewAdapter(list, context);
+
         adapter.setOnItemClickListener(new ScheduleRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -155,9 +159,22 @@ public class PersonalScheduleFragment extends Fragment {
         adapter.setOnItemLongClickListener(new ScheduleRecyclerViewAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(View view, int position) {
-                ScheduleData data = adapter.getItem(position);
-                dbHelper.deleteSchedule(data.getScheduleId());
-                scheduleInvalidate();
+                new AlertDialog.Builder(getContext())
+                        .setMessage("이 일정을 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ScheduleData data = adapter.getItem(position);
+                                dbHelper.deleteSchedule(data.getScheduleId());
+                                scheduleInvalidate();
+                                Toast.makeText(getContext(), "일정이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        }).show();
             }
         });
 

@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/nav_group_schedule"
-        android:name="com.example.daystarter.ui.todo.GroupScheduleFragment"
+        android:name="com.example.daystarter.ui.groupSchedule.GroupScheduleFragment"
         android:label="@string/menu_group_schedule"
         tools:layout="@layout/fragment_group_schedule"
         />
