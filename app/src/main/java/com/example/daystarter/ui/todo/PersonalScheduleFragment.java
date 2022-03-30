@@ -1,10 +1,13 @@
 package com.example.daystarter.ui.todo;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.adapter.ScheduleListViewAdapter;
@@ -33,6 +37,8 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.threeten.bp.DayOfWeek;
 
@@ -49,6 +55,7 @@ public class PersonalScheduleFragment extends Fragment {
     ScheduleRecyclerViewAdapter adapter;
     MaterialCalendarView mcv;
     Calendar SelectedCalendar;
+    ScheduleDecorator scheduleDecorator;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -71,11 +78,19 @@ public class PersonalScheduleFragment extends Fragment {
                 listViewLoad(SelectedCalendar.getTimeInMillis());
             }
         });
+
+        mcv.setOnMonthChangedListener(new OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+                Log.d(TAG, "onMonthChanged: " + date.getYear() + date.getMonth() + date.getDay());
+            }
+        });
         mcv.addDecorators(
                 new DaySelector(getContext()),
                 new SaturdayDecorator(),
                 new SundayDecorator(),
-                new TodayDecorator());
+                new TodayDecorator(),
+                scheduleDecorator);
         ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
         ///////////////////////////////////////MaterialCalendarView set///////////////////////////////////
 
@@ -116,6 +131,7 @@ public class PersonalScheduleFragment extends Fragment {
         mcv.setSelectedDate(today);
         SelectedCalendar = new GregorianCalendar(today.getYear(), today.getMonth()-1, today.getDay());
         listViewLoad(SelectedCalendar.getTimeInMillis());
+        scheduleDecorator = new ScheduleDecorator(getContext());
     }
 
 
@@ -123,6 +139,7 @@ public class PersonalScheduleFragment extends Fragment {
         PersonalScheduleDBHelper dbHelper = new PersonalScheduleDBHelper(context);
         ArrayList<ScheduleData> list = dbHelper.getScheduleList(time);
         adapter = new ScheduleRecyclerViewAdapter(list, context);
+
         adapter.setOnItemClickListener(new ScheduleRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -142,9 +159,22 @@ public class PersonalScheduleFragment extends Fragment {
         adapter.setOnItemLongClickListener(new ScheduleRecyclerViewAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(View view, int position) {
-                ScheduleData data = adapter.getItem(position);
-                dbHelper.deleteSchedule(data.getScheduleId());
-                listViewLoad(SelectedCalendar.getTimeInMillis());
+                new AlertDialog.Builder(getContext())
+                        .setMessage("이 일정을 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ScheduleData data = adapter.getItem(position);
+                                dbHelper.deleteSchedule(data.getScheduleId());
+                                scheduleInvalidate();
+                                Toast.makeText(getContext(), "일정이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        }).show();
             }
         });
 
@@ -164,11 +194,34 @@ public class PersonalScheduleFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        listViewLoad(SelectedCalendar.getTimeInMillis());
+        scheduleInvalidate();
     }
 
+    public void scheduleInvalidate(){
+        listViewLoad(SelectedCalendar.getTimeInMillis());
+        mcv.removeDecorator(scheduleDecorator);
+        mcv.addDecorator(scheduleDecorator);
+    }
     ///////////////////////////mcv Decorator/////////////////////////////
     ///////////////////////////mcv Decorator/////////////////////////////
+    private static class ScheduleDecorator implements DayViewDecorator{
+        PersonalScheduleDBHelper dbHelper; // decorate 할 날짜를 선별하기 위해
+
+        public ScheduleDecorator(Context context){
+            dbHelper = new PersonalScheduleDBHelper(context);
+        }
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            Calendar calendar = new GregorianCalendar(day.getYear(), day.getMonth()-1, day.getDay());
+            return dbHelper.getScheduleCount(calendar.getTimeInMillis()) > 0;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new DotSpan(5, Color.GRAY));
+        }
+    }
+
     private static class DaySelector implements DayViewDecorator {
         //selector decorator
         private final Drawable drawable;
@@ -230,6 +283,19 @@ public class PersonalScheduleFragment extends Fragment {
             view.addSpan(new ForegroundColorSpan(getResources().getColor(R.color.green, getActivity().getTheme())));
             view.addSpan(new StyleSpan(Typeface.BOLD));
             view.addSpan(new UnderlineSpan());
+        }
+    }
+
+    private class PlannedDayDecorator implements DayViewDecorator{
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+
+            return false;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+
         }
     }
     ///////////////////////////mcv Decorator/////////////////////////////

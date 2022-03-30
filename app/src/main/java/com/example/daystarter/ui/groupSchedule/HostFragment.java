@@ -1,4 +1,4 @@
-package com.example.daystarter.ui.todo;
+package com.example.daystarter.ui.groupSchedule;
 
 import android.os.Bundle;
 
@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 
 import com.example.daystarter.R;
 
-public class GroupScheduleFragment extends Fragment {
+public class HostFragment extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v;
-        v = inflater.inflate(R.layout.fragment_group_schedule, container, false);
-
-        return v;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_host, container, false);
     }
 }
