@@ -16,10 +16,10 @@
     <string name="menu_personal_schedule">Personal Schedule</string>
     <string name="menu_group_schedule">Group Schedule</string>
 
-    <string name ="menu_alarm">Alarm</string>
-    <string name ="ad_pm">오전/오후</string>
-    <string name ="alarm_hour">몇시</string>
-    <string name ="alarm_min">몇분</string>
+    <string name="menu_alarm">Alarm</string>
+    <string name="ad_pm">오전/오후</string>
+    <string name="alarm_hour">몇시</string>
+    <string name="alarm_min">몇분</string>
     <string name="alarm_month">몇월</string>
     <string name="alarm_day">몇일</string>
 
