@@ -20,4 +20,8 @@ public class CreateAlarmViewModel extends AndroidViewModel {
     public void insert(Alarm alarm) {
         alarmRepository.insert(alarm);
     }
+
+    public void update(Alarm alarm){alarmRepository.update(alarm);}
+
+    public void delete(Alarm alarm){alarmRepository.delete(alarm);}
 }

@@ -51,10 +51,12 @@
             android:hint="Alarm Title"
             app:layout_constraintTop_toBottomOf="@+id/fragment_createalarm_timePickerLayout" />
 
+
         <CheckBox
             android:id="@+id/fragment_createalarm_recurring"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:checked="false"
             android:text="Recurring Alarm"
             app:layout_constraintStart_toStartOf="parent"

@@ -2,9 +2,13 @@ package com.example.daystarter.ui.alarm.activities;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -33,6 +37,13 @@ public class RingActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+
+        //잠금화면 위에서도 알람울리게
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +61,6 @@ public class RingActivity extends AppCompatActivity {
                 calendar.add(Calendar.MINUTE, 10);
 
                 Alarm alarm = new Alarm(
-                        new Random().nextInt(Integer.MAX_VALUE),
                         calendar.get(Calendar.HOUR_OF_DAY),
                         calendar.get(Calendar.MINUTE),
                         "Snooze",
@@ -83,4 +93,21 @@ public class RingActivity extends AppCompatActivity {
         rotateAnimation.setDuration(800);
         rotateAnimation.start();
     }
+    //음향 조절
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        AudioManager mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);//선언 후
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP :
+                mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+
+                mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                return true;
+            case KeyEvent.KEYCODE_BACK:
+                return true;
+        }
+        return false;
+    }
+
 }

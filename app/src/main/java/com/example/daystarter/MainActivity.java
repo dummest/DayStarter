@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.daystarter.ui.setting.TimeUtil;
 import com.example.daystarter.ui.setting.setting;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     View headerView;
     FirebaseUser user;
     Bitmap profileBitmap;
+    String Color;
 
     private static String TAG = "MainActivity";
 
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        Color = TimeUtil.ModLoad(getApplicationContext());
+        TimeUtil.applyTheme(Color);
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
