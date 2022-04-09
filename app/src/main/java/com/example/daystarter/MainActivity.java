@@ -134,13 +134,14 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
         });
+
+        updateUI();
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
     }
 
     @Override
