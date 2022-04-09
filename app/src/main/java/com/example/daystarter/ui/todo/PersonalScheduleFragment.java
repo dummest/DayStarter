@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.daystarter.R;
-import com.example.daystarter.adapter.ScheduleListViewAdapter;
 import com.example.daystarter.adapter.ScheduleRecyclerViewAdapter;
 import com.example.daystarter.databinding.FragmentPersonalScheduleBinding;
 import com.example.daystarter.myClass.PersonalScheduleDBHelper;

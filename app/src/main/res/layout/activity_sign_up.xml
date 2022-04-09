@@ -3,17 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/signUpTextView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:gravity="center"
         android:text="Day Starter"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="34sp" />
+
+    <ImageView
+        android:id="@+id/profile_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/outline_add_24"
+        />
 
     <EditText
         android:id="@+id/signUpEmailEditText"
@@ -40,6 +48,13 @@
         android:layout_height="wrap_content"
         android:hint="Password Check"
         android:inputType="textPassword"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/nameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
         android:minHeight="48dp" />
 
     <com.google.android.material.button.MaterialButton
