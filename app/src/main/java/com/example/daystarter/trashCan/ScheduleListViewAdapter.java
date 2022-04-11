@@ -1,4 +1,4 @@
-package com.example.daystarter.adapter;
+package com.example.daystarter.trashCan;
 
 import android.content.Context;
 import android.content.Intent;
