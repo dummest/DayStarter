@@ -1,7 +1,5 @@
 package com.example.daystarter.ui.alarm.createalarm;
 
-import android.content.Context;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +9,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -44,11 +40,11 @@ public class CreateAlarmFragment extends Fragment {
     @BindView(R.id.fragment_createalarm_recurring_options) LinearLayout recurringOptions;
 
     private CreateAlarmViewModel createAlarmViewModel;
-    private AudioManager audioManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         createAlarmViewModel = new ViewModelProvider(this).get(CreateAlarmViewModel.class);
     }
 
@@ -82,7 +78,10 @@ public class CreateAlarmFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
+        int alarmId = new Random().nextInt(Integer.MAX_VALUE);
+
         Alarm alarm = new Alarm(
+                alarmId,
                 TimePickerUtil.getTimePickerHour(timePicker),
                 TimePickerUtil.getTimePickerMinute(timePicker),
                 title.getText().toString(),
@@ -97,11 +96,9 @@ public class CreateAlarmFragment extends Fragment {
                 sat.isChecked(),
                 sun.isChecked()
         );
+
         createAlarmViewModel.insert(alarm);
 
         alarm.schedule(getContext());
-    }
-    public void Seekbar(){
-
     }
 }

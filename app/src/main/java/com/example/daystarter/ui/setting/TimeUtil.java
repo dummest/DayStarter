@@ -21,7 +21,6 @@ public class TimeUtil {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 Log.d("TAG","다크 모드");
                 break;
-
         }
     }
 

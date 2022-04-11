@@ -47,24 +47,20 @@ public class AlarmService extends Service {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
             String alarmTitle = String.format("%s Alarm", intent.getStringExtra(TITLE));
-            //notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle(alarmTitle)
                     .setContentText("Ring Ring .. Ring Ring")
                     .setSmallIcon(R.drawable.ic_alarm_black_24dp)
-                    .setContentIntent(pendingIntent);
-
-            Intent intent1 = new Intent(this,RingActivity.class);
-            PendingIntent pendingIntent1 =PendingIntent.getActivity(this,0,intent1,PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setFullScreenIntent(pendingIntent1,true);
-
+                    .setContentIntent(pendingIntent)
+                    .build();
             mediaPlayer.start();
 
             long[] pattern = { 0, 100, 1000 };
             //진동
             vibrator.vibrate(pattern, 0);
 
-            startForeground(1, builder.build());
+            startForeground(1, notification);
         }
         return START_STICKY;
     }
