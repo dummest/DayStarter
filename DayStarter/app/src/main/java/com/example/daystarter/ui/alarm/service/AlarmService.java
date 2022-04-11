@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -27,6 +28,7 @@ public class AlarmService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d("service","service");
         super.onCreate();
 
         mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
@@ -79,7 +81,6 @@ public class AlarmService extends Service {
 
         return channelId;
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

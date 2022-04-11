@@ -17,16 +17,14 @@
     <color name="dark_gray">#191919</color>
     <color name="gray">#808080</color>
     <color name="light_orange">#BFFAC457</color>
-    <color name="blue">#1E88E5</color>
+
+    <color name="light_blue">#6EC0FF</color>
+    <color name="blue">@android:color/holo_blue_dark</color>
     <color name="dark_blue">#3F51B5</color>
-    <color name="light_blue">#82B1FF</color>
 
     <color name="color_dark_000000_ffffff">#000000</color>
     <color name="color_dark_ffffff_000000">#ffffff</color>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-
-
-
 </resources>

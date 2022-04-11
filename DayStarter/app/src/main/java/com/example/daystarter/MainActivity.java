@@ -62,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Color = TimeUtil.ModLoad(getApplicationContext());
+        //TimeUtil.applyTheme(Color);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
 
-
-        //Color = TimeUtil.ModLoad(getApplicationContext());
-        //TimeUtil.applyTheme(Color);
 
         DrawerLayout drawer = binding.drawerLayout; //drawer = 메뉴
         navigationView = binding.navView; //navigation = 메뉴 내부 선택지들
@@ -141,13 +141,14 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
         });
+
+        updateUI();
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
     }
 
     @Override

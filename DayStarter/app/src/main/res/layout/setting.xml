@@ -13,10 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="테마 설정"
+        android:textSize="20sp"
+        android:textColor="@color/color_dark_000000_ffffff"
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
     <RadioGroup
         android:id="@+id/radioMode"
         android:layout_width="match_parent"
@@ -28,9 +31,9 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Light"
             android:textColor="@color/color_dark_000000_ffffff"
             android:buttonTint="@color/colorAccent"
-            android:text="light"
             android:id="@+id/rbLight"/>
         <RadioButton
             android:layout_width="wrap_content"
@@ -40,6 +43,7 @@
             android:textColor="@color/color_dark_000000_ffffff"
             android:id="@+id/rbDark"/>
     </RadioGroup>
+
     <TextView
         android:id="@+id/alarmsound"
         android:layout_width="match_parent"

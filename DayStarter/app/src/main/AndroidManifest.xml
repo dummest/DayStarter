@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.daystarter">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-
 
     <application
         android:allowBackup="true"
@@ -19,9 +19,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayStarter">
         <activity
+            android:name=".ui.groupSchedule.ParticipationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.groupSchedule.MakeGroupActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.todo.WritablePersonalScheduleActivity"
             android:exported="false"
-            android:theme="@style/Theme.DayStarter.NoActionBar"/>
+            android:theme="@style/Theme.DayStarter.NoActionBar" />
         <activity
             android:name=".IntroActivity"
             android:exported="true"
@@ -44,23 +50,20 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.DayStarter.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.DayStarter.NoActionBar" />
         <activity android:name=".ui.setting.setting"/>
-        <activity
-            android:name=".ui.alarm.activities.RingActivity"
+        <activity android:name=".ui.alarm.activities.RingActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity="">
         </activity>
 
-        <receiver android:name=".ui.alarm.broadcastreceiver.AlarmBroadcastReceiver"/>
+        <receiver android:name=".ui.alarm.broadcastreceiver.AlarmBroadcastReceiver" />
 
-        <service
-            android:name=".ui.alarm.service.AlarmService"
+        <service android:name=".ui.alarm.service.AlarmService"
             android:enabled="true"
-            android:exported="true"/>
-        <service android:name=".ui.alarm.service.RescheduleAlarmsService"/>
+            android:exported="true"/>/>
+        <service android:name=".ui.alarm.service.RescheduleAlarmsService" />
     </application>
 
 </manifest>

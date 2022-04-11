@@ -28,18 +28,27 @@ import java.util.Calendar;
 
 @Entity(tableName = "alarm_table")
 public class Alarm {
+    //자동으로 기본키 생성
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int alarmId;
 
-    private int hour, minute;
-    private boolean started, recurring;
-    private boolean monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+    private int hour;
+    private int minute;
+    private boolean started;
+    private boolean recurring;
+    private boolean monday;
+    private boolean tuesday;
+    private boolean wednesday;
+    private boolean thursday;
+    private boolean friday;
+    private boolean saturday;
+    private boolean sunday;
     private String title;
 
     private long created;
 
-    public Alarm(int hour, int minute, String title, long created, boolean started, boolean recurring, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday) {
+    public Alarm( int hour, int minute, String title, long created, boolean started, boolean recurring, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday) {
         this.hour = hour;
         this.minute = minute;
         this.started = started;

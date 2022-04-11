@@ -44,7 +44,6 @@ public class CreateAlarmFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         createAlarmViewModel = new ViewModelProvider(this).get(CreateAlarmViewModel.class);
     }
 
@@ -78,7 +77,6 @@ public class CreateAlarmFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
-
         Alarm alarm = new Alarm(
                 TimePickerUtil.getTimePickerHour(timePicker),
                 TimePickerUtil.getTimePickerMinute(timePicker),
@@ -94,9 +92,11 @@ public class CreateAlarmFragment extends Fragment {
                 sat.isChecked(),
                 sun.isChecked()
         );
-
         createAlarmViewModel.insert(alarm);
 
         alarm.schedule(getContext());
+    }
+    public void Seekbar(){
+
     }
 }

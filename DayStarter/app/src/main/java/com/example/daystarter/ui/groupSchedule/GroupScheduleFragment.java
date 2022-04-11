@@ -1,5 +1,6 @@
 package com.example.daystarter.ui.groupSchedule;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,11 +14,15 @@ import com.example.daystarter.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class GroupScheduleFragment extends Fragment {
     HostFragment hostFragment;
     ParticipantsFragment participantsFragment;
+
+    DatabaseReference dr;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,7 +41,7 @@ public class GroupScheduleFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
 
-                Fragment selected = null;
+                Fragment selected;
                 if(position==0){
                     selected = hostFragment;
                 }
@@ -62,11 +67,14 @@ public class GroupScheduleFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent;
                 if(tabLayout.getSelectedTabPosition() == 0){
-                    Snackbar.make(view, "hostTab", Snackbar.LENGTH_SHORT).show();
+                    intent = new Intent(getContext(), MakeGroupActivity.class);
+                    startActivity(intent);
                 }
                 else{
-                    Snackbar.make(view, "participantsTab", Snackbar.LENGTH_SHORT).show();
+                    intent = new Intent(getContext(), ParticipationActivity.class);
+                    startActivity(intent);
                 }
             }
         });

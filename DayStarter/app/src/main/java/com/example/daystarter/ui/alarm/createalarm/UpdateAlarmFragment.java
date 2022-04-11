@@ -52,7 +52,7 @@ public class UpdateAlarmFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.alarm_createalarm, container, false);
+        View view = inflater.inflate(R.layout.fragment_createalarm, container, false);
 
         ButterKnife.bind(this, view);
 

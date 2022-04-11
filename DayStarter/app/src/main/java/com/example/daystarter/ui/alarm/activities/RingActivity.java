@@ -37,12 +37,12 @@ public class RingActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+
         //잠금화면 위에서도 알람울리게
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
 
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +93,6 @@ public class RingActivity extends AppCompatActivity {
         rotateAnimation.setDuration(800);
         rotateAnimation.start();
     }
-
     //음향 조절
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         AudioManager mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);//선언 후

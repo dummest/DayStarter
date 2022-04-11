@@ -22,5 +22,4 @@ public class CreateAlarmViewModel extends AndroidViewModel {
     }
 
     public void update(Alarm alarm){alarmRepository.update(alarm);}
-
 }
