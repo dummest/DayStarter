@@ -1,6 +1,7 @@
 package com.example.daystarter.ui.alarm.createalarm;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.daystarter.R;
+import com.example.daystarter.ui.alarm.alarmslist.AlarmRecyclerViewAdapter;
 import com.example.daystarter.ui.alarm.data.Alarm;
-
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateAlarmFragment extends Fragment {
+public class UpdateAlarmFragment extends Fragment {
     @BindView(R.id.fragment_createalarm_timePicker) TimePicker timePicker;
     @BindView(R.id.fragment_createalarm_title) EditText title;
     @BindView(R.id.fragment_createalarm_scheduleAlarm) Button scheduleAlarm;
@@ -40,11 +40,12 @@ public class CreateAlarmFragment extends Fragment {
     @BindView(R.id.fragment_createalarm_recurring_options) LinearLayout recurringOptions;
 
     private CreateAlarmViewModel createAlarmViewModel;
+    AlarmRecyclerViewAdapter alarmRecyclerViewAdapter;
+    int notId = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         createAlarmViewModel = new ViewModelProvider(this).get(CreateAlarmViewModel.class);
     }
 
@@ -69,16 +70,16 @@ public class CreateAlarmFragment extends Fragment {
         scheduleAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scheduleAlarm();
-                Navigation.findNavController(v).navigate(R.id.action_createAlarmFragment_to_alarmsListFragment);
+                Log.d("변경","update");
+                    scheduleUpdateAlarm();
+                Navigation.findNavController(v).navigate(R.id.action_updateAlarmFragment_to_nav_alarm);
             }
         });
 
         return view;
     }
 
-    private void scheduleAlarm() {
-
+    private void scheduleUpdateAlarm() {
         Alarm alarm = new Alarm(
                 TimePickerUtil.getTimePickerHour(timePicker),
                 TimePickerUtil.getTimePickerMinute(timePicker),
@@ -94,9 +95,7 @@ public class CreateAlarmFragment extends Fragment {
                 sat.isChecked(),
                 sun.isChecked()
         );
-
-        createAlarmViewModel.insert(alarm);
-
+        createAlarmViewModel.update(alarm);
         alarm.schedule(getContext());
     }
 }
