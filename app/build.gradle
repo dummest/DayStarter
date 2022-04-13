@@ -70,4 +70,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'androidx.room:room-compiler:2.4.1'
+
+    //스와이프 라이브러리
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 }

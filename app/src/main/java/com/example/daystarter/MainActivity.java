@@ -8,14 +8,20 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+<<<<<<< HEAD
 import com.bumptech.glide.Glide;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
+=======
+import com.example.daystarter.ui.setting.TimeUtil;
+import com.example.daystarter.ui.setting.setting;
+>>>>>>> 71c359d6dc4ebc265d367e0f03c81d6ff57df55f
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     View headerView;
     FirebaseUser firebaseUser;
     Bitmap profileBitmap;
+    String Color;
 
     private static String TAG = "MainActivity";
 
@@ -68,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+
+        //Color = TimeUtil.ModLoad(getApplicationContext());
+        //TimeUtil.applyTheme(Color);
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -158,6 +169,16 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, setting.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

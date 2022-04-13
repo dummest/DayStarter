@@ -39,8 +39,7 @@ public class Alarm {
 
     private long created;
 
-    public Alarm(int alarmId, int hour, int minute, String title, long created, boolean started, boolean recurring, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday) {
-        this.alarmId = alarmId;
+    public Alarm(int hour, int minute, String title, long created, boolean started, boolean recurring, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday) {
         this.hour = hour;
         this.minute = minute;
         this.started = started;

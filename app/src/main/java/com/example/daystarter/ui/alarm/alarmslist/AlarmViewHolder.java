@@ -22,7 +22,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
     private OnToggleAlarmListener listener;
 
-    public AlarmViewHolder(@NonNull View itemView, OnToggleAlarmListener listener) {
+    public AlarmViewHolder(@NonNull View itemView, OnToggleAlarmListener listener, AlarmRecyclerViewAdapter.OnItemClickListener itemClickListener, AlarmRecyclerViewAdapter.OnItemLongClickListener itemLongClickListener) {
         super(itemView);
 
         alarmTime = itemView.findViewById(R.id.item_alarm_time);
@@ -32,6 +32,16 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         alarmTitle = itemView.findViewById(R.id.item_alarm_title);
 
         this.listener = listener;
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    itemClickListener.onItemClick(itemView, position);
+                }
+            }
+        });
     }
 
     public void bind(Alarm alarm) {
@@ -49,9 +59,9 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (alarm.getTitle().length() != 0) {
-            alarmTitle.setText(String.format("%s | %d | %d", alarm.getTitle(), alarm.getAlarmId(), alarm.getCreated()));
+            alarmTitle.setText(String.format("%s", alarm.getTitle()));
         } else {
-            alarmTitle.setText(String.format("%s | %d | %d", "Alarm", alarm.getAlarmId(), alarm.getCreated()));
+            alarmTitle.setText(String.format("%s","Alarm"));
         }
 
         alarmStarted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
