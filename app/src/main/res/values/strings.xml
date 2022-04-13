@@ -6,6 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">로그인 해주세요</string>
     <string name="nav_header_subtitle">test@email.com</string>
+    <string name="nav_header_user_name">name</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

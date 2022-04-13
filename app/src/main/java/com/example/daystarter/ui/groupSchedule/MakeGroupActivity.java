@@ -1,5 +1,7 @@
 package com.example.daystarter.ui.groupSchedule;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,13 +21,19 @@ import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
+import com.example.daystarter.ui.groupSchedule.myClass.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -85,40 +93,23 @@ public class MakeGroupActivity extends AppCompatActivity {
                         StorageReference storageRef = storage.getReference();
                         StorageReference pathRef = storageRef.child("group_image/" + key);
 
-
-                        /*TODO 액티비티에서 이미지 다운 후 띄워주는 코드?
-                        pathRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        storageRef.child("group_image").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                Glide.with(getBaseContext()).load(pathRef).into(groupImage);
-                            }
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                String imageUrl;
+                                final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
+                                while(!uriTask.isComplete()){}
 
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                                imageUrl = uriTask.getResult().toString();
 
-                            }
-                        });
-                        */
-
-                        UploadTask uploadTask = pathRef.putFile(uri);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getBaseContext(), "이미지 업로드 실패, 다시 시도해보세요", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Group group = new Group(key, groupName, user.getEmail());
+                                Group group = new Group(key, groupName, user.getEmail(), imageUrl);
                                 dbRef.child("groups").child(key).setValue(group);
-                                finish();
                             }
                         });
                     }
                     //이미지를 넣지 않았을 경우
                     else{
-                        Group group = new Group(key, groupName, user.getEmail());
+                        Group group = new Group(key, groupName, user.getEmail(), null);
                         dbRef.child("groups").child(key).setValue(group);
                         finish();
                     }

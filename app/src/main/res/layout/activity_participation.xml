@@ -14,6 +14,13 @@
         android:layout_height="wrap_content"
         android:hint="그룹 코드"/>
 
+    <EditText
+        android:id="@+id/name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="익명"
+        android:hint="사용할 이름"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/participate_group_button"
         android:layout_width="wrap_content"

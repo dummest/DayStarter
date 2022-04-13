@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -20,15 +22,18 @@ import java.util.ArrayList;
 
 public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<Group> groupList;
+    FirebaseUser user;
 
     public GroupRecyclerViewAdapter(){
         groupList = new ArrayList<Group>();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        FirebaseDatabase.getInstance().getReference().child("groups").orderByChild("hostEmail")
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addValueEventListener(new ValueEventListener() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef.child("users").child(user.getUid()).child("participatingGroups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 groupList.clear();
+                //TODO 데이터를 받아서 넣어야하는데 group id만 있으면 되지 않나?? 오브젝트로 받아서 키로 받는 방법????
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     groupList.add(snapshot.getValue(Group.class));
                 }

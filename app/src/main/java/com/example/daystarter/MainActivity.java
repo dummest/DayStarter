@@ -14,8 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.daystarter.ui.groupSchedule.myClass.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,6 +38,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.daystarter.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -49,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button signOutButton;
     View headerView;
-    FirebaseUser user;
+    FirebaseUser firebaseUser;
     Bitmap profileBitmap;
 
     private static String TAG = "MainActivity";
@@ -160,35 +169,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(){
         ImageView profileImageView;
-        TextView emailTextView;
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null) {
-            Log.d(TAG, "유저 이메일 = " + user.getEmail());
+        profileImageView = headerView.findViewById(R.id.profilePhoto);
 
-            profileImageView = headerView.findViewById(R.id.profilePhoto);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null) {
+            //프로필 이미지 받아오는 작업
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            dbRef.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().into(profileImageView);
 
-            if(user.getPhotoUrl()!=null) {
-                Thread profileThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "run: start");
-                        profileBitmap = getImageBitmap(user.getPhotoUrl().toString());
-                    }
-                });
-
-                profileThread.start();
-                try {
-                    Log.d(TAG, "updateUI: join");
-                    profileThread.join();
-                    profileImageView.setImageBitmap(profileBitmap);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    TextView nameTextView = headerView.findViewById(R.id.nameTextView);
+                    TextView emailTextView = headerView.findViewById(R.id.emailTextView);
+                    nameTextView.setText(user.name);
+                    emailTextView.setText(user.email);
                 }
-            }
 
-            emailTextView = headerView.findViewById(R.id.emailTextView);
-            emailTextView.setText(user.getEmail());
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
 
             signOutButton.setVisibility(View.VISIBLE);
         }

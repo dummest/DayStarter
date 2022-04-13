@@ -68,9 +68,11 @@ public class LoginActivity extends AppCompatActivity {
                     break;
                 case R.id.loginButton:
                     signIn();
+                    break;
                 case R.id.moveToSignUpButton:
                     Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                     startActivity(intent);
+                    break;
             }
         }
     };
@@ -82,8 +84,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn(){
-        String email = binding.loginEmailEditText.toString();
-        String password = binding.loginPasswordEditText.toString();
+        String email = binding.loginEmailEditText.getText().toString().trim();
+        String password = binding.loginPasswordEditText.getText().toString().trim();
 
         if(email.length() > 0 && password.length() > 0) {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
