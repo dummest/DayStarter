@@ -15,13 +15,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-<<<<<<< HEAD
 import com.bumptech.glide.Glide;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
-=======
 import com.example.daystarter.ui.setting.TimeUtil;
 import com.example.daystarter.ui.setting.setting;
->>>>>>> 71c359d6dc4ebc265d367e0f03c81d6ff57df55f
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private Button signOutButton;
     View headerView;
     FirebaseUser firebaseUser;
-    Bitmap profileBitmap;
-    String Color;
 
     private static String TAG = "MainActivity";
 
@@ -75,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-
-
-        //Color = TimeUtil.ModLoad(getApplicationContext());
-        //TimeUtil.applyTheme(Color);
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -97,49 +88,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        /*
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                switch (destination.getId()) {
-                    case R.id.nav_personal_schedule:
-                    case R.id.nav_group_schedule:
-                        binding.appBarMain.fab.setVisibility(View.VISIBLE);
-                        binding.appBarMain.fab.invalidate();
-                        Log.d(TAG, "onDestinationChanged: "+ destination.getLabel());
-                        break;
-                    default:
-                        binding.appBarMain.fab.setVisibility(View.GONE);
-                        binding.appBarMain.fab.invalidate();
-                        Log.d(TAG, "onDestinationChanged: "+ destination.getLabel());
-                        break;
-                }
-            }
-        });
-
-         */
-
-        /*
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String text;
-                switch (navigationView.getCheckedItem().getItemId()) {
-                    case R.id.nav_personal_schedule:
-                        text = "개인 스케줄 추가";
-                        break;
-                    case R.id.nav_group_schedule:
-                        text = "그룹 스케줄";
-                        break;
-                    default:
-                        text = "오류";
-                }
-                Snackbar.make(view, text, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-         */
-
         headerView = navigationView.getHeaderView(0);//헤더뷰 (전연변수로 접근)
 
         signOutButton = headerView.findViewById(R.id.signOutButton);
@@ -147,11 +95,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signOut();
-                updateUI();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
         });
 
@@ -162,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            signOut();
+        }
     }
 
     @Override
@@ -222,8 +168,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signOut(){
-        FirebaseAuth.getInstance().signOut();
-        GoogleSignIn.getClient(getBaseContext(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        if(FirebaseAuth.getInstance()!=null) {
+            FirebaseAuth.getInstance().signOut();
+            GoogleSignIn.getClient(getBaseContext(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        }
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
     }
 
     private Bitmap getImageBitmap(String url) {

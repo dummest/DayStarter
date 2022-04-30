@@ -111,8 +111,8 @@ public class MakeGroupActivity extends AppCompatActivity {
                     else{
                         Group group = new Group(key, groupName, user.getEmail(), null);
                         dbRef.child("groups").child(key).setValue(group);
-                        finish();
                     }
+                    finish();
                 }
                 //그룹명을 기입하지 않은 경우
                 else{

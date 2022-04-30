@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/group_image_view"
-        android:background="@drawable/outline_add_24"
+        android:src="@drawable/outline_add_24"
         android:layout_width="200dp"
         android:layout_height="200dp"
         />
