@@ -98,7 +98,6 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         //time <= 검색범위 < calendar.getTimeinMillis()
-        Log.d(TAG, "getScheduleList: time: " + time + "calendar: " + calendar.getTimeInMillis());
         Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE endTime >= ? AND startTime < ?  Order BY startTime asc", new String[]{Long.toString(time), Long.toString(calendar.getTimeInMillis())});
 
         while (cursor.moveToNext()){
@@ -125,7 +124,6 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         //time <= 검색범위 < calendar.getTimeinMillis()
-        Log.d(TAG, "getScheduleList: time: " + time + "calendar: " + calendar.getTimeInMillis());
         Cursor cursor = db.rawQuery("SELECT scheduleId FROM PersonalScheduleTBL WHERE endTime >= ? AND startTime < ?", new String[]{Long.toString(time), Long.toString(calendar.getTimeInMillis())});
         return cursor.getCount();
     }

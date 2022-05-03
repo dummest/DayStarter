@@ -21,19 +21,14 @@ import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
-import com.example.daystarter.ui.groupSchedule.myClass.User;
+import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -41,11 +36,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Calendar;
 
 public class MakeGroupActivity extends AppCompatActivity {
-    private DatabaseReference dbRef;
-    private String key;
-    private FirebaseStorage storage;
     FirebaseUser user;
-
     MaterialButton button;
     EditText edt;
     ImageView groupImage;
@@ -75,49 +66,7 @@ public class MakeGroupActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //그룹 기본키 설정(기본키는 임시로 유저 uid와 생성 시간으로 결정)
-                dbRef = FirebaseDatabase.getInstance().getReference();
-                user = FirebaseAuth.getInstance().getCurrentUser();
-                key = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                Calendar calendar = Calendar.getInstance();
-                key += calendar.getTimeInMillis();
-                String groupName = edt.getText().toString().trim();
-
-                //그룹명을 기입한 경우
-                if(groupName.length() > 0) {
-                    //이미지 넣었을 경우만 이미지 업로드
-                    if (uri != null) {
-
-                        storage = FirebaseStorage.getInstance();
-                        StorageReference storageRef = storage.getReference();
-                        StorageReference pathRef = storageRef.child("group_image/" + key);
-
-                        storageRef.child("group_image").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                String imageUrl;
-                                final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
-                                while(!uriTask.isComplete()){}
-
-                                imageUrl = uriTask.getResult().toString();
-
-                                Group group = new Group(key, groupName, user.getEmail(), imageUrl);
-                                dbRef.child("groups").child(key).setValue(group);
-                            }
-                        });
-                    }
-                    //이미지를 넣지 않았을 경우
-                    else{
-                        Group group = new Group(key, groupName, user.getEmail(), null);
-                        dbRef.child("groups").child(key).setValue(group);
-                    }
-                    finish();
-                }
-                //그룹명을 기입하지 않은 경우
-                else{
-                    Toast.makeText(getBaseContext(), "그룹명은 필수입니다", Toast.LENGTH_SHORT).show();
-                }
+                makeGroup();
             }
         });
 
@@ -131,5 +80,47 @@ public class MakeGroupActivity extends AppCompatActivity {
                 resultLauncher.launch(intent);
             }
         });
+    }
+
+    void makeGroup(){
+        //그룹명(EditText 에서 말단 공백 제거 후 길이 계산)
+        String groupName = edt.getText().toString().trim();
+        //그룹명을 기입한 경우
+        if(groupName.length() > 0) {
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+
+            //그룹 기본키 설정(기본키는 임시로 유저 uid 와 생성 시간으로 결정)
+            GroupInfo groupInfo = new GroupInfo(FirebaseAuth.getInstance().getCurrentUser().getUid() + Calendar.getInstance().getTimeInMillis());
+            Log.d(TAG, "before Id: " + groupInfo.groupId);
+            //이미지 넣었을 경우만 이미지 업로드
+            if (uri != null) {
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                storageRef.child("groupImages").child(groupInfo.groupId).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        String imageUrl;
+                        final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
+                        while(!uriTask.isComplete()){}
+                        imageUrl = uriTask.getResult().toString();
+                        Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), imageUrl);
+                        dbRef.child("groups").child(groupInfo.groupId).setValue(group);
+                        dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+                        finish();
+                    }
+                });
+            }
+            //이미지를 넣지 않았을 경우
+            else{
+                Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), null);
+                dbRef.child("groups").child(groupInfo.groupId).setValue(group);
+                dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+                finish();
+            }
+        }
+        //그룹명의 길이가 0인 경
+        else{
+            Toast.makeText(getBaseContext(), "그룹명은 필수입니다", Toast.LENGTH_SHORT).show();
+        }
     }
 }

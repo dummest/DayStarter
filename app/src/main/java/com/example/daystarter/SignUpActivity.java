@@ -15,18 +15,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.daystarter.databinding.ActivitySignUpBinding;
-import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,8 +38,6 @@ public class SignUpActivity extends AppCompatActivity {
     Uri uri;
     FirebaseStorage storage;
     DatabaseReference dbRef;
-
-    String uid, email, imgPath, name;
     String imageUrl;
 
     @Override
@@ -94,13 +86,13 @@ public class SignUpActivity extends AppCompatActivity {
                     //성공시
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        //프로필 사진 있을 시 uid와 같은 이름으로 사진을 위치 profile_image/에 업로드 해줌
+                        //프로필 사진 있을 시 uid 와 같은 이름으로 사진을 위치 profileImage/에 업로드 해줌
                         if(uri!=null) {
                             //storage = 파이어베이스 스토리지 참조 객체
                             storage = FirebaseStorage.getInstance();
                             StorageReference storageRef = storage.getReference();
                             //파이어베이스 스토리지 안의
-                            storageRef.child("profile_images").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            storageRef.child("profileImages").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                     final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
@@ -149,14 +141,6 @@ public class SignUpActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_PICK);
 
         resultLauncher.launch(intent);
-    }
-
-    void uploadImage(){
-
-    }
-
-    void makeUserData(){
-
     }
 
     private void showToast(String str){
