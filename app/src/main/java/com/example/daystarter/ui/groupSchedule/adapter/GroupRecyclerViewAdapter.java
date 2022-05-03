@@ -33,7 +33,6 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 groupList.clear();
-                //TODO 데이터를 받아서 넣어야하는데 group id만 있으면 되지 않나?? 오브젝트로 받아서 키로 받는 방법????
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     groupList.add(snapshot.getValue(Group.class));
                 }

@@ -9,19 +9,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
-import com.example.daystarter.ui.groupSchedule.myClass.GroupId;
+import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,7 +37,7 @@ import java.util.ArrayList;
 public class ParticipantsFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
-    ParticipantsRecyclerViewAdapter adapter = new ParticipantsRecyclerViewAdapter();;
+    ParticipantsRecyclerViewAdapter adapter = new ParticipantsRecyclerViewAdapter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,11 +56,11 @@ public class ParticipantsFragment extends Fragment {
 
     public class ParticipantsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ArrayList<Group> groupList;
-        ArrayList<GroupId> groupIdList;
+        ArrayList<GroupInfo> groupInfoList;
 
         public ParticipantsRecyclerViewAdapter(){
             groupList = new ArrayList<Group>();
-            groupIdList = new ArrayList<GroupId>();
+            groupInfoList = new ArrayList<GroupInfo>();
             loadGroupIdList();
         }
 
@@ -90,12 +88,12 @@ public class ParticipantsFragment extends Fragment {
             dbRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    groupIdList.clear();
+                    groupInfoList.clear();
                     groupList.clear();
                     for(DataSnapshot ds : snapshot.getChildren()){
-                        GroupId groupId = ds.getValue(GroupId.class);
-                        groupIdList.add(groupId);
-                        Log.d(TAG, "groupId add: " + groupId.groupId);
+                        GroupInfo groupInfo = ds.getValue(GroupInfo.class);
+                        groupInfoList.add(groupInfo);
+                        Log.d(TAG, "groupInfo add: " + groupInfo.groupId);
                         notifyDataSetChanged();
                     }
                     loadGroupList();
@@ -109,8 +107,8 @@ public class ParticipantsFragment extends Fragment {
         }
 
         public void loadGroupList(){
-            for(GroupId id : groupIdList) {
-                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups").child(id.groupId);
+            for(GroupInfo groupInfo : groupInfoList) {
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupInfo.groupId);
                 dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -135,9 +133,5 @@ public class ParticipantsFragment extends Fragment {
             textView = itemView.findViewById(R.id.group_name);
         }
     }
-
-
-
-
 
 }

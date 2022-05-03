@@ -134,6 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: 2022/05/02 구글 로그인에 대해 따로 프로필 이미지, 이름을 지정해 줄 필요가 있음
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
