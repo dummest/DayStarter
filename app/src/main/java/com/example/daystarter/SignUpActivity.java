@@ -58,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()){
-                case R.id.signUpButton:
+                case R.id.sign_up_button:
                     signUp();
                     break;
                 case R.id.profile_image_view:
@@ -76,9 +76,9 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        String email = String.valueOf(((EditText)findViewById(R.id.signUpEmailEditText)).getText());
-        String password = String.valueOf(((EditText)findViewById(R.id.signUpPasswordEditText)).getText());
-        String passwordCheck = String.valueOf(((EditText)findViewById(R.id.signUpPasswordCheckEditText)).getText());
+        String email = String.valueOf(((EditText)findViewById(R.id.sign_up_email_edit_text)).getText());
+        String password = String.valueOf(((EditText)findViewById(R.id.sign_up_password_edit_text)).getText());
+        String passwordCheck = String.valueOf(((EditText)findViewById(R.id.sign_up_password_check_Edit_Text)).getText());
         if(password.equals(passwordCheck)) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override

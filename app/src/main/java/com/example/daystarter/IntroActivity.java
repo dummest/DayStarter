@@ -23,11 +23,10 @@ public class IntroActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Intent intent;
-                if(user != null) {
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if(auth.getCurrentUser().getUid() != null) {
                     intent = new Intent(IntroActivity.this, MainActivity.class);
-                    Log.d(TAG, user.getEmail());
                 }
                 else
                     intent = new Intent(IntroActivity.this, LoginActivity.class);

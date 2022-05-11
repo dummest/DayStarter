@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
+import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -38,7 +39,7 @@ import java.util.Calendar;
 public class MakeGroupActivity extends AppCompatActivity {
     FirebaseUser user;
     MaterialButton button;
-    EditText edt;
+    EditText groupNameEditText, userNameEditText;
     ImageView groupImage;
     Uri uri;
     ActivityResultLauncher<Intent> resultLauncher;
@@ -49,7 +50,8 @@ public class MakeGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_make_group);
 
         button = findViewById(R.id.make_group_button);
-        edt = findViewById(R.id.group_name_edit_text);
+        groupNameEditText = findViewById(R.id.group_name_edit_text);
+        userNameEditText = findViewById(R.id.name_edit_text);
         groupImage = findViewById(R.id.group_image_view);
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -83,10 +85,19 @@ public class MakeGroupActivity extends AppCompatActivity {
     }
 
     void makeGroup(){
-        //그룹명(EditText 에서 말단 공백 제거 후 길이 계산)
-        String groupName = edt.getText().toString().trim();
-        //그룹명을 기입한 경우
-        if(groupName.length() > 0) {
+        //EditText 에서 말단 공백 제거 후 길이 계산
+        String groupName = groupNameEditText.getText().toString().trim();
+        Log.d(TAG, "makeGroup: " + groupName);
+        String userName = userNameEditText.getText().toString().trim();
+        //그룹명을 기입하지 않은 경우
+        if(groupName.length() < 1) {
+            Toast.makeText(getBaseContext(), "그룹명은 필수입니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(userName.length() < 1){
+            Toast.makeText(getBaseContext(), "이름은 필수입니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
             user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -106,6 +117,9 @@ public class MakeGroupActivity extends AppCompatActivity {
                         Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), imageUrl);
                         dbRef.child("groups").child(groupInfo.groupId).setValue(group);
                         dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+
+                        //group 멤버 안에 호스트를 넣어줌
+                        dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail()));
                         finish();
                     }
                 });
@@ -117,10 +131,5 @@ public class MakeGroupActivity extends AppCompatActivity {
                 dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
                 finish();
             }
-        }
-        //그룹명의 길이가 0인 경
-        else{
-            Toast.makeText(getBaseContext(), "그룹명은 필수입니다", Toast.LENGTH_SHORT).show();
-        }
     }
 }
