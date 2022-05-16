@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         headerView = navigationView.getHeaderView(0);//헤더뷰 (전연변수로 접근)
 
-        signOutButton = headerView.findViewById(R.id.signOutButton);
+        signOutButton = headerView.findViewById(R.id.sign_out_button);
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(){
         ImageView profileImageView;
 
-        profileImageView = headerView.findViewById(R.id.profilePhoto);
+        profileImageView = headerView.findViewById(R.id.profile_image_view);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null) {
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null) {
             //프로필 이미지 받아오는 작업
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
             dbRef.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
                     User user = snapshot.getValue(User.class);
                     Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().into(profileImageView);
 
-                    TextView nameTextView = headerView.findViewById(R.id.nameTextView);
-                    TextView emailTextView = headerView.findViewById(R.id.emailTextView);
+                    TextView nameTextView = headerView.findViewById(R.id.name_text_view);
+                    TextView emailTextView = headerView.findViewById(R.id.email_text_view);
                     nameTextView.setText(user.name);
                     emailTextView.setText(user.email);
                 }
@@ -160,9 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
-
             signOutButton.setVisibility(View.VISIBLE);
         }
     }
@@ -195,5 +192,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return bm;
     }
-
 }

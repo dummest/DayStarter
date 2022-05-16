@@ -2,6 +2,7 @@ package com.example.daystarter.ui.groupSchedule;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,15 @@ public class HostFragment extends Fragment {
             Glide.with(holder.itemView.getContext()).load(groupList.get(position).imagePath).circleCrop()
                     .into(((HostFragment.GroupViewHolder)holder).imageView);
             ((HostFragment.GroupViewHolder)holder).textView.setText(groupList.get(position).groupName);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), GroupActivity.class);
+                    intent.putExtra("groupId", groupList.get(holder.getAdapterPosition()).groupId);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

@@ -7,7 +7,7 @@
     android:gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/signUpTextView"
+        android:id="@+id/sign_up_text_view"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:gravity="center"
@@ -24,7 +24,7 @@
         />
 
     <EditText
-        android:id="@+id/signUpEmailEditText"
+        android:id="@+id/sign_up_email_edit_text"
         android:autofillHints="emailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:minHeight="48dp" />
 
     <EditText
-        android:id="@+id/signUpPasswordEditText"
+        android:id="@+id/sign_up_password_edit_text"
         android:autofillHints="password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:minHeight="48dp" />
 
     <EditText
-        android:id="@+id/signUpPasswordCheckEditText"
+        android:id="@+id/sign_up_password_check_Edit_Text"
         android:autofillHints="password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,14 +51,14 @@
         android:minHeight="48dp" />
 
     <EditText
-        android:id="@+id/nameEditText"
+        android:id="@+id/name_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
         android:minHeight="48dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/signUpButton"
+        android:id="@+id/sign_up_button"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="30dp"
         android:layout_height="wrap_content"
