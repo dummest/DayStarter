@@ -134,10 +134,11 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         long afterTime = afterCalendar.getTimeInMillis();
         String contents = binding.contentsEditText.getText().toString().trim();
 
-        GroupScheduleModel gsm = new GroupScheduleModel(FirebaseAuth.getInstance().getUid(), Calendar.getInstance().getTimeInMillis(), title, beforeTime, afterTime, contents);
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        String key = dbRef.child("schedules").child(groupId).push().getKey();
 
-        dbRef.child("schedules").child(groupId).push().setValue(gsm).addOnCompleteListener(new OnCompleteListener<Void>() {
+        GroupScheduleModel gsm = new GroupScheduleModel(key, FirebaseAuth.getInstance().getUid(), Calendar.getInstance().getTimeInMillis(), title, beforeTime, afterTime, contents);
+        dbRef.child("schedules").child(groupId).child(key).setValue(gsm).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {

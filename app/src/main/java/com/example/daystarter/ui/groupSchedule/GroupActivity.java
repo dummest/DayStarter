@@ -137,8 +137,9 @@ public class GroupActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), GroupActivity.class);
-
+                    Intent intent = new Intent(view.getContext(), GroupSchedulePostActivity.class);
+                    intent.putExtra("key", scheduleList.get(holder.getAdapterPosition()).key);
+                    startActivity(intent);
                 }
             });
         }

@@ -20,15 +20,9 @@ public class GroupScheduleModel {
     public GroupScheduleModel(){
 
     }
-    public GroupScheduleModel(String writerUid, long writingTime, String title, long startTime, long endTime, String contents) {
-        this.writerUid = writerUid;
-        this.writingTime = writingTime;
-        this.title = title;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.contents = contents;
-        this.imagePath = imagePath;
-    }
+
+
+
     public GroupScheduleModel(String key, String writerUid, long writingTime, String title, long startTime, long endTime, String contents, String imagePath) {
         this.key = key;
         this.writerUid = writerUid;

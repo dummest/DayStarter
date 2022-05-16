@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayStarter">
         <activity
+            android:name=".ui.groupSchedule.GroupSchedulePostActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.groupSchedule.WritingGroupScheduleActivity"
             android:exported="false" />
         <activity
