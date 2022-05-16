@@ -110,6 +110,7 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
                             Alarm delete = alarmRecyclerViewAdapter.getItem(position);
                             //Alarm delete = alarms.get(position);
                             alarmsListViewModel.delete(delete);
+                            delete.cancelAlarm(getActivity());
                             alarmRecyclerViewAdapter.removeItem(position);
                             alarmRecyclerViewAdapter.notifyItemRemoved(position);
 
