@@ -50,6 +50,7 @@ public class RingActivity extends AppCompatActivity {
                 calendar.add(Calendar.MINUTE, 10);
 
                 Alarm alarm = new Alarm(
+                        new Random().nextInt(Integer.MAX_VALUE),
                         calendar.get(Calendar.HOUR_OF_DAY),
                         calendar.get(Calendar.MINUTE),
                         "Snooze",

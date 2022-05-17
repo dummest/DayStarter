@@ -50,6 +50,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.news.ItemActivty"/>
         <activity
             android:name=".LoginActivity"
             android:exported="false"

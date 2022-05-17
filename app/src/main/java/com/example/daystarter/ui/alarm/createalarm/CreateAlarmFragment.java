@@ -78,8 +78,9 @@ public class CreateAlarmFragment extends Fragment {
     }
 
     private void scheduleAlarm() {
-
+        int alarmId = new Random().nextInt(Integer.MAX_VALUE);
         Alarm alarm = new Alarm(
+                alarmId,
                 TimePickerUtil.getTimePickerHour(timePicker),
                 TimePickerUtil.getTimePickerMinute(timePicker),
                 title.getText().toString(),
