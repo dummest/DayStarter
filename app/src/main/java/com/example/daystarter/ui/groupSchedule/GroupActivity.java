@@ -30,8 +30,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -55,6 +57,11 @@ public class GroupActivity extends AppCompatActivity {
         validation();
         init();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     //그룹 구성원인 사람이 접속했는지, 그룹이 존재하는지 확인 후 진행 하거나 취소함
@@ -139,14 +146,41 @@ public class GroupActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(), GroupSchedulePostActivity.class);
                     intent.putExtra("key", scheduleList.get(holder.getAdapterPosition()).key);
+                    intent.putExtra("groupId", groupId);
                     startActivity(intent);
                 }
             });
         }
-        void loadGroupScheduleList(int year, int month, int day){
-            scheduleList.clear();
+        void loadGroupScheduleList(int year, int month, int day) {
+            Calendar startTime = Calendar.getInstance();
+            Calendar endTime = Calendar.getInstance();
+            startTime.set(year, month, day, 0, 0, 0);
+            endTime.setTimeInMillis(startTime.getTimeInMillis());
+            endTime.add(Calendar.DAY_OF_MONTH, 1);
+
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference scheduleRef = dbRef.child("schedules").child(groupId);
+            scheduleRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    scheduleList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        GroupScheduleModel model = ds.getValue(GroupScheduleModel.class);
+                        if (model.startTime >= startTime.getTimeInMillis() && model.endTime < endTime.getTimeInMillis()) {
+                            scheduleList.add(model);
+                            Log.d(TAG, "add: " + model.title);
+                        }
+                    }
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+            /*
             scheduleRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -167,7 +201,7 @@ public class GroupActivity extends AppCompatActivity {
                     notifyDataSetChanged();
                 }
             });
-        }
+             */
 
         @Override
         public int getItemCount() {

@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:orientation="vertical">
 
@@ -20,6 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp">
                 <TextView
+                    android:id="@+id/title_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="30sp"/>
@@ -31,37 +32,62 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
                 <TextView
+                    android:id="@+id/writer_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:text="writer"
                     android:layout_weight="1"
-                    android:gravity="left" />
+                    android:gravity="start" />
                 <TextView
+                    android:id="@+id/writing_time_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
                     android:text="writing_time"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:textColor="@color/gray"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="2">
+                android:weightSum="20">
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="yyyy/mm/dd/hh/mm"/>
+                    android:text="예정: "
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:textSize="20sp"/>
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/start_time_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:text="yyyy/mm/dd/hh/mm"
+                    android:gravity="center"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="yyyy/mm/dd/hh/mm"/>
+                    android:gravity="center"
+                    android:text="~"/>
+                <TextView
+                    android:id="@+id/end_time_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:gravity="center"
+                    android:text="yyyy/mm/dd/hh/mm"
+                    android:textSize="16sp"/>
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,9 +96,22 @@
                     android:id="@+id/contents_text_View"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="20sp"
                     />
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comments_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <LinearLayout
@@ -83,12 +122,14 @@
         android:weightSum="10"
         android:padding="5dp">
         <EditText
+            android:id="@+id/comment_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:hint="댓글을 입력하세요"
             />
         <Button
+            android:id="@+id/comment_post_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="8"
