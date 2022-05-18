@@ -48,18 +48,19 @@ import kotlin.jvm.internal.Intrinsics;
 public class WeatherFragment extends Fragment {
     //@BindView(R.id.tv_name) TextView tv_name;
     //@BindView(R.id.tv_country) TextView tv_country;
-    @BindView(R.id.weather_recyclerview) RecyclerView recyclerView;
+    @BindView(R.id.weather_recyclerview)
+    RecyclerView recyclerView;
     Context context;
 
     TextView tv_name, tv_country;
     ImageView iv_weather;
     TextView tv_temp, tv_main, tv_description;
     TextView tv_wind, tv_cloud, tv_humidity;
-    ArrayList<WeatherWeekData> weatherWeekData= new ArrayList<>();
+    ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
     WeatherAdapter weatherAdapter;
-    LocationManager locationManager =null;
-    double lat=0;
-    double lng=0;
+    LocationManager locationManager = null;
+    double lat = 0;
+    double lng = 0;
 
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     NetworkTask networkTask = null;
@@ -69,8 +70,8 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v;
         v = inflater.inflate(R.layout.fragment_weather, container, false);
-        ButterKnife.bind(this,v);
-        weatherAdapter = new WeatherAdapter(weatherWeekData,getActivity());
+        ButterKnife.bind(this, v);
+        weatherAdapter = new WeatherAdapter(weatherWeekData, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(weatherAdapter);
 
@@ -162,14 +163,14 @@ public class WeatherFragment extends Fragment {
 
                 weatherData model = new weatherData();
                 //날씨등을 한글로 표시
-                String description = jsonObjectWeather.get("description").toString().replaceAll("\"","");
-                description=transferWeather(description);
-                model.setName(jsonObject.get("name").toString().replaceAll("\"",""));
-                model.setCountry(jsonObjectSys.get("country").toString().replaceAll("\"",""));
-                Log.d("Icon", "Icon: "+getString(R.string.weather_url)+"img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"","") + ".png");
-                model.setIcon(getString(R.string.weather_url)+"img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"","") + ".png");
+                String description = jsonObjectWeather.get("description").toString().replaceAll("\"", "");
+                description = transferWeather(description);
+                model.setName(jsonObject.get("name").toString().replaceAll("\"", ""));
+                model.setCountry(jsonObjectSys.get("country").toString().replaceAll("\"", ""));
+                Log.d("Icon", "Icon: " + getString(R.string.weather_url) + "img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"", "") + ".png");
+                model.setIcon(getString(R.string.weather_url) + "img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"", "") + ".png");
                 model.setTemp(jsonObjectMain.get("temp").getAsDouble() - 273.15);
-                model.setMain(jsonObjectWeather.get("main").toString().replaceAll("\"",""));
+                model.setMain(jsonObjectWeather.get("main").toString().replaceAll("\"", ""));
                 model.setDescription(description);
                 model.setWind(jsonObjectWind.get("speed").getAsDouble());
                 model.setClouds(jsonObjectClouds.get("all").getAsDouble());
@@ -232,31 +233,31 @@ public class WeatherFragment extends Fragment {
 
     /* 소수점 n번째 자리까지 반올림하기 */
     private String doubleToStrFormat(int n, double value) {
-        return String.format("%."+n+"f", value);
+        return String.format("%." + n + "f", value);
     }
 
-    private String transferWeather(String weather){
+    private String transferWeather(String weather) {
         weather = weather.toLowerCase();
-        if(weather.equals("haze"))
+        if (weather.equals("haze"))
             return "안개";
-        else if(weather.equals("fog"))
+        else if (weather.equals("fog"))
             return "안개";
-        else if(weather.equals("clouds"))
+        else if (weather.equals("clouds"))
             return "구름";
-        else if(weather.equals("few clouds"))
+        else if (weather.equals("few clouds"))
             return "구름 조금";
-        else if(weather.equals("scattered clouds"))
+        else if (weather.equals("scattered clouds"))
             return "구름 낌";
-        else if(weather.equals("broken cludes"))
+        else if (weather.equals("broken cludes"))
             return "구름 많음";
-        else if(weather.equals("overcast clouds"))
+        else if (weather.equals("overcast clouds"))
             return "구름 많음";
-        else if(weather.equals("clear sky"))
+        else if (weather.equals("clear sky"))
             return "맑음";
         return "";
     }
 
-    private void getLocation(){
+    private void getLocation() {
         Log.d("getLocation", "getLocation: ");
 
         requestNetwork();
@@ -272,7 +273,7 @@ public class WeatherFragment extends Fragment {
                         try {
                             //daily 기준으로 파싱
                             JSONArray jsonArray = response.getJSONArray("daily");
-                            for(int i=0 ;i<jsonArray.length(); i++) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 WeatherWeekData data = new WeatherWeekData();
                                 JSONObject objectList = jsonArray.getJSONObject(i);
                                 //daily 안에 있는 temp에 있는 내용 파싱
@@ -282,19 +283,19 @@ public class WeatherFragment extends Fragment {
                                 //날짜가져오기 xx일
                                 long Day = objectList.optLong("dt");
                                 SimpleDateFormat formatDate = new java.text.SimpleDateFormat("dd일");
-                                String readableDate = formatDate.format(new java.util.Date(Day * (long)1000));
+                                String readableDate = formatDate.format(new java.util.Date(Day * (long) 1000));
                                 //요일 가져오기 ex) 월요일
                                 long weekday = objectList.optLong("dt");
                                 SimpleDateFormat format = new SimpleDateFormat("EEEE");
-                                String readableDay = format.format(new Date(weekday * (long)1000));
-                                
+                                String readableDay = format.format(new Date(weekday * (long) 1000));
+
                                 //순서대로 날짜+요일, 날씨 상태,최저온도,최고온도
                                 data.setNameDate(readableDate + ' ' + readableDay);
                                 data.setWeather(jsonObjectTwo.getString("description"));
                                 data.setMinTemp(jsonObjectOne.getDouble("min"));
                                 data.setMaxTemp(jsonObjectOne.getDouble("max"));
 
-                                Log.d("weatherData" ,"addData: ");
+                                Log.d("weatherData", "addData: ");
                                 weatherWeekData.add(data);
                             }
                             weatherAdapter.notifyDataSetChanged();
@@ -310,12 +311,44 @@ public class WeatherFragment extends Fragment {
                     }
                 });
     }
-    private void setWeekWeatherData(weatherData model){
+
+    private void setWeekWeatherData(weatherData model) {
         Log.d("Weather", "setWeatherData");
         tv_name.setText(model.getName());
         tv_country.setText(model.getCountry());
 
     }
+
+    private void DayWeather() {
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("daily");
+                            for(int i =0;i<jsonArray.length();i++){
+
+
+
+
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+    }
+
 
 
 
