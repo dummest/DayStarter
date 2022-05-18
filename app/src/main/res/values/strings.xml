@@ -49,4 +49,9 @@
 
     <string name="weather_url">https://api.openweathermap.org/</string>
     <string name="weather_app_id">7e818b3bfae91bb6fcbe3d382b6c3448</string>
+
+    <string name="BASEURL">"http://api.openweathermap.org/data/2.5/"</string>
+    <string name="CurrentWeather">"weather?"</string>
+    <string name="ListWeather">"forecast?"</string>
+    <string name="Daily">"onecall?"</string>
 </resources>

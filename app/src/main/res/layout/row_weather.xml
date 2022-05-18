@@ -6,21 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
-    <TextView
-        android:id="@+id/weather_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="날짜:"/>
+
     <TextView
         android:id="@+id/weather_week"
-        android:layout_width="100dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:text="요일"
-        android:padding="1dp"/>
+        android:text="날짜"
+        android:padding="3dp"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/weather_img"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:text="날씨"
+        android:text="날씨 이미지"
         android:padding="1dp"/>
     <TextView
         android:id="@+id/highest_temperature"
@@ -33,17 +30,6 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:text="최저기온"
-        android:padding="1dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="습도"
-        android:padding="1dp"/>
-    <TextView
-        android:id="@+id/humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="습도 가져오기"
         android:padding="1dp"/>
 </LinearLayout>
 </androidx.cardview.widget.CardView>
