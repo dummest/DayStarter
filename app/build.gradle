@@ -44,6 +44,7 @@ dependencies {
 
     //glide: url로 이미지를 간단하게 다룰 수 있음
     implementation 'com.github.bumptech.glide:glide:4.13.0'
+    implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -74,10 +75,9 @@ dependencies {
     //스와이프 라이브러리
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 
-    //glide 라이브러리
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'com.google.code.gson:gson:2.8.0'
+
+    implementation 'com.amitshekhar.android:android-networking:1.0.1'
 
 }

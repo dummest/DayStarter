@@ -80,7 +80,9 @@ public class UpdateAlarmFragment extends Fragment {
     }
 
     private void scheduleUpdateAlarm() {
+        int alarmId=getId();
         Alarm alarm = new Alarm(
+                alarmId,
                 TimePickerUtil.getTimePickerHour(timePicker),
                 TimePickerUtil.getTimePickerMinute(timePicker),
                 title.getText().toString(),
