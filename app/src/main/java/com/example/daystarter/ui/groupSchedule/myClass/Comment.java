@@ -1,7 +1,7 @@
 package com.example.daystarter.ui.groupSchedule.myClass;
 
 public class Comment {
-    public String writerName;
+    public String writerUid;
     public String contents;
     public long writingTime;
 
@@ -9,8 +9,8 @@ public class Comment {
 
     }
 
-    public Comment(String writerName, String contents, long writingTime){
-        this.writerName = writerName;
+    public Comment(String writerUid, String contents, long writingTime){
+        this.writerUid = writerUid;
         this.contents = contents;
         this.writingTime = writingTime;
     }

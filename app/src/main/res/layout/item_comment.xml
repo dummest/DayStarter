@@ -35,10 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right">
-        <TextView
+        <ImageView
+            android:id="@+id/delete_image_view"
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="X"
-            android:padding="5dp"/>
+            android:visibility="gone"
+            android:src="@drawable/ic_baseline_close_24"/>
     </LinearLayout>
 </LinearLayout>

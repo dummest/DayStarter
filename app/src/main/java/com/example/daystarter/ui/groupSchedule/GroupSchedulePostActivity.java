@@ -3,14 +3,17 @@ package com.example.daystarter.ui.groupSchedule;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,7 @@ import java.util.Date;
 
 public class GroupSchedulePostActivity extends AppCompatActivity {
     ActivityGroupSchedulePostBinding binding;
-    String key;
+    String scheduleKey;
     String groupId;
     CommentsRecyclerViewAdapter adapter;
     @Override
@@ -49,9 +52,9 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
 
     }
     void init(){
-       key = getIntent().getStringExtra("key");
+       scheduleKey = getIntent().getStringExtra("key");
        groupId = getIntent().getStringExtra("groupId");
-       if((key == null || key.isEmpty()) || (groupId == null || groupId.isEmpty()))
+       if((scheduleKey == null || scheduleKey.isEmpty()) || (groupId == null || groupId.isEmpty()))
            finish();
        else
            adapter = new CommentsRecyclerViewAdapter();
@@ -66,7 +69,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     }
 
     void loadPost(){
-        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(key);
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey);
         postRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -110,10 +113,6 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         return sdf.format(time);
     }
 
-    void loadComment(){
-        adapter.notifyDataSetChanged();
-    }
-
     void writeComment(){
         String str = binding.commentEditText.getText().toString().trim();
         if(str.length() < 3){
@@ -121,46 +120,83 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             return;
         }
         Comment comment = new Comment(FirebaseAuth.getInstance().getUid(), str, Calendar.getInstance().getTimeInMillis());
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(key).child("comments");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey).child("comments");
         dbRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                loadComment();
+                adapter.loadList();
             }
         });
     }
 
     public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.CommentsViewHolder>{
         ArrayList<Comment> commentArrayList;
-
+        ArrayList<String> keyArrayList;
         public CommentsRecyclerViewAdapter(){
             commentArrayList = new ArrayList<>();
+            keyArrayList = new ArrayList<>();
+            loadList();
+        }
 
-            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(key).child("comments");
+        void loadList(){
+            commentArrayList.clear();
+            Log.d(TAG, "loadList: start");
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey).child("comments");
             dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if(task.isSuccessful()){
                         for (DataSnapshot ds: task.getResult().getChildren()) {
-                            commentArrayList.add(ds.getValue(Comment.class));
+                            Comment comment = ds.getValue(Comment.class);
+                            commentArrayList.add(comment);
+                            keyArrayList.add(ds.getKey());
                         }
-                        notifyDataSetChanged();
                     }
+                    notifyDataSetChanged();
+                    Log.d(TAG, "onComplete: done");
                 }
             });
         }
+
         @NonNull
         @Override
         public CommentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            Log.d(TAG, "onCreateViewHolder");
             View view = getLayoutInflater().inflate(R.layout.item_comment, parent, false);
             return new CommentsViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
-            //holder.nameTextView.setText(commentArrayList.get(position).writerName);
-            holder.contentsTextView.setText(commentArrayList.get(position).contents);
-            holder.writingTimeTextView.setText(changeLongToSdf(commentArrayList.get(position).writingTime));
+            Comment comment = commentArrayList.get(position);
+            holder.key = keyArrayList.get(position);
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups")
+                    .child(groupId).child("members").child(comment.writerUid);
+            dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        Member member = task.getResult().getValue(Member.class);
+                        if(member.name.isEmpty())
+                            holder.nameTextView.setText("탈퇴한 멤버입니다");
+                        else{
+                            holder.nameTextView.setText(member.name);
+                        }
+                    }
+                }
+            });
+            holder.contentsTextView.setText(comment.contents);
+            holder.writingTimeTextView.setText(changeLongToSdf(comment.writingTime));
+
+            if(comment.writerUid.equals(FirebaseAuth.getInstance().getUid())) {
+                holder.deleteImageView.setVisibility(View.VISIBLE);
+                holder.deleteImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        makeCommentRemoveDialog(holder.key);
+                    }
+                });
+            }
         }
 
         @Override
@@ -170,12 +206,48 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
 
         public class CommentsViewHolder extends RecyclerView.ViewHolder{
             public TextView nameTextView, contentsTextView, writingTimeTextView;
+            public ImageView deleteImageView;
+            public String key;
             public CommentsViewHolder(@NonNull View itemView) {
                 super(itemView);
-                //nameTextView = findViewById(R.id.name_text_view);
-                contentsTextView = findViewById(R.id.contents_text_View);
-                writingTimeTextView = findViewById(R.id.writing_time_text_view);
+                nameTextView = itemView.findViewById(R.id.name_text_view);
+                contentsTextView = itemView.findViewById(R.id.contents_text_view);
+                writingTimeTextView = itemView.findViewById(R.id.writing_time_text_view);
+                deleteImageView = itemView.findViewById(R.id.delete_image_view);
             }
+        }
+
+        void makeCommentRemoveDialog(String key){
+            Log.d(TAG, "key: " + key);
+            AlertDialog.Builder builder = new AlertDialog.Builder(GroupSchedulePostActivity.this)
+                    .setTitle("확인")
+                    .setMessage("댓글을 지우시겠습니까?")
+                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey).child("comments")
+                                    .child(key);
+                            dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        showToast("삭제되었습니다");
+                                        loadList();
+                                    }
+                                    else{
+                                        showToast("실패");
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+            builder.create().show();
         }
     }
 }
