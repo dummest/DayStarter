@@ -10,12 +10,10 @@
     android:orientation="vertical"
     android:scrollbars="vertical">
 
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/blue"
+        android:layout_height="wrap_content"
         android:elevation="10dp"
         android:gravity="center"
         android:text="현재 날씨"
@@ -27,56 +25,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/ll_name"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title">
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="2dp"
-            android:layout_weight="50"
-            android:gravity="right|center_vertical"
-            android:text="Seoul"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_country"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_weight="50"
-            android:gravity="left|center_vertical"
-            android:text="KR"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
+
         android:layout_marginHorizontal="20dp"
         android:orientation="horizontal"
         android:weightSum="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_name" >
+
 
         <ImageView
             android:id="@+id/iv_weather"
@@ -105,17 +65,7 @@
                 android:textColor="@color/light_blue"
                 android:textSize="25sp"
                 android:textStyle="bold" />
-            <TextView
-                android:id="@+id/tv_main"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="35"
-                android:gravity="center_vertical"
-                android:paddingLeft="25dp"
-                android:text="Clear Sky"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="match_parent"
@@ -130,12 +80,11 @@
 
     </LinearLayout>
 
-
     <View
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="30dp"
+        android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="20dp"
         android:background="@color/dark_gray"
         app:layout_constraintBottom_toTopOf="@+id/ll_detail"
@@ -143,112 +92,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_main" />
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:text="시간별 날씨"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ll_detail"
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_divider">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="33"
-            android:orientation="vertical"
-            android:weightSum="100">
-
-            <TextView
-                android:id="@+id/nm_wind"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="바람  "
-                android:textColor="@color/dark_gray"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_wind"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="40"
-                android:gravity="center_horizontal"
-                android:text="4.6m/s"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="33"
-            android:orientation="vertical"
-            android:weightSum="100">
-
-            <TextView
-                android:id="@+id/nm_cloud"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="구름  "
-                android:textColor="@color/dark_gray"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_cloud"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="40"
-                android:gravity="center_horizontal"
-                android:text="75%"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="33"
-            android:orientation="vertical"
-            android:weightSum="100">
 
 
-            <TextView
-                android:id="@+id/nm_humidity"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_weight="15"
-                android:gravity="center"
-                android:text="습도  "
-                android:textColor="@color/dark_gray"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_humidity"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="40"
-                android:gravity="center_horizontal"
-                android:text="59%"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/weatherday_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
 
     <View
         android:id="@+id/view_weekday"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="30dp"
+        android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="20dp"
         android:background="@color/dark_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -260,7 +147,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="일주일 날씨"
+            android:text="주간 날씨"
             android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
@@ -273,6 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/weather_recyclerview"/>
+
 
     </LinearLayout>
 </LinearLayout>

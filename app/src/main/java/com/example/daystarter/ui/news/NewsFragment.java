@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,10 +113,18 @@ public class NewsFragment extends Fragment {
                                 xpp.next();
                                 if (item != null) item.setLink(xpp.getText());
                             } else if (tagName.equals("description")) {
-                                Log.d("description", "description "+xpp.getAttributeCount());
                                 xpp.next();
-                                Log.d("link", "link: " + xpp.getText());
-                                if (item != null) item.setDesc(xpp.getText());
+                                Log.d("description", "doInBackground: "+xpp.getLineNumber());
+                                Log.d("descripition", "description: ");
+                                if (item != null) {
+                                    String a=xpp.getText();
+                                    String[]splitText=a.split(">");
+                                    for(int i=0; i<splitText.length;i++){
+                                        Log.d("split", "split: ");
+                                        item.setDesc(splitText[i]);
+                                    }
+                                    //item.setDesc(xpp.getText());
+                                }
                             } else if (tagName.equals("media:content")) {
                                 Log.d("0", "attributeCount: " + xpp.getAttributeCount());
                                 xpp.getAttributeValue(null,"url");

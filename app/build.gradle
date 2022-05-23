@@ -80,4 +80,6 @@ dependencies {
 
     implementation 'com.amitshekhar.android:android-networking:1.0.1'
 
+    //고품질 애니메이션
+    implementation "com.airbnb.android:lottie:3.7.0"
 }
