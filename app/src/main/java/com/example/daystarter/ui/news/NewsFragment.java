@@ -3,6 +3,8 @@ package com.example.daystarter.ui.news;
 import static androidx.fragment.app.FragmentManager.TAG;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daystarter.R;
+import com.example.daystarter.ui.weather.ProgressDialog;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,6 +41,7 @@ public class NewsFragment extends Fragment {
     RecyclerView recyclerView;
     private NewAdapter newAdapter;
     ArrayList<NewData> items = new ArrayList<>();
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -49,7 +53,9 @@ public class NewsFragment extends Fragment {
         newAdapter = new NewAdapter(items,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(newAdapter);
-
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
         readRss();
 
         return v;
@@ -160,6 +166,7 @@ public class NewsFragment extends Fragment {
                 e.printStackTrace();
             }
             //return 값은 onPostExecute에 들어간다
+            progressDialog.dismiss();
             return "파싱종료";
         }
 

@@ -69,9 +69,11 @@ public class WeatherAdapter extends RecyclerView.Adapter{
         }
         else if(weatherdata.getWeather().equals("moderate rain")){
             wv.weather_img.setImageResource(R.drawable.weatehr_rain);
+        } else if(weatherdata.getWeather().equals("Rain")) {
+            wv.weather_img.setImageResource(R.drawable.weatehr_rain);
         }
         else
-            wv.weather_img.setImageResource(R.drawable.primary_round_layout);
+            wv.weather_img.setImageResource(R.drawable.weather_clearsky);
     }
 
     @Override

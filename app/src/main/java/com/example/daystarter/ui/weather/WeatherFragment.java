@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -49,20 +51,20 @@ import kotlin.jvm.internal.Intrinsics;
 public class WeatherFragment extends Fragment {
     //@BindView(R.id.tv_name) TextView tv_name;
     //@BindView(R.id.tv_country) TextView tv_country;
-    @BindView(R.id.weather_recyclerview)
-    RecyclerView recyclerView;
+    @BindView(R.id.weather_recyclerview) RecyclerView recyclerView;
     @BindView(R.id.weatherday_recyclerview)RecyclerView DayRecyclerView;
+    @BindView(R.id.tv_temp)TextView tv_temp;
+    @BindView(R.id.tv_description)TextView tv_description;
+    @BindView(R.id.iv_weather)ImageView iv_weather;
     Context context;
 
-    TextView tv_name, tv_country;
-    ImageView iv_weather;
-    TextView tv_temp, tv_main, tv_description;
-    TextView tv_wind, tv_cloud, tv_humidity;
+    TextView tv_wind, tv_cloud, tv_humidity,tv_name, tv_country;
     ArrayList<weatherData> ArrayWeatherData = new ArrayList<>();
     ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
     WeatherAdapter weatherAdapter;
     WeatherDayAdapter weatherDayAdapter;
     LocationManager locationManager = null;
+    ProgressDialog progressDialog;
     double lat = 0;
     double lng = 0;
 
@@ -84,13 +86,9 @@ public class WeatherFragment extends Fragment {
         recyclerView.setAdapter(weatherAdapter);
 
 
-
         //tv_name = (TextView) v.findViewById(R.id.tv_name);
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
-        iv_weather = (ImageView) v.findViewById(R.id.iv_weather);
-        tv_temp = (TextView) v.findViewById(R.id.tv_temp);
         //tv_main = (TextView) v.findViewById(R.id.tv_main);
-        tv_description = (TextView) v.findViewById(R.id.tv_description);
 
         /*
          현재 위치하고 있는 위도 경도를 가져오려했지만 bug로 인해 잠시 대기
@@ -101,6 +99,9 @@ public class WeatherFragment extends Fragment {
         //경도
         lng = current.getLatitude();
         */
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
         DayWeather();
         //일주일 날씨
         getLocation();
@@ -110,7 +111,7 @@ public class WeatherFragment extends Fragment {
 
 
     /* NetworkTask 를 요청하기 위한 메소드 */
-    private void requestNetwork() {
+    public void requestNetwork() {
         ContentValues values = new ContentValues();
         //기본값 =서울날씨(바꾸고 싶으면 여기서 교채하면된다.)
         values.put("q", "Seoul");
@@ -373,6 +374,7 @@ public class WeatherFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override
