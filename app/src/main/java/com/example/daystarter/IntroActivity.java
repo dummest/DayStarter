@@ -17,7 +17,8 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
+        //setContentView(R.layout.activity_intro);
+        setContentView(R.layout.activity_animation_intro);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -34,7 +35,7 @@ public class IntroActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
             }
-        }, 1000);
+        }, 1500);
     }
 
     @Override

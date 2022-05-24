@@ -4,12 +4,40 @@ public class weatherData {
     String name = "";  //도시이름
     String icon = "";  //나라
     String country = "";  //아이콘
-    double temp = 0.0;  //온도
+    double temp;  //온도
     String main = "";  //날씨
-    String description = "";  //상세설명
+    String description;  //상세설명
     double wind = 0.0;  //바람
     double clouds = 0.0;  //구름
     double humidity = 0.0;  //습도
+
+    double maxTemp;
+    double minTemp;
+    String time;
+
+    public double getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(double maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+    public double getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(double minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getName() {
         return name;

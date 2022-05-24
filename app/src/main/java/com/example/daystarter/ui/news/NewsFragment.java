@@ -3,6 +3,8 @@ package com.example.daystarter.ui.news;
 import static androidx.fragment.app.FragmentManager.TAG;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daystarter.R;
+import com.example.daystarter.ui.weather.ProgressDialog;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,6 +31,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +41,7 @@ public class NewsFragment extends Fragment {
     RecyclerView recyclerView;
     private NewAdapter newAdapter;
     ArrayList<NewData> items = new ArrayList<>();
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -48,7 +53,9 @@ public class NewsFragment extends Fragment {
         newAdapter = new NewAdapter(items,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(newAdapter);
-
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
         readRss();
 
         return v;
@@ -112,10 +119,18 @@ public class NewsFragment extends Fragment {
                                 xpp.next();
                                 if (item != null) item.setLink(xpp.getText());
                             } else if (tagName.equals("description")) {
-                                Log.d("description", "description "+xpp.getAttributeCount());
                                 xpp.next();
-                                Log.d("link", "link: " + xpp.getText());
-                                if (item != null) item.setDesc(xpp.getText());
+                                Log.d("description", "doInBackground: "+xpp.getLineNumber());
+                                Log.d("descripition", "description: ");
+                                if (item != null) {
+                                    String a=xpp.getText();
+                                    String[]splitText=a.split(">");
+                                    for(int i=0; i<splitText.length;i++){
+                                        Log.d("split", "split: ");
+                                        item.setDesc(splitText[i]);
+                                    }
+                                    //item.setDesc(xpp.getText());
+                                }
                             } else if (tagName.equals("media:content")) {
                                 Log.d("0", "attributeCount: " + xpp.getAttributeCount());
                                 xpp.getAttributeValue(null,"url");
@@ -151,6 +166,7 @@ public class NewsFragment extends Fragment {
                 e.printStackTrace();
             }
             //return 값은 onPostExecute에 들어간다
+            progressDialog.dismiss();
             return "파싱종료";
         }
 

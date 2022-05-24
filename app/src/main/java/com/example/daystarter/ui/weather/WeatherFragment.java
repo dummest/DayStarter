@@ -1,10 +1,14 @@
 package com.example.daystarter.ui.weather;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,17 +54,21 @@ import kotlin.jvm.internal.Intrinsics;
 public class WeatherFragment extends Fragment {
     //@BindView(R.id.tv_name) TextView tv_name;
     //@BindView(R.id.tv_country) TextView tv_country;
-    @BindView(R.id.weather_recyclerview)
-    RecyclerView recyclerView;
+    @BindView(R.id.weather_recyclerview) RecyclerView recyclerView;
+    @BindView(R.id.weatherday_recyclerview)RecyclerView DayRecyclerView;
+    @BindView(R.id.tv_temp)TextView tv_temp;
+    @BindView(R.id.tv_description)TextView tv_description;
+    @BindView(R.id.iv_weather)ImageView iv_weather;
     Context context;
 
-    TextView tv_name, tv_country;
-    ImageView iv_weather;
-    TextView tv_temp, tv_main, tv_description;
-    TextView tv_wind, tv_cloud, tv_humidity;
+    TextView tv_wind, tv_cloud, tv_humidity,tv_name, tv_country;
+    ArrayList<weatherData> ArrayWeatherData = new ArrayList<>();
     ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
     WeatherAdapter weatherAdapter;
-    LocationManager locationManager = null;
+    WeatherDayAdapter weatherDayAdapter;
+    LocationManager locationManager;
+    ProgressDialog progressDialog;
+    private static final int REQUEST_CODE_LOCATION = 2;
     double lat = 0;
     double lng = 0;
 
@@ -71,20 +81,27 @@ public class WeatherFragment extends Fragment {
         View v;
         v = inflater.inflate(R.layout.fragment_weather, container, false);
         ButterKnife.bind(this, v);
+        weatherDayAdapter = new WeatherDayAdapter(ArrayWeatherData, getActivity());
+        DayRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
+        DayRecyclerView.setAdapter(weatherDayAdapter);
+
         weatherAdapter = new WeatherAdapter(weatherWeekData, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(weatherAdapter);
+        locationManager =(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Location location = MyLocation();
+        if(location != null){
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            Log.d("lng", "lng: "+lng);
+            Toast.makeText(getActivity(), "위도 경도"+lng+lat, Toast.LENGTH_SHORT).show();
+        }
+        DayWeather();
+        getLocation();
 
-
-        tv_name = (TextView) v.findViewById(R.id.tv_name);
-        tv_country = (TextView) v.findViewById(R.id.tv_country);
-        iv_weather = (ImageView) v.findViewById(R.id.iv_weather);
-        tv_temp = (TextView) v.findViewById(R.id.tv_temp);
-        tv_main = (TextView) v.findViewById(R.id.tv_main);
-        tv_description = (TextView) v.findViewById(R.id.tv_description);
-        tv_wind = (TextView) v.findViewById(R.id.tv_wind);
-        tv_cloud = (TextView) v.findViewById(R.id.tv_cloud);
-        tv_humidity = (TextView) v.findViewById(R.id.tv_humidity);
+        //tv_name = (TextView) v.findViewById(R.id.tv_name);
+        //tv_country = (TextView) v.findViewById(R.id.tv_country);
+        //tv_main = (TextView) v.findViewById(R.id.tv_main);
 
         /*
          현재 위치하고 있는 위도 경도를 가져오려했지만 bug로 인해 잠시 대기
@@ -95,16 +112,40 @@ public class WeatherFragment extends Fragment {
         //경도
         lng = current.getLatitude();
         */
-
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
+        //DayWeather();
         //일주일 날씨
-        getLocation();
+        //getLocation();
         //주별 날씨
         return v;
+    }
+    private Location MyLocation(){
+        Location MyLocation = null;
+        String Fine_location=Manifest.permission.ACCESS_FINE_LOCATION;
+        String Coarse_location= Manifest.permission.ACCESS_COARSE_LOCATION;
+        //위치 정보 권한
+        if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
+            Log.d("권한요청", "권한: ");
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
+            //MyLocation();
+        }
+        else{
+            String locationProvider=LocationManager.GPS_PROVIDER;
+            MyLocation= locationManager.getLastKnownLocation(locationProvider);
+            if(MyLocation != null){
+                double leg= MyLocation.getLongitude();
+                double lat = MyLocation.getLatitude();
+            }
+        }
+        return MyLocation;
     }
 
 
     /* NetworkTask 를 요청하기 위한 메소드 */
-    private void requestNetwork() {
+    public void requestNetwork() {
         ContentValues values = new ContentValues();
         //기본값 =서울날씨(바꾸고 싶으면 여기서 교채하면된다.)
         values.put("q", "Seoul");
@@ -193,18 +234,18 @@ public class WeatherFragment extends Fragment {
     /* 통신하여 받아온 날씨 데이터를 통해 UI 업데이트 메소드 */
     private void setWeatherData(weatherData model) {
         Log.d("Weather", "setWeatherData");
-        tv_name.setText(model.getName());
-        tv_country.setText(model.getCountry());
+        //tv_name.setText(model.getName());
+        //tv_country.setText(model.getCountry());
         Glide.with(this).load(model.getIcon())  //Glide 라이브러리를 이용하여 ImageView 에 url 로 이미지 지정
                 //.placeholder(R.drawable.icon_image)
                 //.error(R.drawable.icon_image)
                 .into(iv_weather);
         tv_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
-        tv_main.setText(model.getMain());
+        //tv_main.setText(model.getMain());
         tv_description.setText(model.getDescription());
-        tv_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
-        tv_cloud.setText(doubleToStrFormat(2, model.getClouds()) + " %");
-        tv_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
+        //tv_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
+        //tv_cloud.setText(doubleToStrFormat(2, model.getClouds()) + " %");
+        //tv_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
     }
 
 
@@ -248,21 +289,23 @@ public class WeatherFragment extends Fragment {
             return "구름 조금";
         else if (weather.equals("scattered clouds"))
             return "구름 낌";
-        else if (weather.equals("broken cludes"))
+        else if (weather.equals("broken clouds"))
             return "구름 많음";
         else if (weather.equals("overcast clouds"))
             return "구름 많음";
         else if (weather.equals("clear sky"))
             return "맑음";
+        else if(weather.equals("moderate rain"))
+            return  "비";
         return "";
     }
 
     private void getLocation() {
         Log.d("getLocation", "getLocation: ");
-
+        //https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
         requestNetwork();
         // android-networking 위도 경도에 따라 지역 달라짐(현재는 서울)
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+lng+"&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -290,6 +333,7 @@ public class WeatherFragment extends Fragment {
                                 String readableDay = format.format(new Date(weekday * (long) 1000));
 
                                 //순서대로 날짜+요일, 날씨 상태,최저온도,최고온도
+                                Log.d("weather", "setWeatherData: "+jsonObjectTwo.getString("description"));
                                 data.setNameDate(readableDate + ' ' + readableDay);
                                 data.setWeather(jsonObjectTwo.getString("description"));
                                 data.setMinTemp(jsonObjectOne.getDouble("min"));
@@ -320,26 +364,51 @@ public class WeatherFragment extends Fragment {
     }
 
     private void DayWeather() {
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        Log.d("DayWeather", "DayWeather: ");
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray jsonArray = response.getJSONArray("daily");
-                            for(int i =0;i<jsonArray.length();i++){
+                            Log.d("weather_onResponse", "onResponse_success: ");
+                            JSONArray jsonArray = response.getJSONArray("list");
+                            for(int i =0;i<6;i++){
+                                weatherData weatherData = new weatherData();
+                                JSONObject list = jsonArray.getJSONObject(i);
+                                JSONObject Main = list.getJSONObject("main");
+                                JSONArray MainArray = list.getJSONArray("weather");
+                                JSONObject Weather = MainArray.getJSONObject(0);
+                                String CurrentTime = list.getString("dt_txt");
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
 
+                                try{
+                                    Date time = format.parse(CurrentTime);
+                                    CurrentTime =formatTime.format(time);
+                                }
+                                catch (ParseException e){
+                                    e.printStackTrace();
+                                }
+                                Log.d("onResponse", "onResponse_addData: ");
+                                //현재시간
+                                weatherData.setTime(CurrentTime);
+                                //평균 온도
+                                weatherData.setTemp(Main.getDouble("temp"));
+                                weatherData.setDescription(Weather.getString("description"));
+                                weatherData.setMinTemp(Main.getDouble("temp_min"));
+                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
 
-
-
+                                ArrayWeatherData.add(weatherData);
                             }
-
+                            weatherDayAdapter.notifyDataSetChanged();
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override

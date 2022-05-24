@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,29 +43,37 @@ public class WeatherAdapter extends RecyclerView.Adapter{
 
 
          //weather을 가져와 적절한 아이콘 집어넣기
+        if(weatherdata.getWeather().equals("haze")){
+            wv.weather_img.setImageResource(R.drawable.weatehr_rain);
+        }
         if(weatherdata.getWeather().equals("fog")){
-            wv.weather_img.setText("안개");
+            wv.weather_img.setImageResource(R.drawable.weatehr_rain);
         }
         else if (weatherdata.getWeather().equals("clouds")){
-            wv.weather_img.setText("구름");
+            wv.weather_img.setImageResource(R.drawable.weather_clouds);
         }
         else if (weatherdata.getWeather().equals("few clouds")){
-            wv.weather_img.setText("구름 조금");
+            wv.weather_img.setImageResource(R.drawable.weather_windcloud);
         }
         else if (weatherdata.getWeather().equals("scattered clouds")){
-            wv.weather_img.setText("구름 낌");
+            wv.weather_img.setImageResource(R.drawable.weather_lowclouds);
         }
         else if (weatherdata.getWeather().equals("broken clouds")){
-            wv.weather_img.setText("구름 많음");
+            wv.weather_img.setImageResource(R.drawable.weather_moreclouds);
         }
         else if (weatherdata.getWeather().equals("overcast clouds")){
-            wv.weather_img.setText("구름 많음");
+            wv.weather_img.setImageResource(R.drawable.weather_moreclouds);
         }
         else if(weatherdata.getWeather().equals("clear sky")){
-            wv.weather_img.setText("맑음");
+            wv.weather_img.setImageResource(R.drawable.weather_clearsky);
+        }
+        else if(weatherdata.getWeather().equals("moderate rain")){
+            wv.weather_img.setImageResource(R.drawable.weatehr_rain);
+        } else if(weatherdata.getWeather().equals("Rain")) {
+            wv.weather_img.setImageResource(R.drawable.weatehr_rain);
         }
         else
-            wv.weather_img.setText("");
+            wv.weather_img.setImageResource(R.drawable.weather_clearsky);
     }
 
     @Override
@@ -74,7 +83,8 @@ public class WeatherAdapter extends RecyclerView.Adapter{
 
     class WeatherViewHolder extends RecyclerView.ViewHolder{
 
-        TextView weather_week,highest_temperature,lowest_temperature,weather_img;
+        TextView weather_week,highest_temperature,lowest_temperature;
+        ImageView weather_img;
 
         public WeatherViewHolder(@NonNull View itemView) {
             super(itemView);
