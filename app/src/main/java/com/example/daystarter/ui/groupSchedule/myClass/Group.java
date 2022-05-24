@@ -5,12 +5,14 @@ public class Group {
     public String groupName;
     public String hostEmail;
     public String imagePath;
+    public String initialStatus;
 
-    public Group(String groupId, String groupName, String hostEmail, String imagePath){
+    public Group(String groupId, String groupName, String hostEmail, String imagePath, String initialStatus){
         this.groupId = groupId;
         this.groupName = groupName;
         this.hostEmail = hostEmail;
         this.imagePath = imagePath;
+        this.initialStatus = initialStatus;
     }
 
     public Group(){

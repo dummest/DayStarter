@@ -9,10 +9,11 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:padding="15dp">
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/group_image_view"
             android:layout_height="50dp"
             android:layout_width="50dp"
+            android:src="@drawable/ic_outline_group_24"
             />
         <TextView
             android:id="@+id/group_name"

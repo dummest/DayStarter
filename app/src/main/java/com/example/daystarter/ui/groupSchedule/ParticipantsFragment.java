@@ -74,7 +74,7 @@ public class ParticipantsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Glide.with(holder.itemView.getContext()).load(groupList.get(position).imagePath).circleCrop()
+            Glide.with(holder.itemView.getContext()).load(groupList.get(position).imagePath).circleCrop().error(R.drawable.ic_outline_group_24)
                     .into(((GroupViewHolder)holder).imageView);
             ((GroupViewHolder)holder).textView.setText(groupList.get(position).groupName);
 

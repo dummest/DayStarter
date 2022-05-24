@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
-                    Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().into(profileImageView);
+                    Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().error(R.drawable.ic_baseline_person_24).into(profileImageView);
 
                     TextView nameTextView = headerView.findViewById(R.id.name_text_view);
                     TextView emailTextView = headerView.findViewById(R.id.email_text_view);
