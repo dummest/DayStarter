@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupSchedulePostBinding;
 import com.example.daystarter.ui.groupSchedule.myClass.Comment;
@@ -66,6 +68,13 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                writeComment();
            }
        });
+
+       binding.deleteImageView.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+                makeScheduleDeleteDialog();
+           }
+       });
     }
 
     void loadPost(){
@@ -81,7 +90,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                     binding.startTimeTextView.setText(changeLongToSdf(post.startTime));
                     binding.endTimeTextView.setText(changeLongToSdf(post.endTime));
                     binding.contentsTextView.setText(post.contents);
-
+                    loadProfileImage(post.writerUid);
                     loadName(post.writerUid);
                 }
                 else{
@@ -90,6 +99,21 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             }
         });
     }
+    void loadProfileImage(String uid){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(uid).child("profileImgPath");
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    String path = task.getResult().getValue(String.class);
+                    Glide.with(getBaseContext()).load(path).circleCrop().error(R.drawable.ic_outline_group_24)
+                            .into(binding.profileImageView);
+                }
+            }
+        });
+    }
+
     void loadName(String uid){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupId).child("members").child(uid);
         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -113,9 +137,9 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         return sdf.format(time);
     }
 
-    void writeComment(){
+    void writeComment() {
         String str = binding.commentEditText.getText().toString().trim();
-        if(str.length() < 3){
+        if (str.length() < 3) {
             showToast("댓글은 최소 2자 이상 적어야 합니다");
             return;
         }
@@ -124,23 +148,80 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         dbRef.push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                adapter.loadList();
+                adapter.loadComments();
             }
         });
     }
 
+    void makeScheduleDeleteDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(GroupSchedulePostActivity.this)
+                .setTitle("확인")
+                .setMessage("스케줄을 지우시겠습니까?")
+                .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                                .child("groups").child(groupId).child("members").child(FirebaseAuth.getInstance().getUid());
+                        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    Member member = task.getResult().getValue(Member.class);
+                                    switch (member.status){
+                                        case "host":
+                                        case "write":
+                                            deleteSchedule();
+                                            break;
+                                        default:
+                                            showToast("삭제할 수 있는 권한이 없습니다");
+                                            break;
+                                    }
+                                }
+                                else{
+                                    showToast("오류! 잠시 후 다시 시도해주세요");
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.create().show();
+    }
+
+    void deleteSchedule(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey);
+        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    showToast("삭제되었습니다");
+                }
+                else{
+                    showToast("삭제에 실패했습니다");
+                }
+                finish();
+            }
+        });
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.CommentsViewHolder>{
         ArrayList<Comment> commentArrayList;
         ArrayList<String> keyArrayList;
         public CommentsRecyclerViewAdapter(){
             commentArrayList = new ArrayList<>();
             keyArrayList = new ArrayList<>();
-            loadList();
+            loadComments();
         }
 
-        void loadList(){
+        void loadComments(){
             commentArrayList.clear();
-            Log.d(TAG, "loadList: start");
+            Log.d(TAG, "loadComments: start");
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey).child("comments");
             dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -151,6 +232,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                             commentArrayList.add(comment);
                             keyArrayList.add(ds.getKey());
                         }
+                        binding.commentsCountTextView.setText("댓글 " + commentArrayList.size() + "개");
                     }
                     notifyDataSetChanged();
                     Log.d(TAG, "onComplete: done");
@@ -177,8 +259,10 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if(task.isSuccessful()) {
                         Member member = task.getResult().getValue(Member.class);
-                        if(member.name.isEmpty())
+                        if(member.name.isEmpty()) {
                             holder.nameTextView.setText("탈퇴한 멤버입니다");
+                            holder.nameTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.gray));
+                        }
                         else{
                             holder.nameTextView.setText(member.name);
                         }
@@ -232,7 +316,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         showToast("삭제되었습니다");
-                                        loadList();
+                                        loadComments();
                                     }
                                     else{
                                         showToast("실패");

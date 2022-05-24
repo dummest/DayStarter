@@ -25,7 +25,7 @@ public class IntroActivity extends AppCompatActivity {
             public void run() {
                 Intent intent;
                 FirebaseAuth auth = FirebaseAuth.getInstance();
-                if(auth.getCurrentUser().getUid() != null) {
+                if(auth.getCurrentUser().getUid() != null && !auth.getCurrentUser().getUid().isEmpty()) {
                     intent = new Intent(IntroActivity.this, MainActivity.class);
                 }
                 else

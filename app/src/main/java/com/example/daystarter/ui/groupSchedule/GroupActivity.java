@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +39,14 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class GroupActivity extends AppCompatActivity {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일 HH:mm", Locale.getDefault());
     ActivityGroupBinding binding;
     String groupId;
     GroupScheduleRecyclerViewAdapter adapter = new GroupScheduleRecyclerViewAdapter();
@@ -62,6 +66,7 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        validation();
     }
 
     //그룹 구성원인 사람이 접속했는지, 그룹이 존재하는지 확인 후 진행 하거나 취소함
@@ -72,12 +77,7 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(!task.getResult().exists()){
-                    showToast("에러!");
                     finish();
-                }
-                else{
-                    Log.d(TAG, "he's in the group");
-
                 }
             }
         });
@@ -118,6 +118,14 @@ public class GroupActivity extends AppCompatActivity {
                 adapter.loadGroupScheduleList(date.getYear(), date.getMonth()-1, date.getDay());
             }
         });
+        binding.settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), GroupSettingActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showToast(String str){
@@ -140,6 +148,9 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull GroupScheduleViewHolder holder, int position) {
             holder.mainTextView.setText(scheduleList.get(position).title);
+            String start = sdf.format(scheduleList.get(position).startTime);
+            String end = sdf.format(scheduleList.get(position).endTime);
+            holder.subTextView.setText(start + " ~ " + end);
             //holder.subTextView.setText(scheduleList.get(position).);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -180,28 +191,6 @@ public class GroupActivity extends AppCompatActivity {
                 }
             });
         }
-            /*
-            scheduleRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(task.isSuccessful()){
-                        Calendar startTime = Calendar.getInstance();
-                        Calendar endTime = Calendar.getInstance();
-                        startTime.set(year, month, day, 0, 0, 0);
-                        endTime.setTimeInMillis(startTime.getTimeInMillis());
-                        endTime.add(Calendar.DAY_OF_MONTH, 1);
-                        for (DataSnapshot ds: task.getResult().getChildren()) {
-                            GroupScheduleModel model = ds.getValue(GroupScheduleModel.class);
-                            if(model.startTime >= startTime.getTimeInMillis() &&  model.endTime < endTime.getTimeInMillis()){
-                                scheduleList.add(model);
-                                Log.d(TAG, "add: " + model.title);
-                            }
-                        }
-                    }
-                    notifyDataSetChanged();
-                }
-            });
-             */
 
         @Override
         public int getItemCount() {

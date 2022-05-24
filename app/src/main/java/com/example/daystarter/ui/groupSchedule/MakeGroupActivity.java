@@ -114,7 +114,7 @@ public class MakeGroupActivity extends AppCompatActivity {
                         final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
                         while(!uriTask.isComplete()){}
                         imageUrl = uriTask.getResult().toString();
-                        Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), imageUrl);
+                        Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), imageUrl, "read");
                         dbRef.child("groups").child(groupInfo.groupId).setValue(group);
                         dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
 
@@ -126,9 +126,11 @@ public class MakeGroupActivity extends AppCompatActivity {
             }
             //이미지를 넣지 않았을 경우
             else{
-                Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), null);
+                Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), null, "read");
                 dbRef.child("groups").child(groupInfo.groupId).setValue(group);
                 dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+
+                dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail()));
                 finish();
             }
     }
