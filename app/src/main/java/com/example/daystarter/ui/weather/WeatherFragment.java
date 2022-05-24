@@ -1,10 +1,12 @@
 package com.example.daystarter.ui.weather;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,8 +66,9 @@ public class WeatherFragment extends Fragment {
     ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
     WeatherAdapter weatherAdapter;
     WeatherDayAdapter weatherDayAdapter;
-    LocationManager locationManager = null;
+    LocationManager locationManager;
     ProgressDialog progressDialog;
+    private static final int REQUEST_CODE_LOCATION = 2;
     double lat = 0;
     double lng = 0;
 
@@ -84,7 +88,16 @@ public class WeatherFragment extends Fragment {
         weatherAdapter = new WeatherAdapter(weatherWeekData, getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(weatherAdapter);
-
+        locationManager =(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Location location = MyLocation();
+        if(location != null){
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            Log.d("lng", "lng: "+lng);
+            Toast.makeText(getActivity(), "위도 경도"+lng+lat, Toast.LENGTH_SHORT).show();
+        }
+        DayWeather();
+        getLocation();
 
         //tv_name = (TextView) v.findViewById(R.id.tv_name);
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
@@ -102,11 +115,32 @@ public class WeatherFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.show();
-        DayWeather();
+        //DayWeather();
         //일주일 날씨
-        getLocation();
+        //getLocation();
         //주별 날씨
         return v;
+    }
+    private Location MyLocation(){
+        Location MyLocation = null;
+        String Fine_location=Manifest.permission.ACCESS_FINE_LOCATION;
+        String Coarse_location= Manifest.permission.ACCESS_COARSE_LOCATION;
+        //위치 정보 권한
+        if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
+            Log.d("권한요청", "권한: ");
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
+            //MyLocation();
+        }
+        else{
+            String locationProvider=LocationManager.GPS_PROVIDER;
+            MyLocation= locationManager.getLastKnownLocation(locationProvider);
+            if(MyLocation != null){
+                double leg= MyLocation.getLongitude();
+                double lat = MyLocation.getLatitude();
+            }
+        }
+        return MyLocation;
     }
 
 
@@ -268,10 +302,10 @@ public class WeatherFragment extends Fragment {
 
     private void getLocation() {
         Log.d("getLocation", "getLocation: ");
-
+        //https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
         requestNetwork();
         // android-networking 위도 경도에 따라 지역 달라짐(현재는 서울)
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+lng+"&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -331,7 +365,7 @@ public class WeatherFragment extends Fragment {
 
     private void DayWeather() {
         Log.d("DayWeather", "DayWeather: ");
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5683&lon=126.977&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
