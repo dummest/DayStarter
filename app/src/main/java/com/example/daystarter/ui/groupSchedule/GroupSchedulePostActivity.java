@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     String scheduleKey;
     String groupId;
     CommentsRecyclerViewAdapter adapter;
+    InputMethodManager imm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     void init(){
        scheduleKey = getIntent().getStringExtra("key");
        groupId = getIntent().getStringExtra("groupId");
+       imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
        if((scheduleKey == null || scheduleKey.isEmpty()) || (groupId == null || groupId.isEmpty()))
            finish();
        else
@@ -149,6 +152,8 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 adapter.loadComments();
+                imm.hideSoftInputFromWindow(binding.commentEditText.getWindowToken(), 0);
+                binding.commentEditText.setText("");
             }
         });
     }

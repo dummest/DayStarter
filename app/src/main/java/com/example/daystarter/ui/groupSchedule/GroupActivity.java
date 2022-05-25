@@ -126,6 +126,9 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        CalendarDay today = CalendarDay.today();
+        binding.mcvViewGroup.calendar.setSelectedDate(today);
+        adapter.loadGroupScheduleList(today.getYear(), today.getMonth()-1, today.getDay());
     }
 
     private void showToast(String str){
@@ -181,6 +184,10 @@ public class GroupActivity extends AppCompatActivity {
                             scheduleList.add(model);
                             Log.d(TAG, "add: " + model.title);
                         }
+                        if(scheduleList.size()>0)
+                            binding.showEmptyTextView.setVisibility(View.GONE);
+                        else
+                            binding.showEmptyTextView.setVisibility(View.VISIBLE);
                     }
                     notifyDataSetChanged();
                 }

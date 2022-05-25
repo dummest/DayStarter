@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -106,37 +107,38 @@
                 android:hint="내용"
                 android:lines="20"
                 />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:weightSum="2"
-                android:orientation="horizontal"
-                android:paddingHorizontal="10dp"
-                android:backgroundTint="?android:attr/statusBarColor">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cancel_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/invisible"
-                    android:text="취소"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="20sp"
-                    app:cornerRadius="@dimen/round_button_radius"
-                    />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/save_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/invisible"
-                    android:text="저장"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="20sp"
-                    app:cornerRadius="@dimen/round_button_radius"
-                    />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="9"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:layout_gravity="bottom"
+        android:backgroundTint="?android:attr/statusBarColor">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/invisible"
+            android:text="취소"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            app:cornerRadius="@dimen/round_button_radius"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/invisible"
+            android:text="저장"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            app:cornerRadius="@dimen/round_button_radius"
+            />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
