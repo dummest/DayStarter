@@ -45,6 +45,7 @@ dependencies {
     //glide: url로 이미지를 간단하게 다룰 수 있음
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
