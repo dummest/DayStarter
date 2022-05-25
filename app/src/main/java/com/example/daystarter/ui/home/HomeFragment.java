@@ -24,16 +24,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
 import com.example.daystarter.LoginActivity;
 import com.example.daystarter.R;
@@ -79,7 +69,7 @@ public class HomeFragment extends Fragment {
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     NetworkTask networkTask = null;
     Context context;
-    RequestQueue requestQueue;
+    private long back_time = 0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,7 +84,7 @@ public class HomeFragment extends Fragment {
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
 
         //tv_main = (TextView) v.findViewById(R.id.tv_main);
-
+        onBackPressed();
         requestNetwork();
         //requestQueue= Volley.newRequestQueue(getActivity());
         //getNews();
@@ -384,44 +374,16 @@ public class HomeFragment extends Fragment {
 
         }
     }
-        private void getNews() {
-            String newUrl = "https://rss.donga.com/total.xml";
 
-            Log.d("getNews", "getNews: ");
-            Log.d("", "getNews: ");
-            StringRequest stringRequest = new StringRequest(Request.Method.GET,
-                    newUrl,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("onResponse", "onResponse:");
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                JSONArray jsonArray = jsonObject.getJSONArray("channel");
-                                Log.d("jsonArray", "jsonArray " + jsonObject);
-
-                                for (int i = 0; i < 5; i++) {
-                                    JSONObject JsonList = jsonArray.getJSONObject(i);
-                                    JSONObject JsonNew = JsonList.getJSONObject("item");
-                                    NewData newData = new NewData();
-
-                                    newData.setTitle(JsonNew.getString("title"));
-                                    Log.d("title", "title: " + JsonNew.getString("title"));
-
-                                }
-
-
-                            } catch (JSONException e) {
-                                Log.d("error", "onResponse error: ");
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getActivity(), "인터넷에 연결하지 못하였습니다.", Toast.LENGTH_SHORT).show();
-                }
-            });
-            requestQueue.add(stringRequest);
+    public void onBackPressed(){
+        if(System.currentTimeMillis() - back_time >=2000){
+            back_time= System.currentTimeMillis();
+            Toast.makeText(getActivity(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
         }
+        else if(System.currentTimeMillis() -back_time <2000){
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().remove(this).commit();
+            fragmentManager.popBackStack();
+        }
+    }
 }
