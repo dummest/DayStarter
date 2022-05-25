@@ -82,12 +82,10 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(newAdapter);
         //tv_name = (TextView) v.findViewById(R.id.tv_name);
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
-
         //tv_main = (TextView) v.findViewById(R.id.tv_main);
-        onBackPressed();
+
+        //onBackPressed();
         requestNetwork();
-        //requestQueue= Volley.newRequestQueue(getActivity());
-        //getNews();
         readRss();
         return v;
     }
@@ -287,8 +285,8 @@ public class HomeFragment extends Fragment {
 
                 NewData item = null;
                 String tagName = null;
-
-                while (eventType != XmlPullParser.END_DOCUMENT) {
+                int j=0;
+                while (eventType != XmlPullParser.END_DOCUMENT && j<2) {
                     switch (eventType) {
                         case XmlPullParser.START_DOCUMENT:
                             break;
@@ -340,9 +338,9 @@ public class HomeFragment extends Fragment {
                                 item = null;
 
                                 //ui변경사항
+                                j++;
                                 publishProgress();
                             }
-
                             break;
                     }
                     eventType = xpp.next();
@@ -370,8 +368,6 @@ public class HomeFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            Toast.makeText(getContext(), s + "." + items.size(), Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -386,4 +382,5 @@ public class HomeFragment extends Fragment {
             fragmentManager.popBackStack();
         }
     }
+
 }

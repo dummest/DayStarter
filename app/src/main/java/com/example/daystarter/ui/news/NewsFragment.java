@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.weather.ProgressDialog;
@@ -37,8 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NewsFragment extends Fragment {
-    @BindView(R.id.new_recyclerview)
-    RecyclerView recyclerView;
+    @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
+    @BindView(R.id.swiper_layout) SwipeRefreshLayout swipeRefreshLayout;
     private NewAdapter newAdapter;
     ArrayList<NewData> items = new ArrayList<>();
     ProgressDialog progressDialog;
@@ -58,6 +59,14 @@ public class NewsFragment extends Fragment {
         progressDialog.show();
         readRss();
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                items.clear();
+                newAdapter.notifyDataSetChanged();
+                readRss();
+            }
+        });
         return v;
     }
 
@@ -158,7 +167,7 @@ public class NewsFragment extends Fragment {
                             }
                             break;
                     }
-                    eventType = xpp.next();
+                    eventType=xpp.next();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -181,7 +190,7 @@ public class NewsFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
+            swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(getContext(), s+"."+items.size(), Toast.LENGTH_SHORT).show();
 
         }
