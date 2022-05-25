@@ -22,11 +22,14 @@
         android:theme="@style/Theme.DayStarter"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.groupSchedule.MemberListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.groupSchedule.GroupSettingActivity"
             android:exported="false" />
         <activity
             android:name=".ui.groupSchedule.GroupSchedulePostActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".ui.groupSchedule.WritingGroupScheduleActivity"
             android:exported="false" />
