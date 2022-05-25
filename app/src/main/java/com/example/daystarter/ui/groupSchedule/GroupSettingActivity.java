@@ -292,6 +292,12 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.copyGroupIdLayout.setVisibility(View.VISIBLE);
         binding.editInfoLayout.setVisibility(View.VISIBLE);
         binding.withdrawalLayout.setVisibility(View.VISIBLE);
+        binding.withdrawalLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
 
