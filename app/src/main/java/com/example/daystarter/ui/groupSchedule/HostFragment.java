@@ -117,7 +117,6 @@ public class HostFragment extends Fragment {
                         if(task.isSuccessful()){
                             Group group = task.getResult().getValue(Group.class);
                             groupList.add(group);
-                            Log.d(TAG, "group add: " + group.groupName);
                             notifyDataSetChanged();
                         }
                     }
