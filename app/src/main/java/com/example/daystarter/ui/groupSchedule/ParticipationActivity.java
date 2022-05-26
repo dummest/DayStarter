@@ -82,7 +82,7 @@ public class ParticipationActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         groupRef.child("members").child(user.getUid()).setValue(new Member(nameText, group.initialStatus, user.getEmail()));
-                                        dbRef.child("users").child(user.getUid()).child("participatingGroups").push().setValue(groupInfo);
+                                        dbRef.child("users").child(user.getUid()).child("participatingGroups").child(groupId).setValue(groupInfo);
                                         finish();
                                     }
                                 })

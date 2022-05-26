@@ -33,14 +33,15 @@ public class IntroActivity extends AppCompatActivity {
             public void run() {
                 if(FirebaseAuth.getInstance().getCurrentUser().getUid() != null) {
                     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                            .child("user");
+                            .child("users").child(FirebaseAuth.getInstance().getUid());
                     dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             Intent intent;
                             if (task.getResult().exists()) {
                                 intent = new Intent(IntroActivity.this, MainActivity.class);
-                            } else {
+                            }
+                            else {
                                 intent = new Intent(IntroActivity.this, LoginActivity.class);
                             }
                             startActivity(intent);

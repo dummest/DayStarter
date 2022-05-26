@@ -128,7 +128,7 @@ public class MakeGroupActivity extends AppCompatActivity {
             else{
                 Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), null, "read");
                 dbRef.child("groups").child(groupInfo.groupId).setValue(group);
-                dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+                dbRef.child("users").child(user.getUid()).child("hostingGroups").child(group.groupId).setValue(groupInfo);
 
                 dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail()));
                 finish();

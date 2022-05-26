@@ -82,24 +82,7 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.initialStatusLayout.setVisibility(View.VISIBLE);
 
         binding.groupIdTextView.setText(groupId);
-
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                .child("groups").child(groupId).child("initialStatus");
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String initialStatus = snapshot.getValue(String.class);
-                if(initialStatus.equals("write"))
-                    binding.initialStatusTextView.setText("현재 기본 권한: 쓰기");
-                if(initialStatus.equals("read"))
-                    binding.initialStatusTextView.setText("현재 기본 권한: 읽기");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        loadInitialStatus();
 
         binding.memberListLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +148,7 @@ public class GroupSettingActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         showToast("설정이 적용되었습니다");
+                                        loadInitialStatus();
                                     }
                                 });
                             }
@@ -217,11 +201,24 @@ public class GroupSettingActivity extends AppCompatActivity {
         });
 
     }
+    void loadInitialStatus(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("groups").child(groupId).child("initialStatus");
+
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                String initialStatus = task.getResult().getValue(String.class);
+                if(initialStatus.equals("write"))
+                    binding.initialStatusTextView.setText("현재 기본 권한: 쓰기");
+                if(initialStatus.equals("read"))
+                    binding.initialStatusTextView.setText("현재 기본 권한: 읽기");
+            }
+        });
+    }
 
     void startDelete(){
         deleteMember();
-        deleteSchedule();
-        deleteGroup();
     }
     void deleteMember(){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
@@ -231,49 +228,32 @@ public class GroupSettingActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
                     for (DataSnapshot ds: task.getResult().getChildren()) {
-                        deleteHostParticipants(ds.getKey());
+                        deleteHostParticipants(ds.getKey(), groupId);
                     }
+                    deleteSchedule();
                 }
             }
         });
     }
-    void deleteHostParticipants(String uid){
-        DatabaseReference hostRef = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(uid).child("hostingGroups");
-        hostRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    for (DataSnapshot ds: task.getResult().getChildren()) {
-                        GroupInfo groupInfo = ds.getValue(GroupInfo.class);
-                        if(groupInfo.groupId.equals(groupId)){
-                            hostRef.child(ds.getKey()).removeValue();
-                        }
-                    }
-                }
-            }
-        });
-        DatabaseReference participantsRef = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(FirebaseAuth.getInstance().getUid()).child("participatingGroups");
-        participantsRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    for (DataSnapshot ds: task.getResult().getChildren()) {
-                        GroupInfo groupInfo = ds.getValue(GroupInfo.class);
-                        if(groupInfo.groupId.equals(groupId)){
-                            participantsRef.child(ds.getKey()).removeValue();
-                        }
-                    }
-                }
-            }
-        });
+    void deleteHostParticipants(String uid, String groupId){
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(uid);
+
+        usersRef.child("hostingGroups").child(groupId).removeValue();
+        usersRef.child("participatingGroups").child(groupId).removeValue();
     }
 
     void deleteSchedule(){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
                 .child("schedules").child(groupId);
-        dbRef.removeValue();
+        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    deleteGroup();
+                }
+            }
+        });
     }
     void deleteGroup(){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
