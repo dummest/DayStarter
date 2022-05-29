@@ -4,10 +4,12 @@ public class Member {
     public String name;
     public String status;
     public String email;
+    public String uid;
 
-    public Member(String name, String status, String email){
+    public Member(String name, String status, String email, String uid){
         this.name = name;
         this.status = status;
+        this.uid = uid;
     }
 
     public Member(){

@@ -10,6 +10,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class GroupSettingActivity extends AppCompatActivity {
     ActivityGroupSettingBinding binding;
@@ -68,6 +71,8 @@ public class GroupSettingActivity extends AppCompatActivity {
                                 showToast("오류: 권한이 없습니다");
                                 finish();
                         }
+                        binding.groupIdTextView.setText(groupId);
+                        setClickListener();
                     }
                 }
             });
@@ -80,14 +85,138 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.deleteGroupLayout.setVisibility(View.VISIBLE);
         binding.editInfoLayout.setVisibility(View.VISIBLE);
         binding.initialStatusLayout.setVisibility(View.VISIBLE);
-
-        binding.groupIdTextView.setText(groupId);
         loadInitialStatus();
 
+
+
+    }
+    void loadInitialStatus(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("groups").child(groupId).child("initialStatus");
+
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                String initialStatus = task.getResult().getValue(String.class);
+                if(initialStatus.equals("write"))
+                    binding.initialStatusTextView.setText("현재 기본 권한: 쓰기");
+                if(initialStatus.equals("read"))
+                    binding.initialStatusTextView.setText("현재 기본 권한: 읽기");
+            }
+        });
+    }
+
+    void startDelete(){
+        loopMember();
+    }
+    void loopMember(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("groups").child(groupId).child("members");
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    for (DataSnapshot ds: task.getResult().getChildren()) {
+                        deleteHostParticipants(ds.getKey(), groupId);
+                    }
+                    deleteSchedule();
+                }
+                Log.d(TAG, "loopMember done");
+            }
+        });
+    }
+    void deleteHostParticipants(String uid, String groupId){
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(uid);
+        usersRef.child("hostingGroups").child(groupId).removeValue();
+        usersRef.child("participatingGroups").child(groupId).removeValue();
+        Log.d(TAG, "delete HostParticipants");
+    }
+
+    void deleteSchedule(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("schedules").child(groupId);
+        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    deleteGroup();
+                }
+                Log.d(TAG, "schedule delete");
+            }
+        });
+    }
+    void deleteGroup(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                .child("groups").child(groupId);
+        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    deleteImage();
+                }
+                Log.d(TAG, "group delete");
+            }
+        });
+    }
+
+    void deleteImage(){
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        storageRef.child("groupImages").child(groupId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                showToast("해체되었습니다");
+                Log.d(TAG, "image delete");
+                finish();
+            }
+        });
+    }
+
+    void deleteMember(){
+        DatabaseReference memberRef = FirebaseDatabase.getInstance().getReference().child("groups").
+                child(groupId).child("members").child(FirebaseAuth.getInstance().getUid());
+        DatabaseReference participateRef = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(FirebaseAuth.getInstance().getUid()).child("participatingGroups").child(groupId);
+        memberRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    participateRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            showToast("탈퇴 완료");
+                            finish();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    void initMember(){
+        binding.copyGroupIdLayout.setVisibility(View.VISIBLE);
+        binding.editInfoLayout.setVisibility(View.VISIBLE);
+        binding.withdrawalLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void showToast(String str){
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    }
+
+    void setClickListener(){
         binding.memberListLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(GroupSettingActivity.this, MemberListActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
 
+        binding.withdrawalLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteMember();
             }
         });
 
@@ -191,98 +320,12 @@ public class GroupSettingActivity extends AppCompatActivity {
                                 });
                             }
                         });
-                builder.setNegativeButton("취소",
-                        new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         });
                 builder.show();
             }
         });
-
-    }
-    void loadInitialStatus(){
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                .child("groups").child(groupId).child("initialStatus");
-
-        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                String initialStatus = task.getResult().getValue(String.class);
-                if(initialStatus.equals("write"))
-                    binding.initialStatusTextView.setText("현재 기본 권한: 쓰기");
-                if(initialStatus.equals("read"))
-                    binding.initialStatusTextView.setText("현재 기본 권한: 읽기");
-            }
-        });
-    }
-
-    void startDelete(){
-        deleteMember();
-    }
-    void deleteMember(){
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                .child("groups").child(groupId).child("members");
-        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    for (DataSnapshot ds: task.getResult().getChildren()) {
-                        deleteHostParticipants(ds.getKey(), groupId);
-                    }
-                    deleteSchedule();
-                }
-            }
-        });
-    }
-    void deleteHostParticipants(String uid, String groupId){
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(uid);
-
-        usersRef.child("hostingGroups").child(groupId).removeValue();
-        usersRef.child("participatingGroups").child(groupId).removeValue();
-    }
-
-    void deleteSchedule(){
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                .child("schedules").child(groupId);
-        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    deleteGroup();
-                }
-            }
-        });
-    }
-    void deleteGroup(){
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                .child("groups").child(groupId);
-        dbRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                showToast("해체되었습니다");
-                finish();
-            }
-        });
-    }
-
-    void initMember(){
-        binding.memberListLayout.setVisibility(View.VISIBLE);
-        binding.copyGroupIdLayout.setVisibility(View.VISIBLE);
-        binding.editInfoLayout.setVisibility(View.VISIBLE);
-        binding.withdrawalLayout.setVisibility(View.VISIBLE);
-        binding.withdrawalLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-    }
-
-
-
-    private void showToast(String str){
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 }

@@ -81,7 +81,7 @@ public class ParticipationActivity extends AppCompatActivity {
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        groupRef.child("members").child(user.getUid()).setValue(new Member(nameText, group.initialStatus, user.getEmail()));
+                                        groupRef.child("members").child(user.getUid()).setValue(new Member(nameText, group.initialStatus, user.getEmail(), FirebaseAuth.getInstance().getUid()));
                                         dbRef.child("users").child(user.getUid()).child("participatingGroups").child(groupId).setValue(groupInfo);
                                         finish();
                                     }

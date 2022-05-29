@@ -31,7 +31,8 @@ public class IntroActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(FirebaseAuth.getInstance().getCurrentUser().getUid() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user != null) {
                     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
                             .child("users").child(FirebaseAuth.getInstance().getUid());
                     dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -46,12 +47,15 @@ public class IntroActivity extends AppCompatActivity {
                             }
                             startActivity(intent);
                             finish();
-                            overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
                         }
                     });
                 }
+                else{
+                    Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
-        }, 1500);
+        }, 1000);
     }
 
     @Override
