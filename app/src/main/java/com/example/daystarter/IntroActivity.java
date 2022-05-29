@@ -31,26 +31,31 @@ public class IntroActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(FirebaseAuth.getInstance().getCurrentUser().getUid() != null) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user != null) {
                     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                            .child("user");
+                            .child("users").child(FirebaseAuth.getInstance().getUid());
                     dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             Intent intent;
                             if (task.getResult().exists()) {
                                 intent = new Intent(IntroActivity.this, MainActivity.class);
-                            } else {
+                            }
+                            else {
                                 intent = new Intent(IntroActivity.this, LoginActivity.class);
                             }
                             startActivity(intent);
                             finish();
-                            overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
                         }
                     });
                 }
+                else{
+                    Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
-        }, 1500);
+        }, 1000);
     }
 
     @Override

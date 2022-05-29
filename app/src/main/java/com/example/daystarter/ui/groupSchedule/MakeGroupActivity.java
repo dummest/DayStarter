@@ -116,10 +116,10 @@ public class MakeGroupActivity extends AppCompatActivity {
                         imageUrl = uriTask.getResult().toString();
                         Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), imageUrl, "read");
                         dbRef.child("groups").child(groupInfo.groupId).setValue(group);
-                        dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+                        dbRef.child("users").child(user.getUid()).child("hostingGroups").child(groupInfo.groupId).setValue(groupInfo);
 
                         //group 멤버 안에 호스트를 넣어줌
-                        dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail()));
+                        dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail(), FirebaseAuth.getInstance().getUid()));
                         finish();
                     }
                 });
@@ -128,9 +128,9 @@ public class MakeGroupActivity extends AppCompatActivity {
             else{
                 Group group = new Group(groupInfo.groupId, groupName, user.getEmail(), null, "read");
                 dbRef.child("groups").child(groupInfo.groupId).setValue(group);
-                dbRef.child("users").child(user.getUid()).child("hostingGroups").push().setValue(groupInfo);
+                dbRef.child("users").child(user.getUid()).child("hostingGroups").child(group.groupId).setValue(groupInfo);
 
-                dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail()));
+                dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail(), FirebaseAuth.getInstance().getUid()));
                 finish();
             }
     }

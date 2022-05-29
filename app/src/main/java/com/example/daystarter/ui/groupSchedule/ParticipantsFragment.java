@@ -34,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-
 public class ParticipantsFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
@@ -53,6 +52,7 @@ public class ParticipantsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     public class ParticipantsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -103,7 +103,6 @@ public class ParticipantsFragment extends Fragment {
                     for(DataSnapshot ds : snapshot.getChildren()){
                         GroupInfo groupInfo = ds.getValue(GroupInfo.class);
                         groupInfoList.add(groupInfo);
-                        Log.d(TAG, "groupInfo add: " + groupInfo.groupId);
                         notifyDataSetChanged();
                     }
                     loadGroupList();
@@ -125,7 +124,6 @@ public class ParticipantsFragment extends Fragment {
                         if(task.isSuccessful()){
                             Group group = task.getResult().getValue(Group.class);
                             groupList.add(group);
-                            Log.d(TAG, "group add: " + group.groupName);
                             notifyDataSetChanged();
                         }
                     }
@@ -143,5 +141,4 @@ public class ParticipantsFragment extends Fragment {
             textView = itemView.findViewById(R.id.group_name);
         }
     }
-
 }

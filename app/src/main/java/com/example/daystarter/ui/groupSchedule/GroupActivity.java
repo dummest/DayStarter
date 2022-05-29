@@ -86,32 +86,24 @@ public class GroupActivity extends AppCompatActivity {
         binding.groupScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), WritingGroupScheduleActivity.class);
-                intent.putExtra("groupId", groupId);
-                Calendar calendar = new GregorianCalendar();
-
-                //선택한 날이 오늘일 시
-                if(binding.mcvViewGroup.calendar.getSelectedDate().equals(CalendarDay.today())) {
-                    calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)+1);
-                    calendar.set(Calendar.MINUTE, 0);
-                }
-                //선택한 날이 오늘이 아닐 시
-                else{
-                    CalendarDay cd = binding.mcvViewGroup.calendar.getSelectedDate();
-                    calendar.set(cd.getYear(), cd.getMonth()-1, cd.getDay(), 8, 0);
-                    /*
-                    Note: 자바에서 Calendar는 Month가 0부터 시작하지만(영어권에서는 달을 숫자가 아닌 영어로 부름 ex)March
-                    MCV는 Month가 1부터 시작함. 고로 연산할때 주의할 것.
-                    */
-                }
-                intent.putExtra("beforeLong", calendar.getTimeInMillis());
-
-                calendar.add(Calendar.HOUR_OF_DAY, 1);
-                intent.putExtra("afterLong", calendar.getTimeInMillis());
-
-                startActivity(intent);
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+                dbRef.child("groups").child(groupId).child("members").child(FirebaseAuth.getInstance().getUid())
+                        .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            Member member = task.getResult().getValue(Member.class);
+                            if(member.status.equals("write") || member.status.equals("host"))
+                                goWrite();
+                            else{
+                                showToast("작성 권한이 없습니다");
+                            }
+                        }
+                    }
+                });
             }
         });
+
         binding.mcvViewGroup.calendar.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -129,6 +121,33 @@ public class GroupActivity extends AppCompatActivity {
         CalendarDay today = CalendarDay.today();
         binding.mcvViewGroup.calendar.setSelectedDate(today);
         adapter.loadGroupScheduleList(today.getYear(), today.getMonth()-1, today.getDay());
+    }
+
+    void goWrite(){
+        Intent intent = new Intent(getBaseContext(), WritingGroupScheduleActivity.class);
+        intent.putExtra("groupId", groupId);
+        Calendar calendar = new GregorianCalendar();
+
+        //선택한 날이 오늘일 시
+        if(binding.mcvViewGroup.calendar.getSelectedDate().equals(CalendarDay.today())) {
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY)+1);
+            calendar.set(Calendar.MINUTE, 0);
+        }
+        //선택한 날이 오늘이 아닐 시
+        else{
+            CalendarDay cd = binding.mcvViewGroup.calendar.getSelectedDate();
+            calendar.set(cd.getYear(), cd.getMonth()-1, cd.getDay(), 8, 0);
+                    /*
+                    Note: 자바에서 Calendar는 Month가 0부터 시작하지만(영어권에서는 달을 숫자가 아닌 영어로 부름 ex)March
+                    MCV는 Month가 1부터 시작함. 고로 연산할때 주의할 것.
+                    */
+        }
+        intent.putExtra("beforeLong", calendar.getTimeInMillis());
+
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        intent.putExtra("afterLong", calendar.getTimeInMillis());
+
+        startActivity(intent);
     }
 
     private void showToast(String str){

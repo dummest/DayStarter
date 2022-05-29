@@ -143,24 +143,21 @@ public class MainActivity extends AppCompatActivity {
             //프로필 이미지 받아오는 작업
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-            dbRef.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            dbRef.child("users").child(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user = snapshot.getValue(User.class);
-                    Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().error(R.drawable.ic_baseline_person_24).into(profileImageView);
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        User user = task.getResult().getValue(User.class);
+                        Glide.with(MainActivity.this).load(user.profileImgPath).circleCrop().error(R.drawable.ic_baseline_person_24).into(profileImageView);
 
-                    TextView nameTextView = headerView.findViewById(R.id.name_text_view);
-                    TextView emailTextView = headerView.findViewById(R.id.email_text_view);
-                    nameTextView.setText(user.name);
-                    emailTextView.setText(user.email);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
+                        TextView nameTextView = headerView.findViewById(R.id.name_text_view);
+                        TextView emailTextView = headerView.findViewById(R.id.email_text_view);
+                        nameTextView.setText(user.name);
+                        emailTextView.setText(user.email);
+                        signOutButton.setVisibility(View.VISIBLE);
+                    }
                 }
             });
-            signOutButton.setVisibility(View.VISIBLE);
         }
     }
 

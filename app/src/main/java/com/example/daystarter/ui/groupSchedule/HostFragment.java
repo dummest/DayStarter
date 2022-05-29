@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class HostFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
-    HostFragment.HostRecyclerViewAdapter adapter = new HostFragment.HostRecyclerViewAdapter();
+    HostRecyclerViewAdapter adapter = new HostRecyclerViewAdapter();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +46,13 @@ public class HostFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
 
     public class HostRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ArrayList<Group> groupList;
@@ -61,14 +68,14 @@ public class HostFragment extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.group_item, parent, false);
-            return new HostFragment.GroupViewHolder(view);
+            return new GroupViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             Glide.with(holder.itemView.getContext()).load(groupList.get(position).imagePath).circleCrop().error(R.drawable.ic_outline_group_24)
-                    .into(((HostFragment.GroupViewHolder)holder).imageView);
-            ((HostFragment.GroupViewHolder)holder).textView.setText(groupList.get(position).groupName);
+                    .into(((GroupViewHolder)holder).imageView);
+            ((GroupViewHolder)holder).textView.setText(groupList.get(position).groupName);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,8 +102,6 @@ public class HostFragment extends Fragment {
                     for(DataSnapshot ds : snapshot.getChildren()){
                         GroupInfo groupInfo = ds.getValue(GroupInfo.class);
                         groupInfoList.add(groupInfo);
-                        Log.d(TAG, "groupId add: " + groupInfo.groupId);
-                        notifyDataSetChanged();
                     }
                     loadGroupList();
                 }
@@ -117,13 +122,14 @@ public class HostFragment extends Fragment {
                         if(task.isSuccessful()){
                             Group group = task.getResult().getValue(Group.class);
                             groupList.add(group);
-                            notifyDataSetChanged();
                         }
+                        notifyDataSetChanged();
                     }
                 });
             }
         }
     }
+
     private class GroupViewHolder extends RecyclerView.ViewHolder{
         public ImageView imageView;
         public TextView textView;
