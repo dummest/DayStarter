@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
+import com.example.daystarter.ui.home.OnBackPressedListener;
 import com.example.daystarter.ui.setting.TimeUtil;
 import com.example.daystarter.ui.setting.setting;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private Button signOutButton;
     View headerView;
     FirebaseUser firebaseUser;
+    OnBackPressedListener listener;
 
     private static String TAG = "MainActivity";
 
@@ -191,5 +193,16 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Error getting bitmap", e);
         }
         return bm;
+    }
+    public void setOnBackPressedListener(OnBackPressedListener listener){
+        this.listener =listener;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(listener !=null)
+            listener.onBackPressed();
+        else
+            super.onBackPressed();
     }
 }

@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
-                android:text="Add Alarm"
+                android:text="알람 추가"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
         </LinearLayout>

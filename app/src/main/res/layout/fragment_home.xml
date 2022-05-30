@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
     android:scrollbars="vertical">
 
@@ -17,7 +16,6 @@
         android:elevation="10dp"
         android:gravity="center"
         android:text="현재 날씨"
-        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ll_name"
@@ -26,17 +24,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="4dp"
+        app:cardElevation="4dp"
+        app:contentPadding="8dp">
+
     <LinearLayout
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginHorizontal="20dp"
         android:orientation="horizontal"
-        android:weightSum="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_name" >
-
 
         <ImageView
             android:id="@+id/iv_weather"
@@ -74,11 +78,11 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="25dp"
                 android:text="broken clouds"
-                android:textColor="@color/dark_gray"
                 android:textSize="17sp" />
         </LinearLayout>
-
     </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/view_divider"
@@ -86,7 +90,6 @@
         android:layout_height="1dp"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="20dp"
-        android:background="@color/dark_gray"
         app:layout_constraintBottom_toTopOf="@+id/new_LinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,10 +111,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
         android:scrollbars="vertical"
-        android:id="@+id/new_recyclerview"
-        app:layout_constrainedHeight="true"/>
+        android:id="@+id/new_recyclerview" />
     </LinearLayout>
 
     <View
@@ -120,7 +121,6 @@
         android:layout_height="1dp"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="20dp"
-        android:background="@color/dark_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_LinearLayout" />
