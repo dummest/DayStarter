@@ -29,6 +29,7 @@ import com.example.daystarter.LoginActivity;
 import com.example.daystarter.MainActivity;
 import com.example.daystarter.R;
 import com.example.daystarter.SignUpActivity;
+import com.example.daystarter.ui.groupSchedule.GroupActivity;
 import com.example.daystarter.ui.news.NewAdapter;
 import com.example.daystarter.ui.news.NewData;
 import com.example.daystarter.ui.news.NewsFragment;
@@ -65,6 +66,8 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
     @BindView(R.id.tv_temp)TextView tv_temp;
     @BindView(R.id.tv_description)TextView tv_description;
     @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
+    @BindView(R.id.home_schedule_recycler_view) RecyclerView homeScheduleRecyclerView;
+
     private HomeNewAdapter newAdapter;
     ArrayList<NewData> items = new ArrayList<>();
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         //LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,v);
+        setHomeScheduleRecyclerView();
         newAdapter = new HomeNewAdapter(items,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(newAdapter);
@@ -415,5 +419,13 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
     public void onResume() {
         super.onResume();
         mainActivity.setOnBackPressedListener(this);
+    }
+
+    public void setHomeScheduleRecyclerView(){
+        HomeScheduleAdapter adapter = new HomeScheduleAdapter(getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getLayoutInflater().getContext());
+        manager.setOrientation(RecyclerView.HORIZONTAL);
+        homeScheduleRecyclerView.setLayoutManager(manager);
+        homeScheduleRecyclerView.setAdapter(adapter);
     }
 }
