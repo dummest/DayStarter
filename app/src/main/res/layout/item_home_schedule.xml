@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+    <LinearLayout
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/title_text_view"
+            android:singleLine="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="title_text_view"/>
+        <TextView
+            android:id="@+id/start_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start_time"/>
+        <TextView
+            android:id="@+id/end_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="end_time"/>
+        <TextView
+            android:id="@+id/category_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="category"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
