@@ -72,7 +72,6 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="25dp"
                 android:text="broken clouds"
-                android:textColor="@color/dark_gray"
                 android:textSize="17sp" />
         </LinearLayout>
 
