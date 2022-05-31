@@ -1,14 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.DayStarter" parent="Theme.MaterialComponents.Light">
-
+    <style name="Theme.DayStarter" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorPrimaryVariant">#00FF38</item>
+        <item name="colorPrimary">#9FA8DA</item>
+        <item name="colorPrimaryVariant">#FF8A80</item>
         <item name="colorOnPrimary">@color/black</item>
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_500</item>
+        <item name="colorSecondary">#81C784</item>
         <item name="colorSecondaryVariant">#D903FF</item>
         <item name="colorOnSecondary">@color/white</item>
 
@@ -25,11 +24,9 @@
 
         <item name="android:timePickerStyle">@style/ScheduleTimePickerTheme</item>
         <item name="android:windowBackground">@color/light_gray</item>
-    </style>
 
-    <!-- ActionBar background change to black or white(by -->
-    <style name="MyActionBar" parent="Widget.MaterialComponents.AppBarLayout.Primary">
-        <item name="android:backgroundTint">?android:attr/colorSecondary</item>
+        <item name="appBarLayoutStyle">@style/Theme.DayStarter.AppBar</item>
+        <item name="actionBarStyle">@style/Theme.DayStarter.ActionBar</item>
     </style>
 
     <!--drawer theme-->
@@ -49,7 +46,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.DayStarter.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.DayStarter.ActionBar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="background">@color/white</item>
+    </style>
 
-    <style name="Theme.DayStarter.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.DayStarter.AppBar" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Theme.DayStarter.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
 </resources>

@@ -15,8 +15,6 @@
             android:layout_height="wrap_content"
             app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabTextColor="?android:attr/textColorPrimary"
-            app:tabSelectedTextColor="?android:attr/colorPrimary"
             android:elevation="1dp"
             />
 
