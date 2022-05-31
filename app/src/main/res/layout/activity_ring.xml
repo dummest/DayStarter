@@ -32,7 +32,7 @@
         android:id="@+id/activity_ring_dismiss"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Dismiss"
+        android:text="종료"
         app:layout_constraintBottom_toTopOf="@+id/activity_ring_snooze"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -41,7 +41,7 @@
         android:id="@+id/activity_ring_snooze"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Snooze"
+        android:text="반복"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

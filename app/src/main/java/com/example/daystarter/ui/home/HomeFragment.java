@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.daystarter.LoginActivity;
+import com.example.daystarter.MainActivity;
 import com.example.daystarter.R;
 import com.example.daystarter.SignUpActivity;
 import com.example.daystarter.ui.news.NewAdapter;
@@ -59,17 +60,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kotlin.jvm.internal.Intrinsics;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements  OnBackPressedListener{
     @BindView(R.id.iv_weather)ImageView iv_weather;
     @BindView(R.id.tv_temp)TextView tv_temp;
     @BindView(R.id.tv_description)TextView tv_description;
     @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
-    private NewAdapter newAdapter;
+    private HomeNewAdapter newAdapter;
     ArrayList<NewData> items = new ArrayList<>();
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     NetworkTask networkTask = null;
     Context context;
     private long back_time = 0;
+    private long Finish_back_time=2000;
+    MainActivity mainActivity;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,17 +80,21 @@ public class HomeFragment extends Fragment {
         //LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,v);
-        newAdapter = new NewAdapter(items,getActivity());
+        newAdapter = new HomeNewAdapter(items,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(newAdapter);
         //tv_name = (TextView) v.findViewById(R.id.tv_name);
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
         //tv_main = (TextView) v.findViewById(R.id.tv_main);
-
-        //onBackPressed();
+        mainActivity = (MainActivity) getActivity();
         requestNetwork();
-        readRss();
         return v;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        readRss();
     }
 
     /* NetworkTask 를 요청하기 위한 메소드 */
@@ -370,17 +377,43 @@ public class HomeFragment extends Fragment {
 
         }
     }
-
-    public void onBackPressed(){
-        if(System.currentTimeMillis() - back_time >=2000){
+    @Override
+    public void onBackPressed() {
+        showDialog();
+        /*
+        if(System.currentTimeMillis() > back_time +2000){
             back_time= System.currentTimeMillis();
             Toast.makeText(getActivity(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
         }
-        else if(System.currentTimeMillis() -back_time <2000){
+        if(System.currentTimeMillis() <=back_time +2000){
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction().remove(this).commit();
             fragmentManager.popBackStack();
         }
-    }
 
+         */
+    }
+    public void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("종료");
+        builder.setMessage("종료하시겠습니까?");
+        builder.setPositiveButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mainActivity.finish();
+            }
+        });
+        builder.show();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainActivity.setOnBackPressedListener(this);
+    }
 }
