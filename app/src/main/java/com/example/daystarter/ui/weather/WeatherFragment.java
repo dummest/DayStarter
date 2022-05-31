@@ -130,7 +130,7 @@ public class WeatherFragment extends Fragment {
                 ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
             Log.d("권한요청", "권한: ");
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
-            //MyLocation();
+            MyLocation();
         }
         else{
             String locationProvider=LocationManager.GPS_PROVIDER;
