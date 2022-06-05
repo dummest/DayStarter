@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -87,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         //프로필 사진 있을 시 uid 와 같은 이름으로 사진을 위치 profileImage/에 업로드 해줌
-                        if(uri!=null) {
+
                             //storage = 파이어베이스 스토리지 참조 객체
                             storage = FirebaseStorage.getInstance();
                             StorageReference storageRef = storage.getReference();
@@ -104,14 +105,17 @@ public class SignUpActivity extends AppCompatActivity {
                                     User userData = new User(user.getUid(), user.getEmail(), name, imageUrl);
                                     dbRef = FirebaseDatabase.getInstance().getReference();
                                     dbRef.child("users").child(user.getUid()).setValue(userData);
+
+                                    showToast("회원가입 완료.");
+                                    finish();
                                 }
                             });
-                        }
+
+                        /*
                         User userData = new User(user.getUid(), user.getEmail(), name, null);
                         dbRef = FirebaseDatabase.getInstance().getReference();
                         dbRef.child("users").child(user.getUid()).setValue(userData);
-                        showToast("회원가입 완료.");
-                        finish();
+                         */
                     }
                     else {
                         showToast(task.getException().toString());
@@ -121,6 +125,7 @@ public class SignUpActivity extends AppCompatActivity {
         }else
             showToast("비밀번호가 일치하지 않습니다");
     }
+
     void setResultLauncher(){
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {

@@ -19,12 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.model.Progress;
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupSchedulePostBinding;
 import com.example.daystarter.ui.groupSchedule.myClass.Comment;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,41 +45,42 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     String groupId;
     CommentsRecyclerViewAdapter adapter;
     InputMethodManager imm;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityGroupSchedulePostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        progressDialog = new ProgressDialog(this);
         init();
 
         binding.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         binding.commentsRecyclerView.setAdapter(adapter);
-
-
     }
     void init(){
-       scheduleKey = getIntent().getStringExtra("key");
-       groupId = getIntent().getStringExtra("groupId");
-       imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-       if((scheduleKey == null || scheduleKey.isEmpty()) || (groupId == null || groupId.isEmpty()))
-           finish();
-       else
-           adapter = new CommentsRecyclerViewAdapter();
-           loadPost();
+        progressDialog.show();
+        scheduleKey = getIntent().getStringExtra("key");
+        groupId = getIntent().getStringExtra("groupId");
+        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if((scheduleKey == null || scheduleKey.isEmpty()) || (groupId == null || groupId.isEmpty()))
+            finish();
+        else
+            adapter = new CommentsRecyclerViewAdapter();
+            loadPost();
 
-       binding.commentPostButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
+        binding.commentPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                writeComment();
            }
-       });
+        });
 
-       binding.deleteImageView.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
+        binding.deleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 makeScheduleDeleteDialog();
-           }
-       });
+            }
+        });
     }
 
     void loadPost(){
@@ -95,6 +98,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                     binding.contentsTextView.setText(post.contents);
                     loadProfileImage(post.writerUid);
                     loadName(post.writerUid);
+                    progressDialog.dismiss();
                 }
                 else{
                     showToast("Data load fail");
@@ -110,7 +114,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
                     String path = task.getResult().getValue(String.class);
-                    Glide.with(getBaseContext()).load(path).circleCrop().error(R.drawable.ic_outline_group_24)
+                    Glide.with(getBaseContext()).load(path).circleCrop().error(R.drawable.ic_baseline_person_24)
                             .into(binding.profileImageView);
                 }
             }
@@ -122,11 +126,13 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                String name = task.getResult().getValue(Member.class).name;
-                if(name == null || name.isEmpty()){
-                    name = "탈퇴한 멤버입니다.";
+                if(task.getResult().exists()){
+                    binding.writerTextView.setText(task.getResult().getValue(Member.class).name);
                 }
-                binding.writerTextView.setText(name);
+                else {
+                    binding.writerTextView.setText("탈퇴한 멤버");
+                    binding.writerTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.gray));
+                }
             }
         });
     }
@@ -172,14 +178,11 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
                                 if(task.isSuccessful()) {
                                     Member member = task.getResult().getValue(Member.class);
-                                    switch (member.status){
-                                        case "host":
-                                        case "write":
-                                            deleteSchedule();
-                                            break;
-                                        default:
-                                            showToast("삭제할 수 있는 권한이 없습니다");
-                                            break;
+                                    if(member.status.equals("host") || member.uid == FirebaseAuth.getInstance().getUid()){
+                                        deleteSchedule();
+                                    }
+                                    else{
+                                        showToast("삭제할 수 있는 권한이 없습니다");
                                     }
                                 }
                                 else{
@@ -263,13 +266,13 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if(task.isSuccessful()) {
-                        Member member = task.getResult().getValue(Member.class);
-                        if(member.name.isEmpty()) {
-                            holder.nameTextView.setText("탈퇴한 멤버입니다");
-                            holder.nameTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.gray));
+                        if(task.getResult().exists()) {
+                            Member member = task.getResult().getValue(Member.class);
+                            holder.nameTextView.setText(member.name);
                         }
                         else{
-                            holder.nameTextView.setText(member.name);
+                            holder.nameTextView.setText("탈퇴한 멤버");
+                            holder.nameTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.gray));
                         }
                     }
                 }

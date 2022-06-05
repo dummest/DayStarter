@@ -73,7 +73,7 @@ public class MemberListActivity extends AppCompatActivity {
                     .child("groups").child(groupId).child("members").child(memberArrayList.get(position).uid).child("status");
             switch (memberArrayList.get(position).status){
                 case "host":
-                        holder.statusSwitch.setVisibility(View.GONE);
+                    holder.statusSwitch.setVisibility(View.GONE);
                 case "write":
                     holder.statusSwitch.setText("읽기");
                     holder.statusSwitch.setChecked(false);
@@ -97,6 +97,8 @@ public class MemberListActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String status = snapshot.getValue(String.class);
+                    if(status == null)
+                        return;
                     if(status.equals("write")){
                         holder.statusSwitch.setChecked(true);
                         holder.statusSwitch.setText("쓰기");
@@ -115,6 +117,7 @@ public class MemberListActivity extends AppCompatActivity {
             Glide.with(holder.itemView.getContext()).load(userArrayList.get(position).profileImgPath)
                     .circleCrop().error(R.drawable.ic_baseline_person_24).into(holder.profileImageView);
             holder.nameTextView.setText(memberArrayList.get(position).name);
+            holder.emailTextView.setText(memberArrayList.get(position).email);
         }
 
         @Override
@@ -162,11 +165,13 @@ public class MemberListActivity extends AppCompatActivity {
     private class MemberViewHolder extends RecyclerView.ViewHolder{
         public CircleImageView profileImageView;
         public TextView nameTextView;
+        public TextView emailTextView;
         public SwitchMaterial statusSwitch;
         public MemberViewHolder(@NonNull View itemView) {
             super(itemView);
             profileImageView = itemView.findViewById(R.id.profile_image_view);
             nameTextView = itemView.findViewById(R.id.name_text_view);
+            emailTextView = itemView.findViewById(R.id.email_text_view);
             statusSwitch = itemView.findViewById(R.id.status_switch);
         }
     }

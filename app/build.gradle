@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
+    implementation 'com.google.firebase:firebase-messaging'
 
     //glide: url로 이미지를 간단하게 다룰 수 있음
     implementation 'com.github.bumptech.glide:glide:4.13.0'

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,16 +39,25 @@ import java.util.ArrayList;
 public class ParticipantsFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
-    ParticipantsRecyclerViewAdapter adapter = new ParticipantsRecyclerViewAdapter();
-
+    ParticipantsRecyclerViewAdapter adapter;
+    ProgressDialog progressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_participants, container, false);
+        progressDialog = new ProgressDialog(getActivity());
+
+        adapter = new ParticipantsRecyclerViewAdapter();
         recyclerView = view.findViewById(R.id.participants_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        progressDialog = new ProgressDialog(getActivity());
     }
 
     @Override
@@ -94,6 +105,7 @@ public class ParticipantsFragment extends Fragment {
         }
 
         public void loadGroupIdList() {
+            progressDialog.show();
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getUid()).child("participatingGroups");
             dbRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -103,9 +115,11 @@ public class ParticipantsFragment extends Fragment {
                     for(DataSnapshot ds : snapshot.getChildren()){
                         GroupInfo groupInfo = ds.getValue(GroupInfo.class);
                         groupInfoList.add(groupInfo);
-                        notifyDataSetChanged();
                     }
-                    loadGroupList();
+                    if(groupInfoList.size()>0)
+                        loadGroupList();
+                    else
+                        progressDialog.dismiss();
                 }
 
                 @Override
@@ -121,11 +135,13 @@ public class ParticipantsFragment extends Fragment {
                 dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
                         if(task.isSuccessful()){
                             Group group = task.getResult().getValue(Group.class);
                             groupList.add(group);
-                            notifyDataSetChanged();
                         }
+                        notifyDataSetChanged();
                     }
                 });
             }
