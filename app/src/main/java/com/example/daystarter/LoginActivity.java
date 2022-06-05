@@ -36,13 +36,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
     private static final int RC_SIGN_IN = 100;
     ActivityLoginBinding binding;
     @Override
@@ -50,9 +53,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        mAuth = FirebaseAuth.getInstance();
-
 
         binding.googleSignInButton.setOnClickListener(onClickListener);
         binding.loginButton.setOnClickListener(onClickListener);
@@ -80,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
     }
 
     private void signIn(){
@@ -88,13 +87,12 @@ public class LoginActivity extends AppCompatActivity {
         String password = binding.loginPasswordEditText.getText().toString().trim();
 
         if(email.length() > 0 && password.length() > 0) {
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        goMain(user);
+                        getFirebaseMessagingToken();
                     } else {
                         Log.w(TAG, "signInUserWithEmail:failure");
                         showToast(task.getException().toString());
@@ -137,31 +135,57 @@ public class LoginActivity extends AppCompatActivity {
     // TODO: 2022/05/02 구글 로그인에 대해 따로 프로필 이미지, 이름을 지정해 줄 필요가 있음
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            goMain(user);
-                            Log.d(TAG, user.getEmail());
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        }
-                    }
-                });
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success");
+                    goMain();
+                } else {
+                    Log.w(TAG, "signInWithCredential:failure", task.getException());
+                }
+            }
+        });
+
     }
+
+    void getFirebaseMessagingToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful())
+                    return;
+                addFirebaseMessagingToken(task.getResult());
+            }
+        });
+    }
+
+    void addFirebaseMessagingToken(String token){
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingTokens");
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(!task.isSuccessful()){
+                    return;
+                }
+                dbRef.child(token).setValue(token);
+                goMain();
+            }
+        });
+    }
+
 
 
     private void showToast(String str){
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
-    private void goMain(FirebaseUser user){
-        if(user != null) {
+    private void goMain(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Log.d(TAG, "goMain: " + "user not null");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             finish();
             overridePendingTransition(R.anim.none, R.anim.view_go_down);
@@ -171,5 +195,4 @@ public class LoginActivity extends AppCompatActivity {
             showToast("user is null");
         }
     }
-
 }

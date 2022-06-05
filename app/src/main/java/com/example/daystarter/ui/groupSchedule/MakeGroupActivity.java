@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,12 +19,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -43,11 +47,15 @@ public class MakeGroupActivity extends AppCompatActivity {
     ImageView groupImage;
     Uri uri;
     ActivityResultLauncher<Intent> resultLauncher;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_group);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         button = findViewById(R.id.make_group_button);
         groupNameEditText = findViewById(R.id.group_name_edit_text);
@@ -98,6 +106,7 @@ public class MakeGroupActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "이름은 필수입니다", Toast.LENGTH_SHORT).show();
             return;
         }
+            progressDialog.show();
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
             user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -120,6 +129,7 @@ public class MakeGroupActivity extends AppCompatActivity {
 
                         //group 멤버 안에 호스트를 넣어줌
                         dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail(), FirebaseAuth.getInstance().getUid()));
+                        progressDialog.dismiss();
                         finish();
                     }
                 });
@@ -131,6 +141,7 @@ public class MakeGroupActivity extends AppCompatActivity {
                 dbRef.child("users").child(user.getUid()).child("hostingGroups").child(group.groupId).setValue(groupInfo);
 
                 dbRef.child("groups").child(group.groupId).child("members").child(user.getUid()).setValue(new Member(userName, "host", user.getEmail(), FirebaseAuth.getInstance().getUid()));
+                progressDialog.dismiss();
                 finish();
             }
     }

@@ -21,6 +21,7 @@ import com.example.daystarter.databinding.ActivityGroupBinding;
 import com.example.daystarter.databinding.ActivityGroupSettingBinding;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,12 @@ import com.google.firebase.storage.StorageReference;
 public class GroupSettingActivity extends AppCompatActivity {
     ActivityGroupSettingBinding binding;
     String groupId;
+    ProgressDialog progressDialog;
+    boolean groupDeleted = false;
+    boolean imageDeleted = false;
+    boolean scheduleDeleted = false;
+    boolean hostingGroupDeleted = false;
+    boolean participatingGroupDeleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,7 @@ public class GroupSettingActivity extends AppCompatActivity {
     }
 
     void init(){
+        progressDialog = new ProgressDialog(this);
         groupId = getIntent().getStringExtra("groupId");
         if(groupId == null || groupId.isEmpty()){
             showToast("오류");
@@ -107,6 +115,7 @@ public class GroupSettingActivity extends AppCompatActivity {
     }
 
     void startDelete(){
+        progressDialog.show();
         loopMember();
     }
     void loopMember(){
@@ -116,8 +125,11 @@ public class GroupSettingActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
+                    long size = task.getResult().getChildrenCount();
+                    int i = 0;
                     for (DataSnapshot ds: task.getResult().getChildren()) {
-                        deleteHostParticipants(ds.getKey(), groupId);
+                        deleteHostParticipants(ds.getKey(), groupId, i, size);
+                        i++;
                     }
                     deleteSchedule();
                 }
@@ -125,12 +137,27 @@ public class GroupSettingActivity extends AppCompatActivity {
             }
         });
     }
-    void deleteHostParticipants(String uid, String groupId){
+    void deleteHostParticipants(String uid, String groupId, long index, long size){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(uid);
-        usersRef.child("hostingGroups").child(groupId).removeValue();
-        usersRef.child("participatingGroups").child(groupId).removeValue();
-        Log.d(TAG, "delete HostParticipants");
+        usersRef.child("hostingGroups").child(groupId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(index == size-1){
+                    hostingGroupDeleted = true;
+                    checkFinished();
+                }
+            }
+        });
+        usersRef.child("participatingGroups").child(groupId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(index == size-1){
+                    participatingGroupDeleted = true;
+                    checkFinished();
+                }
+            }
+        });
     }
 
     void deleteSchedule(){
@@ -142,7 +169,7 @@ public class GroupSettingActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     deleteGroup();
                 }
-                Log.d(TAG, "schedule delete");
+                scheduleDeleted = true;
             }
         });
     }
@@ -155,7 +182,7 @@ public class GroupSettingActivity extends AppCompatActivity {
                 if(task.isSuccessful()) {
                     deleteImage();
                 }
-                Log.d(TAG, "group delete");
+                groupDeleted = true;
             }
         });
     }
@@ -165,14 +192,14 @@ public class GroupSettingActivity extends AppCompatActivity {
         storageRef.child("groupImages").child(groupId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                showToast("해체되었습니다");
-                Log.d(TAG, "image delete");
-                finish();
+                imageDeleted = true;
+                checkFinished();
             }
         });
     }
 
     void deleteMember(){
+        progressDialog.show();
         DatabaseReference memberRef = FirebaseDatabase.getInstance().getReference().child("groups").
                 child(groupId).child("members").child(FirebaseAuth.getInstance().getUid());
         DatabaseReference participateRef = FirebaseDatabase.getInstance().getReference().child("users")
@@ -185,6 +212,8 @@ public class GroupSettingActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             showToast("탈퇴 완료");
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
                             finish();
                         }
                     });
@@ -327,5 +356,15 @@ public class GroupSettingActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
+
+    void checkFinished(){
+        if(groupDeleted && imageDeleted && scheduleDeleted && hostingGroupDeleted && participatingGroupDeleted){
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            showToast("해체되었습니다");
+            finish();
+        }
     }
 }

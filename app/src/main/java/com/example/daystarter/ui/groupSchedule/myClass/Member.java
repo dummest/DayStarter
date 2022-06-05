@@ -9,6 +9,7 @@ public class Member {
     public Member(String name, String status, String email, String uid){
         this.name = name;
         this.status = status;
+        this.email = email;
         this.uid = uid;
     }
 
