@@ -25,9 +25,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -40,8 +44,8 @@ public class SignUpActivity extends AppCompatActivity {
     Uri uri;
     FirebaseStorage storage;
     DatabaseReference dbRef;
-    String imageUrl;
     ProgressDialog progressDialog;
+    String email, password, passwordCheck, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,66 +77,107 @@ public class SignUpActivity extends AppCompatActivity {
     };
 
     private void signUp() {
-        progressDialog.show();
-        String name = binding.nameEditText.getText().toString().trim();
+        name = binding.nameEditText.getText().toString().trim();
         //이름 칸에 2자 이상 기입하지 않을 시
         if(name.length() < 2){
             showToast("이름을 2자 이상 입력해 주세요");
             return;
         }
 
-        String email = String.valueOf(((EditText)findViewById(R.id.sign_up_email_edit_text)).getText());
-        String password = String.valueOf(((EditText)findViewById(R.id.sign_up_password_edit_text)).getText());
-        String passwordCheck = String.valueOf(((EditText)findViewById(R.id.sign_up_password_check_Edit_Text)).getText());
+        email = String.valueOf(((EditText)findViewById(R.id.sign_up_email_edit_text)).getText());
+        password = String.valueOf(((EditText)findViewById(R.id.sign_up_password_edit_text)).getText());
+        passwordCheck = String.valueOf(((EditText)findViewById(R.id.sign_up_password_check_Edit_Text)).getText());
         if(password.equals(passwordCheck)) {
+            progressDialog.show();
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     //성공시
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        //프로필 사진 있을 시 uid 와 같은 이름으로 사진을 위치 profileImage/에 업로드 해줌
-
-                            //storage = 파이어베이스 스토리지 참조 객체
-                            storage = FirebaseStorage.getInstance();
-                            StorageReference storageRef = storage.getReference();
-                            //파이어베이스 스토리지 안의
-                            storageRef.child("profileImages").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                    final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
-                                    while(!uriTask.isComplete()){}
-
-                                    imageUrl = uriTask.getResult().toString();
-                                    Log.d(TAG, "onComplete: " + imageUrl);
-
-                                    User userData = new User(user.getUid(), user.getEmail(), name, imageUrl);
-                                    dbRef = FirebaseDatabase.getInstance().getReference();
-                                    dbRef.child("users").child(user.getUid()).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            progressDialog.dismiss();
-                                            showToast("회원가입 완료.");
-                                            finish();
-                                        }
-                                    });
-                                }
-                            });
-
-                        /*
-                        User userData = new User(user.getUid(), user.getEmail(), name, null);
-                        dbRef = FirebaseDatabase.getInstance().getReference();
-                        dbRef.child("users").child(user.getUid()).setValue(userData);
-                         */
+                        uploadImage(user);
                     }
                     else {
-                        showToast(task.getException().toString());
+                        progressDialog.dismiss();
+                        try {
+                            throw task.getException();
+                        } catch(FirebaseAuthWeakPasswordException e) {
+                            showToast("weekPassword");
+                        } catch(FirebaseAuthInvalidCredentialsException e) {
+                            showToast("invalidCredential");
+                        } catch(FirebaseAuthUserCollisionException e) {
+                            showToast("usercollisionexception");
+                        } catch (FirebaseNoSignedInUserException e){
+                            showToast("noSignedInUserException");
+                        }
+                        catch(Exception e) {
+                            showToast(e.getMessage());
+                        }
                     }
                 }
             });
         }else
             showToast("비밀번호가 일치하지 않습니다");
     }
+
+    void uploadImage(FirebaseUser user){
+        storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        if(uri != null) {
+            storageRef.child("profileImages").child(user.getUid()).putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final Task<Uri> uriTask = task.getResult().getStorage().getDownloadUrl();
+                        while (!uriTask.isComplete()) {
+                        }
+                        String imageUrl = uriTask.getResult().toString();
+                        makeUserDB(user, imageUrl);
+                    } else {
+                        progressDialog.dismiss();
+                        try {
+                            throw task.getException();
+                        } catch (Exception e) {
+                            showToast(e.getMessage());
+                        }
+                    }
+                }
+            });
+        }
+        else{
+            makeUserDB(user, null);
+        }
+    }
+
+    void makeUserDB(FirebaseUser user, String imageUrl){
+        User userData;
+        if(imageUrl != null)
+            userData = new User(user.getUid(), user.getEmail(), name, imageUrl);
+        else
+            userData = new User(user.getUid(), user.getEmail(), name, null);
+        dbRef = FirebaseDatabase.getInstance().getReference();
+
+        dbRef.child("users").child(user.getUid()).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    progressDialog.dismiss();
+                    showToast("회원가입 완료.");
+                    finish();
+                }
+                else{
+                    progressDialog.dismiss();
+                    try {
+                        throw task.getException();
+                    }
+                    catch(Exception e) {
+                        showToast(e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
 
     void setResultLauncher(){
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
