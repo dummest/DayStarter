@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.daystarter.databinding.ActivitySignUpBinding;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -40,6 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseStorage storage;
     DatabaseReference dbRef;
     String imageUrl;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
         binding.profileImageView.setOnClickListener(onClickListener);
 
         setResultLauncher();
+        progressDialog = new ProgressDialog(this);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -70,6 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
     };
 
     private void signUp() {
+        progressDialog.show();
         String name = binding.nameEditText.getText().toString().trim();
         //이름 칸에 2자 이상 기입하지 않을 시
         if(name.length() < 2){
@@ -104,10 +108,14 @@ public class SignUpActivity extends AppCompatActivity {
 
                                     User userData = new User(user.getUid(), user.getEmail(), name, imageUrl);
                                     dbRef = FirebaseDatabase.getInstance().getReference();
-                                    dbRef.child("users").child(user.getUid()).setValue(userData);
-
-                                    showToast("회원가입 완료.");
-                                    finish();
+                                    dbRef.child("users").child(user.getUid()).setValue(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            progressDialog.dismiss();
+                                            showToast("회원가입 완료.");
+                                            finish();
+                                        }
+                                    });
                                 }
                             });
 
