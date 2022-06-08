@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -102,13 +103,16 @@ public class SignUpActivity extends AppCompatActivity {
                         try {
                             throw task.getException();
                         } catch(FirebaseAuthWeakPasswordException e) {
-                            showToast("weekPassword");
+                            showToast("비밀번호가 너무 짧습니다(최소 8자 이상)");
                         } catch(FirebaseAuthInvalidCredentialsException e) {
                             showToast("invalidCredential");
                         } catch(FirebaseAuthUserCollisionException e) {
-                            showToast("usercollisionexception");
+                            showToast("userCollisionException");
                         } catch (FirebaseNoSignedInUserException e){
                             showToast("noSignedInUserException");
+                        }
+                        catch (FirebaseAuthEmailException e){
+                            showToast("잘못된 이메일 형식입니다");
                         }
                         catch(Exception e) {
                             showToast(e.getMessage());
