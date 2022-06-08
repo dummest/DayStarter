@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.daystarter.ui.EditUserInfoActivity;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
 import com.example.daystarter.ui.home.OnBackPressedListener;
 import com.example.daystarter.ui.setting.TimeUtil;
@@ -53,6 +55,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        headerView.findViewById(R.id.user_profile_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, EditUserInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
         updateUI();
     }
 
@@ -110,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             signOut();
         }
+        updateUI();
     }
 
     @Override
@@ -174,23 +187,6 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
     }
 
-    private Bitmap getImageBitmap(String url) {
-        Bitmap bm = null;
-        try {
-            Log.d(TAG, "getImageBitmap: " + url);
-            URL aURL = new URL(url);
-            URLConnection conn = aURL.openConnection();
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            bm = BitmapFactory.decodeStream(bis);
-            bis.close();
-            is.close();
-        } catch (IOException e) {
-            Log.e(TAG, "Error getting bitmap", e);
-        }
-        return bm;
-    }
     public void setOnBackPressedListener(OnBackPressedListener listener){
         this.listener =listener;
     }

@@ -22,6 +22,9 @@
         android:theme="@style/Theme.DayStarter"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.EditUserInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.groupSchedule.MemberListActivity"
             android:exported="false" />
         <activity
@@ -91,7 +94,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!--
