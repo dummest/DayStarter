@@ -22,8 +22,10 @@ import com.example.daystarter.databinding.ActivityMemberListBinding;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
+import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,12 +41,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MemberListActivity extends AppCompatActivity {
     ActivityMemberListBinding binding;
     String groupId;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMemberListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         groupId = getIntent().getStringExtra("groupId");
+        progressDialog = new ProgressDialog(this);
 
         MemberListRecyclerViewAdapter adapter = new MemberListRecyclerViewAdapter();
         binding.memberRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
@@ -71,15 +75,18 @@ public class MemberListActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
                     .child("groups").child(groupId).child("members").child(memberArrayList.get(position).uid).child("status");
+
             switch (memberArrayList.get(position).status){
                 case "host":
                     holder.statusSwitch.setVisibility(View.GONE);
+                    holder.banButton.setVisibility(View.GONE);
                 case "write":
                     holder.statusSwitch.setText("읽기");
                     holder.statusSwitch.setChecked(false);
                 case "read":
                     holder.statusSwitch.setText("쓰기");
                     holder.statusSwitch.setChecked(true);
+
                     if(!memberArrayList.get(position).status.equals("host")) {
                         holder.statusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
@@ -88,6 +95,21 @@ public class MemberListActivity extends AppCompatActivity {
                                     dbRef.setValue("write");
                                 else
                                     dbRef.setValue("read");
+                            }
+                        });
+                        holder.banButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                progressDialog.show();
+                                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups")
+                                        .child(groupId).child("members").child(memberArrayList.get(holder.getAdapterPosition()).uid);
+                                while (dbRef.removeValue().isComplete()){}
+
+                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users")
+                                        .child(memberArrayList.get(holder.getAdapterPosition()).uid);
+                                while(userRef.child("participatingGroups").child(groupId).removeValue().isComplete()){}
+                                progressDialog.dismiss();
+                                loadMemberList();
                             }
                         });
                     }
@@ -167,12 +189,14 @@ public class MemberListActivity extends AppCompatActivity {
         public TextView nameTextView;
         public TextView emailTextView;
         public SwitchMaterial statusSwitch;
+        public MaterialButton banButton;
         public MemberViewHolder(@NonNull View itemView) {
             super(itemView);
             profileImageView = itemView.findViewById(R.id.profile_image_view);
             nameTextView = itemView.findViewById(R.id.name_text_view);
             emailTextView = itemView.findViewById(R.id.email_text_view);
             statusSwitch = itemView.findViewById(R.id.status_switch);
+            banButton = itemView.findViewById(R.id.ban_button);
         }
     }
 }
