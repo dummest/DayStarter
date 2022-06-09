@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:gravity="center_vertical"
         android:orientation="vertical">
         <TextView
@@ -36,22 +36,19 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="7"
+        android:layout_weight="8"
         android:gravity="center">
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/status_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="권한"
-            />
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/ban_button"
-            android:text="강퇴"
-            android:textColor="@color/red"
-            android:backgroundTint="?android:attr/statusBarColor"
+            android:id="@+id/approve_button"
+            android:text="승인"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:backgroundTint="?android:attr/statusBarColor"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/denial_button"
+            android:text="거절"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?android:attr/statusBarColor"/>
     </LinearLayout>
 </LinearLayout>

@@ -93,6 +93,7 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.deleteGroupLayout.setVisibility(View.VISIBLE);
         binding.editInfoLayout.setVisibility(View.VISIBLE);
         binding.initialStatusLayout.setVisibility(View.VISIBLE);
+        binding.joinLayout.setVisibility(View.VISIBLE);
         loadInitialStatus();
 
 
@@ -354,6 +355,15 @@ public class GroupSettingActivity extends AppCompatActivity {
                             }
                         });
                 builder.show();
+            }
+        });
+
+        binding.joinLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupSettingActivity.this, ApplicantsActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
             }
         });
     }

@@ -22,6 +22,9 @@
         android:theme="@style/Theme.DayStarter"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.groupSchedule.ApplicantsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.EditUserInfoActivity"
             android:exported="false" />
         <activity

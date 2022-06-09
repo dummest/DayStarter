@@ -13,6 +13,12 @@ public class Member {
         this.uid = uid;
     }
 
+    public Member(String name, String email, String uid){
+        this.name = name;
+        this.email = email;
+        this.uid = uid;
+    }
+
     public Member(){
     }
 }
