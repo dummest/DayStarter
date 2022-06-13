@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.DayStarter" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#9FA8DA</item>
+        <item name="colorPrimary">@color/smoky_blue</item>
         <item name="colorPrimaryVariant">#FF8A80</item>
         <item name="colorOnPrimary">@color/black</item>
 
