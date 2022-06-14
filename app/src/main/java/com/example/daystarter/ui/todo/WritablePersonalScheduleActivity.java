@@ -54,8 +54,6 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
         setBeforeDate(beforeCalendar);
         setAfterDate(afterCalendar);
         binding.memoEditText.setText(intent.getStringExtra("memo"));
-        binding.locationEditText.setText(intent.getStringExtra("address"));
-        binding.attachFileTextView.setText(intent.getStringExtra("imgPath"));
     }
 
     public void setBeforeDate(Calendar calendar) {
@@ -126,8 +124,8 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                     beforeCalendar.getTimeInMillis(),
                     afterCalendar.getTimeInMillis(),
                     binding.memoEditText.getText().toString(),
-                    binding.locationEditText.getText().toString(),
-                    binding.attachFileTextView.getText().toString());
+                    null,
+                    null);
 
             if(data.getScheduleId() == -1) //id로 편집인지 생성인지 판단
                 saveNewSchedule(data);
