@@ -4,11 +4,19 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +30,7 @@ import com.example.daystarter.R;
 import com.example.daystarter.adapter.ScheduleViewHolder;
 import com.example.daystarter.databinding.ActivityGroupBinding;
 import com.example.daystarter.databinding.ActivityWritingGroupScheduleBinding;
+import com.example.daystarter.myClass.PersonalScheduleDBHelper;
 import com.example.daystarter.ui.groupSchedule.adapter.GroupRecyclerViewAdapter;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
@@ -34,10 +43,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
+import org.threeten.bp.DayOfWeek;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +65,7 @@ public class GroupActivity extends AppCompatActivity {
     ActivityGroupBinding binding;
     String groupId;
     GroupScheduleRecyclerViewAdapter adapter = new GroupScheduleRecyclerViewAdapter();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +75,6 @@ public class GroupActivity extends AppCompatActivity {
         binding.scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         binding.scheduleRecyclerView.setAdapter(adapter);
         validation();
-        init();
-
     }
 
     @Override
@@ -79,10 +93,16 @@ public class GroupActivity extends AppCompatActivity {
                 if(!task.getResult().exists()){
                     finish();
                 }
+                init();
             }
         });
     }
     private void init(){
+        binding.mcvViewGroup.calendar.addDecorators(
+                new SundayDecorator(),
+                new SaturdayDecorator(),
+                new TodayDecorator(),
+                new DaySelector(this));
         binding.groupScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,6 +250,70 @@ public class GroupActivity extends AppCompatActivity {
             super(itemView);
             mainTextView = itemView.findViewById(R.id.main_text_view);
             subTextView = itemView.findViewById(R.id.sub_text_view);
+        }
+    }
+
+    private static class DaySelector implements DayViewDecorator {
+        //selector decorator
+        private final Drawable drawable;
+
+        public DaySelector(Context context) {
+            drawable = ContextCompat.getDrawable(context, R.drawable.mcv_selector);
+        }
+
+        // true를 리턴 시 모든 요일에 내가 설정한 드로어블이 적용된다
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return true;
+        }
+
+        // 일자 선택 시 내가 정의한 드로어블이 적용되도록 한다
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.setSelectionDrawable(drawable);
+//            view.addSpan(new StyleSpan(Typeface.BOLD));   // 달력 안의 모든 숫자들이 볼드 처리됨
+        }
+    }
+
+    private class SaturdayDecorator implements DayViewDecorator{
+        //saturday decorator(make text blue)
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            int saturday = day.getDate().with(DayOfWeek.SATURDAY).getDayOfMonth();
+            return day.getDay() == saturday;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new ForegroundColorSpan(getResources().getColor(R.color.blue, GroupActivity.this.getTheme())));
+        }
+    }
+
+    private class SundayDecorator implements DayViewDecorator{
+        //sunday decorator(make text red)
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            int sunday = day.getDate().with(DayOfWeek.SUNDAY).getDayOfMonth();
+            return day.getDay() == sunday;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new ForegroundColorSpan(getResources().getColor(R.color.red, GroupActivity.this.getTheme())));
+        }
+    }
+
+    private class TodayDecorator implements DayViewDecorator{
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return day.equals(CalendarDay.today());
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new ForegroundColorSpan(getResources().getColor(R.color.green, GroupActivity.this.getTheme())));
+            view.addSpan(new StyleSpan(Typeface.BOLD));
+            view.addSpan(new UnderlineSpan());
         }
     }
 }
