@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/primary_round_layout"
+                android:background="?android:attr/statusBarColor"
                 android:layout_marginBottom="@dimen/layout_margin">
                 <EditText
                     android:id="@+id/titleEditText"
@@ -127,50 +127,7 @@
                 android:layout_marginBottom="@dimen/layout_margin"
                 />
 
-            <!-- location Group -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="6"
-                android:padding="10dp"
-                android:paddingHorizontal="10dp"
-                android:background="@drawable/primary_round_layout"
-                android:layout_marginBottom="@dimen/layout_margin"
-                >
-                <EditText
-                    android:id="@+id/location_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="장소"
-                    android:layout_weight="1"
-                    />
-                <ImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/attach_file_layout"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/primary_round_layout"
-                android:padding="10dp"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/outline_attach_file_24"
-                    />
-                <TextView
-                    android:id="@+id/attach_file_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:hint="이미지 첨부"
-                    />
-            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
     <LinearLayout
