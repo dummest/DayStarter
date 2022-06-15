@@ -62,9 +62,11 @@ import butterknife.ButterKnife;
 import kotlin.jvm.internal.Intrinsics;
 
 public class HomeFragment extends Fragment implements  OnBackPressedListener{
-    @BindView(R.id.iv_weather)ImageView iv_weather;
-    @BindView(R.id.tv_temp)TextView tv_temp;
-    @BindView(R.id.tv_description)TextView tv_description;
+    @BindView(R.id.iv_weather)ImageView home_weather;
+    @BindView(R.id.tv_temp)TextView home_temp;
+    @BindView(R.id.tv_description)TextView home_description;
+    @BindView(R.id.weather_humidity)TextView home_humidity;
+    @BindView(R.id.weather_wind)TextView home_wind;
     @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
     @BindView(R.id.home_schedule_recycler_view) RecyclerView homeScheduleRecyclerView;
 
@@ -73,8 +75,6 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     NetworkTask networkTask = null;
     Context context;
-    private long back_time = 0;
-    private long Finish_back_time=2000;
     MainActivity mainActivity;
     @Nullable
     @Override
@@ -87,9 +87,6 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         newAdapter = new HomeNewAdapter(items,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(newAdapter);
-        //tv_name = (TextView) v.findViewById(R.id.tv_name);
-        //tv_country = (TextView) v.findViewById(R.id.tv_country);
-        //tv_main = (TextView) v.findViewById(R.id.tv_main);
         mainActivity = (MainActivity) getActivity();
         requestNetwork();
         return v;
@@ -194,13 +191,12 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         //tv_name.setText(model.getName());
         //tv_country.setText(model.getCountry());
         Glide.with(this).load(model.getIcon())  //Glide 라이브러리를 이용하여 ImageView 에 url 로 이미지 지정
-                .into(iv_weather);
-        tv_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
+                .into(home_weather);
+        home_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
         //tv_main.setText(model.getMain());
-        tv_description.setText(model.getDescription());
-        //tv_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
-        //tv_cloud.setText(doubleToStrFormat(2, model.getClouds()) + " %");
-        //tv_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
+        home_description.setText(model.getDescription());
+        home_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
+        home_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
     }
 
 
@@ -384,19 +380,8 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
     @Override
     public void onBackPressed() {
         showDialog();
-        /*
-        if(System.currentTimeMillis() > back_time +2000){
-            back_time= System.currentTimeMillis();
-            Toast.makeText(getActivity(), "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
-        }
-        if(System.currentTimeMillis() <=back_time +2000){
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().remove(this).commit();
-            fragmentManager.popBackStack();
-        }
-
-         */
     }
+
     public void showDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("종료");

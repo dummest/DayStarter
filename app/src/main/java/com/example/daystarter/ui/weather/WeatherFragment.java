@@ -94,7 +94,6 @@ public class WeatherFragment extends Fragment {
             lat = location.getLatitude();
             lng = location.getLongitude();
             Log.d("lng", "lng: "+lng);
-            Toast.makeText(getActivity(), "위도 경도"+lng+lat, Toast.LENGTH_SHORT).show();
         }
         DayWeather();
         getLocation();
@@ -128,7 +127,6 @@ public class WeatherFragment extends Fragment {
         //위치 정보 권한
         if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
-            Log.d("권한요청", "권한: ");
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
             MyLocation();
         }
