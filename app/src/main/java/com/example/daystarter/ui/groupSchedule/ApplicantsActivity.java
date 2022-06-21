@@ -57,16 +57,13 @@ public class ApplicantsActivity extends AppCompatActivity {
     void setAutoApproveSwitch(){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups").child(groupId)
                 .child("autoApprove");
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    boolean autoApprove = snapshot.getValue(boolean.class);
-                    binding.autoApproveSwitch.setChecked(autoApprove);
-            }
 
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    binding.autoApproveSwitch.setChecked(task.getResult().getValue(boolean.class));
+                }
             }
         });
 

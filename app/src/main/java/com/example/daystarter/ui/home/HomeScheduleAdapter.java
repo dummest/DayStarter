@@ -129,8 +129,8 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
                     for(DataSnapshot ds : task.getResult().getChildren()){
                         GroupInfo info = ds.getValue(GroupInfo.class);
                         groupIdArrayList.add(info.groupId);
-                        loadTodaySchedules();
                     }
+                    loadTodaySchedules();
                 }
             }
         });
@@ -138,6 +138,7 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
 
     public void loadTodaySchedules(){
         for(int i = 0; i < groupIdArrayList.size(); i++){
+            Log.d(TAG, "loadTodaySchedules: " + groupIdArrayList.size());
             final int index = i;
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules")
                     .child(groupIdArrayList.get(i));

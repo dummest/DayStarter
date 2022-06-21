@@ -178,7 +178,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
                                 if(task.isSuccessful()) {
                                     Member member = task.getResult().getValue(Member.class);
-                                    if(member.status.equals("host") || member.uid == FirebaseAuth.getInstance().getUid()){
+                                    if(member.status.equals("host") || member.uid.equals(FirebaseAuth.getInstance().getUid())){
                                         deleteSchedule();
                                     }
                                     else{
