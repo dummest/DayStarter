@@ -228,6 +228,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         }
 
         void loadComments(){
+            keyArrayList.clear();
             commentArrayList.clear();
             Log.d(TAG, "loadComments: start");
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("schedules").child(groupId).child(scheduleKey).child("comments");
@@ -259,7 +260,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
             Comment comment = commentArrayList.get(position);
-            holder.key = keyArrayList.get(position);
+            holder.key = keyArrayList.get(holder.getAdapterPosition());
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups")
                     .child(groupId).child("members").child(comment.writerUid);
             dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
