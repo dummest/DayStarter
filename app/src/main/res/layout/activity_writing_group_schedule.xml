@@ -8,105 +8,125 @@
     tools:context=".ui.groupSchedule.WritingGroupScheduleActivity">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <EditText
-                android:id="@+id/title_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="제목"
-                />
+            android:orientation="vertical"
+            >
+            <!-- Top Group -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="5dp"
-                android:padding="5dp">
+                android:background="?android:attr/statusBarColor"
+                android:layout_marginBottom="@dimen/layout_margin">
+                <EditText
+                    android:id="@+id/title_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:hint="제목"
+                    android:layout_margin="10dp"
+                    />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="20dp"
-                    android:weightSum="20"
-                    >
-                    <TextView
+                    android:orientation="vertical"
+                    android:layout_margin="5dp"
+                    android:padding="5dp">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:layout_gravity="center"
-                        android:gravity="start"
-                        android:textSize="20sp"
-                        android:text ="시작"
-                        />
-                    <TextView
-                        android:text="Date"
-                        android:id="@+id/before_date_text_view"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp"
+                        android:weightSum="20"
+                        >
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:layout_gravity="center"
+                            android:gravity="start"
+                            android:textSize="20sp"
+                            android:text ="시작"
+                            />
+                        <TextView
+                            android:text="Date"
+                            android:id="@+id/before_date_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:layout_margin="3dp"
+                            android:textSize="20sp"
+                            android:gravity="end"
+                            />
+                        <TextView
+                            android:text="Time"
+                            android:id="@+id/before_time_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="7"
+                            android:layout_margin="3dp"
+                            android:textSize="20sp"
+                            android:gravity="end"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="5"
-                        android:layout_margin="3dp"
-                        android:textSize="20sp"
-                        android:gravity="end"
-                        />
-                    <TextView
-                        android:text="Time"
-                        android:id="@+id/before_time_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="7"
-                        android:layout_margin="3dp"
-                        android:textSize="20sp"
-                        android:gravity="end"
-                        />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="20dp"
-                    android:weightSum="20">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:layout_gravity="center"
-                        android:gravity="start"
-                        android:text="종료"
-                        android:textSize="20sp"
-                        />
-                    <TextView
-                        android:text="Date"
-                        android:id="@+id/after_date_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5"
-                        android:layout_margin="3dp"
-                        android:gravity="end"
-                        android:textSize="20sp"
-                        />
-                    <TextView
-                        android:text="Time"
-                        android:id="@+id/after_time_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="7"
-                        android:layout_margin="3dp"
-                        android:gravity="end"
-                        android:textSize="20sp"
-                        />
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp"
+                        android:weightSum="20">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:layout_gravity="center"
+                            android:gravity="start"
+                            android:text="종료"
+                            android:textSize="20sp"
+                            />
+                        <TextView
+                            android:text="Date"
+                            android:id="@+id/after_date_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:layout_margin="3dp"
+                            android:gravity="end"
+                            android:textSize="20sp"
+                            />
+                        <TextView
+                            android:text="Time"
+                            android:id="@+id/after_time_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="7"
+                            android:layout_margin="3dp"
+                            android:gravity="end"
+                            android:textSize="20sp"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- memo -->
             <EditText
                 android:id="@+id/contents_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                android:hint="내용"
-                android:lines="20"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:hint="내용을 입력해 주세요"
+                android:background="@drawable/primary_round_layout"
+                android:layout_marginBottom="@dimen/layout_margin"
                 />
+
+
         </LinearLayout>
     </ScrollView>
     <LinearLayout

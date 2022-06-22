@@ -53,7 +53,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
         afterCalendar.setTimeInMillis(intent.getLongExtra("afterLong", beforeCalendar.getTimeInMillis()));
         setBeforeDate(beforeCalendar);
         setAfterDate(afterCalendar);
-        binding.memoEditText.setText(intent.getStringExtra("memo"));
+        binding.contentsEditText.setText(intent.getStringExtra("memo"));
     }
 
     public void setBeforeDate(Calendar calendar) {
@@ -123,7 +123,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                     binding.titleEditText.getText().toString(),
                     beforeCalendar.getTimeInMillis(),
                     afterCalendar.getTimeInMillis(),
-                    binding.memoEditText.getText().toString(),
+                    binding.contentsEditText.getText().toString(),
                     null,
                     null);
 

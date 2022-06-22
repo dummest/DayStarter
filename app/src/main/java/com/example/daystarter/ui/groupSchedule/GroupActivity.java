@@ -75,6 +75,7 @@ public class GroupActivity extends AppCompatActivity {
         binding.scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         binding.scheduleRecyclerView.setAdapter(adapter);
         validation();
+        init();
     }
 
     @Override
@@ -93,7 +94,6 @@ public class GroupActivity extends AppCompatActivity {
                 if(!task.getResult().exists()){
                     finish();
                 }
-                init();
             }
         });
     }

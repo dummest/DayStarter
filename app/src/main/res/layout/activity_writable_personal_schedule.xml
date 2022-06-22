@@ -25,7 +25,7 @@
                 android:background="?android:attr/statusBarColor"
                 android:layout_marginBottom="@dimen/layout_margin">
                 <EditText
-                    android:id="@+id/titleEditText"
+                    android:id="@+id/title_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="40sp"
@@ -116,13 +116,13 @@
 
             <!-- memo -->
             <EditText
-                android:id="@+id/memo_edit_text"
+                android:id="@+id/contents_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textSize="20sp"
                 android:gravity="center"
-                android:hint="메모를 입력해 주세요"
+                android:hint="내용을 입력해 주세요"
                 android:background="@drawable/primary_round_layout"
                 android:layout_marginBottom="@dimen/layout_margin"
                 />
