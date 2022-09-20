@@ -5,6 +5,7 @@ public class User {
     public String email;
     public String name;
     public String profileImgPath;
+    public String pushToken;
 
     public User(String uid, String email, String name, String profileImgPath){
         this.uid = uid;

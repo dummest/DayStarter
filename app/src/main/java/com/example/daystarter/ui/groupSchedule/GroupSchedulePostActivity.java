@@ -23,6 +23,7 @@ import com.androidnetworking.model.Progress;
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupSchedulePostBinding;
+import com.example.daystarter.model.NotificationModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Comment;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
@@ -33,11 +34,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class GroupSchedulePostActivity extends AppCompatActivity {
     ActivityGroupSchedulePostBinding binding;
@@ -46,6 +57,9 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     CommentsRecyclerViewAdapter adapter;
     InputMethodManager imm;
     ProgressDialog progressDialog;
+    long finishCount;
+    long currentCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,13 +222,90 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     showToast("삭제되었습니다");
+                    sendGcm();
                 }
                 else{
                     showToast("삭제에 실패했습니다");
                 }
-                finish();
             }
         });
+    }
+
+    void sendGcm(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef.child("groups").child(groupId).child("members").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    finishCount = task.getResult().getChildrenCount();
+                    for (DataSnapshot ds : task.getResult().getChildren()) {
+                        Member member = ds.getValue(Member.class);
+                        String uid = member.uid;
+
+                        //자기자신에게 노티를 보내지는 않도록
+                        if (member.alarmSet && !uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference();
+                            tokenRef.child("users").child(uid).child("firebaseMessagingTokens").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "onComplete: " + task.getResult().getValue(String.class));
+                                        if(task.getResult().exists()) {
+                                            sendNotification(task.getResult().getValue(String.class));
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        else{
+                            checkCount();
+                        }
+                    }
+                }
+                else{
+                    Log.d(TAG, "onComplete: error");
+                }
+            }
+        });
+
+
+
+    }
+
+    void sendNotification(String token){
+        Gson gson = new Gson();
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.data.title = binding.startTimeTextView.getText().toString() + "의 일정이 삭제되었습니다";
+        notificationModel.data.body = "'" + binding.titleTextView.getText().toString() + "'";
+        notificationModel.to = token;
+        RequestBody requestBody = RequestBody.create(gson.toJson(notificationModel), MediaType.parse("application/json; charset=utf8"));
+
+        Request request =  new Request.Builder()
+                .header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, "onFailure: " + e.getMessage());
+                checkCount();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d(TAG, "onResponse: " + response.toString());
+                checkCount();
+            }
+        });
+    }
+    void checkCount(){
+        currentCount++;
+        if(currentCount == finishCount)
+            finish();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,8 @@
 <resources>
     <string name="web_client_id">618097949759-i770cqak2dat4d6h72qjfe004hjv73ga.apps.googleusercontent.com</string>
+    <string name="server_key">AAAAj-mCPD8:APA91bHU9GwNzLPXGiqVcZp0lOWqkIhnUVhpKskSTOJl9V1vErPzE-TGdl98wA7v5i8erip4usTurZ9GICOvOYEaT6KGGAAGEJY3xMvuSbDSQ87bO8Cp4JM2l6lGVkYboOFUUGf6KfmH</string>
+    <string name="default_notification_channel_id">day starter notification</string>
+    <string name="day_starter_group_notification_channel">DayStarterGroup</string>
 
     <string name="app_name">DayStarter</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
