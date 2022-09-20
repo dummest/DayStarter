@@ -298,8 +298,6 @@ public class WeatherFragment extends Fragment {
             return "맑음";
         else if(weather.equals("moderate rain"))
             return  "비";
-        else if(weather.equals("rain"))
-            return  "비";
         return "비";
     }
 

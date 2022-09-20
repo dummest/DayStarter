@@ -10,11 +10,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
-    <!--현재 위치값을 받기 위한 퍼미션-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -89,9 +88,6 @@
         <activity android:name=".ui.setting.setting" />
 
         <receiver android:name=".ui.alarm.broadcastreceiver.AlarmBroadcastReceiver" />
-        <receiver android:name=".ui.alarm.rock.RockReceiver"></receiver>
-
-        <service android:name=".ui.alarm.rock.ScreenService"></service>
 
         <service
             android:name=".ui.alarm.service.AlarmService"
@@ -101,11 +97,15 @@
         <service
             android:name=".ui.groupSchedule.service.GroupScheduleService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
+
+
         <!--
  Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
