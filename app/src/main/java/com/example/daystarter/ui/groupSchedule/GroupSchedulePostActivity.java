@@ -57,6 +57,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     CommentsRecyclerViewAdapter adapter;
     InputMethodManager imm;
     ProgressDialog progressDialog;
+    GroupScheduleModel post;
     long finishCount;
     long currentCount = 0;
 
@@ -104,7 +105,6 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
                     GroupScheduleModel post = task.getResult().getValue(GroupScheduleModel.class);
-
                     binding.titleTextView.setText(post.title);
                     binding.writingTimeTextView.setText(changeLongToSdf(post.writingTime));
                     binding.startTimeTextView.setText(changeLongToSdf(post.startTime));
@@ -112,6 +112,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                     binding.contentsTextView.setText(post.contents);
                     loadProfileImage(post.writerUid);
                     loadName(post.writerUid);
+                    GroupSchedulePostActivity.this.post = post;
                     progressDialog.dismiss();
                 }
                 else{
@@ -192,7 +193,8 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
                                 if(task.isSuccessful()) {
                                     Member member = task.getResult().getValue(Member.class);
-                                    if(member.status.equals("host") || member.uid.equals(FirebaseAuth.getInstance().getUid())){
+                                    if(member.status.equals("host") || member.uid.equals(post.writerUid)){
+                                        Log.d(TAG, "status " + member.status);
                                         deleteSchedule();
                                     }
                                     else{
