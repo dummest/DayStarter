@@ -17,9 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.alarm.alarmslist.AlarmRecyclerViewAdapter;
+import com.example.daystarter.ui.alarm.alarmslist.AlarmViewHolder;
+import com.example.daystarter.ui.alarm.alarmslist.AlarmsListViewModel;
 import com.example.daystarter.ui.alarm.data.Alarm;
 
 import butterknife.BindView;
@@ -38,10 +41,10 @@ public class UpdateAlarmFragment extends Fragment {
     @BindView(R.id.fragment_createalarm_checkSat) CheckBox sat;
     @BindView(R.id.fragment_createalarm_checkSun) CheckBox sun;
     @BindView(R.id.fragment_createalarm_recurring_options) LinearLayout recurringOptions;
-
     private CreateAlarmViewModel createAlarmViewModel;
     AlarmRecyclerViewAdapter alarmRecyclerViewAdapter;
     int notId = 0;
+    AlarmViewHolder alarmViewHolder = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +83,7 @@ public class UpdateAlarmFragment extends Fragment {
     }
 
     private void scheduleUpdateAlarm() {
+
         int alarmId=getId();
         Alarm alarm = new Alarm(
                 alarmId,

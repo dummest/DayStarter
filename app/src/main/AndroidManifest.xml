@@ -10,9 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <!--현재 위치값을 받기 위한 퍼미션-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+
 
     <application
         android:allowBackup="true"
@@ -87,6 +89,9 @@
         <activity android:name=".ui.setting.setting" />
 
         <receiver android:name=".ui.alarm.broadcastreceiver.AlarmBroadcastReceiver" />
+        <receiver android:name=".ui.alarm.rock.RockReceiver"></receiver>
+
+        <service android:name=".ui.alarm.rock.ScreenService"></service>
 
         <service
             android:name=".ui.alarm.service.AlarmService"

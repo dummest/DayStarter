@@ -248,7 +248,7 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
             return "맑음";
         else if(weather.equals("moderate rain"))
             return  "비";
-        return "";
+        return "비";
     }
 
 

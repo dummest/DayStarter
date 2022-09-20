@@ -1,6 +1,10 @@
 package com.example.daystarter.ui.alarm.createalarm;
 
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -19,6 +24,7 @@ import androidx.navigation.Navigation;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.alarm.data.Alarm;
+import com.example.daystarter.ui.alarm.service.AlarmService;
 
 import java.util.Random;
 
@@ -38,13 +44,13 @@ public class CreateAlarmFragment extends Fragment {
     @BindView(R.id.fragment_createalarm_checkSat) CheckBox sat;
     @BindView(R.id.fragment_createalarm_checkSun) CheckBox sun;
     @BindView(R.id.fragment_createalarm_recurring_options) LinearLayout recurringOptions;
+    @BindView(R.id.alarm_seekbar) SeekBar seekBar;
 
     private CreateAlarmViewModel createAlarmViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         createAlarmViewModel = new ViewModelProvider(this).get(CreateAlarmViewModel.class);
     }
 
@@ -74,6 +80,30 @@ public class CreateAlarmFragment extends Fragment {
             }
         });
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                Log.d("seekbar", String.format("onProgressChanged 값 변경 중 : progress [%d] fromUser [%b]", i, b));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d("seekbar", String.format("onProgressChanged 값 변경 시작 : progress [%d] ", seekBar.getProgress()));
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d("seekbar", String.format("onProgressChanged 값 변경 종료 : progress [%d] ", seekBar.getProgress()));
+                int Volumn =seekBar.getProgress();
+                Log.d("Volumn","volumn"+Volumn);
+                /*
+                Intent intent =new Intent(getContext(), AlarmService.class);
+                intent.putExtra("sound",Volumn);
+                startActivity(intent);
+                 */
+            }
+        });
+
         return view;
     }
 
@@ -100,4 +130,5 @@ public class CreateAlarmFragment extends Fragment {
 
         alarm.schedule(getContext());
     }
+
 }
