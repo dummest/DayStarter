@@ -35,9 +35,11 @@ public class GroupScheduleService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
-                .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingToken");
-        dbRef.setValue(s);
+        if(FirebaseAuth.getInstance() != null) {
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
+                    .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingToken");
+            dbRef.setValue(s);
+        }
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {

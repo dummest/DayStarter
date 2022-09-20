@@ -20,6 +20,7 @@ import com.google.firebase.auth.internal.zzx;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class IntroActivity extends AppCompatActivity {
     private static String TAG = "IntroActivity";
@@ -42,12 +43,8 @@ public class IntroActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             Intent intent;
                             if (task.getResult().exists()) {
-                                try {
-                                    throw task.getException();
-                                } catch (Exception e) {
-                                    Log.d(TAG, e.toString());
-                                }
                                 intent = new Intent(IntroActivity.this, MainActivity.class);
+                                getFirebaseMessagingToken();
                             }
                             else {
                                 intent = new Intent(IntroActivity.this, LoginActivity.class);
@@ -63,6 +60,33 @@ public class IntroActivity extends AppCompatActivity {
                 }
             }
         }, 1000);
+    }
+
+    void getFirebaseMessagingToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful())
+                    return;
+                validateFirebaseMessagingToken(task.getResult());
+            }
+        });
+    }
+
+    void validateFirebaseMessagingToken(String token){
+        Log.d(TAG, "validateFirebaseMessagingToken");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingToken");
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(!task.isSuccessful()){
+                    return;
+                }
+                dbRef.setValue(token);
+
+            }
+        });
     }
 
     @Override

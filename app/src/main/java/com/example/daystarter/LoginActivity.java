@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInUserWithEmail:success");
-                        getFirebaseMessagingToken();
+                        goMain();
                     } else {
                         Log.w(TAG, "signInUserWithEmail:failure");
                         showToast(task.getException().toString());
@@ -135,32 +135,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    void getFirebaseMessagingToken(){
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if(!task.isSuccessful())
-                    return;
-                validateFirebaseMessagingToken(task.getResult());
-            }
-        });
-    }
-
-    void validateFirebaseMessagingToken(String token){
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
-                .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingTokens");
-        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(!task.isSuccessful()){
-                    return;
-                }
-                dbRef.setValue(token);
-                goMain();
-            }
-        });
     }
 
 

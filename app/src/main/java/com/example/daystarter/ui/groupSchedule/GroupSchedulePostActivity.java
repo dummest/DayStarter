@@ -245,7 +245,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                         //자기자신에게 노티를 보내지는 않도록
                         if (member.alarmSet && !uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference();
-                            tokenRef.child("users").child(uid).child("firebaseMessagingTokens").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            tokenRef.child("users").child(uid).child("firebaseMessagingToken").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                                     if (task.isSuccessful()) {

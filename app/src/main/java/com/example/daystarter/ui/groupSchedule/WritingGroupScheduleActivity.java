@@ -216,10 +216,12 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
                         Member member = ds.getValue(Member.class);
                         String uid = member.uid;
 
+                        Log.d(TAG, "member: " + member.name);
                         //자기자신에게 노티를 보내지는 않도록
                         if (member.alarmSet && !uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            Log.d(TAG, "go");
                             DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference();
-                            tokenRef.child("users").child(uid).child("firebaseMessagingTokens").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            tokenRef.child("users").child(uid).child("firebaseMessagingToken").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                                     if (task.isSuccessful()) {
@@ -232,6 +234,7 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
                             });
                         }
                         else{
+                            Log.d(TAG, "can't go");
                             checkCount();
                         }
                     }
