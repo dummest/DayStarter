@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class GroupSettingActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if(task.isSuccessful()) {
                         Member member = task.getResult().getValue(Member.class);
+                        binding.alarmSwitch.setChecked(member.alarmSet);
+                        initAlarmSet(dbRef, member);
                         switch (member.status){
                             case "host":
                                 initHost();
@@ -87,6 +90,22 @@ public class GroupSettingActivity extends AppCompatActivity {
         }
     }
 
+    void initAlarmSet(DatabaseReference dbRef, Member member){
+        binding.alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(compoundButton.isChecked()){
+                    dbRef.child("alarmSet").setValue(true);
+                }
+                else{
+                    dbRef.child("alarmSet").setValue(false);
+                }
+
+            }
+        });
+        binding.alarmSwitch.setChecked(true);
+    }
+
     void initHost(){
         binding.memberListLayout.setVisibility(View.VISIBLE);
         binding.copyGroupIdLayout.setVisibility(View.VISIBLE);
@@ -94,6 +113,7 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.editInfoLayout.setVisibility(View.VISIBLE);
         binding.initialStatusLayout.setVisibility(View.VISIBLE);
         binding.joinLayout.setVisibility(View.VISIBLE);
+        binding.alarmSetLayout.setVisibility(View.VISIBLE);
         loadInitialStatus();
 
 
@@ -227,6 +247,7 @@ public class GroupSettingActivity extends AppCompatActivity {
         binding.copyGroupIdLayout.setVisibility(View.VISIBLE);
         binding.editInfoLayout.setVisibility(View.VISIBLE);
         binding.withdrawalLayout.setVisibility(View.VISIBLE);
+        binding.alarmSetLayout.setVisibility(View.VISIBLE);
     }
 
     private void showToast(String str){

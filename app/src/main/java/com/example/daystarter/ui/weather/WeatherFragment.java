@@ -295,7 +295,7 @@ public class WeatherFragment extends Fragment {
             return "맑음";
         else if(weather.equals("moderate rain"))
             return  "비";
-        return "";
+        return "비";
     }
 
     private void getLocation() {
@@ -303,7 +303,7 @@ public class WeatherFragment extends Fragment {
         //https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
         requestNetwork();
         // android-networking 위도 경도에 따라 지역 달라짐(현재는 서울)
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat="+lat+"&lon="+lng+"&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

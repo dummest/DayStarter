@@ -5,45 +5,32 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.daystarter.databinding.ActivityLoginBinding;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.Api;
+
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100;
@@ -58,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.loginButton.setOnClickListener(onClickListener);
         binding.moveToSignUpButton.setOnClickListener(onClickListener);
     }
-
+    
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -156,13 +143,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<String> task) {
                 if(!task.isSuccessful())
                     return;
-                addFirebaseMessagingToken(task.getResult());
+                validateFirebaseMessagingToken(task.getResult());
             }
         });
     }
 
-    void addFirebaseMessagingToken(String token){
-
+    void validateFirebaseMessagingToken(String token){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users")
                 .child(FirebaseAuth.getInstance().getUid()).child("firebaseMessagingTokens");
         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -171,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(!task.isSuccessful()){
                     return;
                 }
-                dbRef.child(token).setValue(token);
+                dbRef.setValue(token);
                 goMain();
             }
         });
