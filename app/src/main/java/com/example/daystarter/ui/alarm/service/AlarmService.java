@@ -1,6 +1,5 @@
 package com.example.daystarter.ui.alarm.service;
 
-import static com.example.daystarter.ui.alarm.application.App.CHANNEL_ID;
 import static com.example.daystarter.ui.alarm.broadcastreceiver.AlarmBroadcastReceiver.TITLE;
 
 import android.annotation.SuppressLint;
@@ -12,22 +11,18 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.daystarter.R;
 import com.example.daystarter.ui.alarm.activities.RingActivity;
-import com.example.daystarter.ui.alarm.rock.RockReceiver;
-import com.example.daystarter.ui.alarm.rock.ScreenService;
 
 public class AlarmService extends Service {
     private MediaPlayer mediaPlayer;
@@ -44,7 +39,7 @@ public class AlarmService extends Service {
     public void onCreate() {
         super.onCreate();
         powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        //mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "WAKELOCK");
 
         mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
@@ -77,8 +72,7 @@ public class AlarmService extends Service {
             //notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle(alarmTitle)
-                    .setContentText("Ring Ring .. Ring Ring")
-                    .setSmallIcon(R.drawable.ic_alarm_black_24dp)
+                    .setContentText("Ring Ring .. Ring Ring")                    .setSmallIcon(R.drawable.ic_alarm_black_24dp)
                     .setContentIntent(pendingIntent)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -92,6 +86,7 @@ public class AlarmService extends Service {
             long[] pattern = { 0, 100, 1000 };
             //진동
             vibrator.vibrate(pattern, 0);
+             startActivity(notificationIntent);
              startForeground(1, builder.build());
              /*
              Intent intent1 = new Intent(getApplicationContext(),ScreenService.class);
@@ -129,6 +124,7 @@ public class AlarmService extends Service {
     }
 
 
+    /*
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP :
@@ -142,4 +138,5 @@ public class AlarmService extends Service {
         }
         return false;
     }
+     */
 }
