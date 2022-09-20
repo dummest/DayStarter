@@ -68,6 +68,7 @@ public class WeatherFragment extends Fragment {
     WeatherDayAdapter weatherDayAdapter;
     LocationManager locationManager;
     ProgressDialog progressDialog;
+    Location location;
     private static final int REQUEST_CODE_LOCATION = 2;
     double lat = 0;
     double lng = 0;
@@ -89,11 +90,13 @@ public class WeatherFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(weatherAdapter);
         locationManager =(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Location location = MyLocation();
+        location =null;
+        location = MyLocation();
+
         if(location != null){
             lat = location.getLatitude();
             lng = location.getLongitude();
-            Log.d("lng", "lng: "+lng);
+            Log.d("lng", "lng: "+lng+"lat"+lat);
         }
         DayWeather();
         getLocation();
@@ -121,24 +124,24 @@ public class WeatherFragment extends Fragment {
         return v;
     }
     private Location MyLocation(){
-        Location MyLocation = null;
         String Fine_location=Manifest.permission.ACCESS_FINE_LOCATION;
         String Coarse_location= Manifest.permission.ACCESS_COARSE_LOCATION;
         //위치 정보 권한
         if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
-            MyLocation();
+            Log.d("get GPS", "Return MyLocation ");
         }
         else{
             String locationProvider=LocationManager.GPS_PROVIDER;
-            MyLocation= locationManager.getLastKnownLocation(locationProvider);
-            if(MyLocation != null){
-                double leg= MyLocation.getLongitude();
-                double lat = MyLocation.getLatitude();
+            location= locationManager.getLastKnownLocation(locationProvider);
+            if(location != null){
+                double leg= location.getLongitude();
+                double lat = location.getLatitude();
+                Log.d("Don't gps", "return gps ");
             }
         }
-        return MyLocation;
+        return location;
     }
 
 
@@ -363,7 +366,7 @@ public class WeatherFragment extends Fragment {
 
     private void DayWeather() {
         Log.d("DayWeather", "DayWeather: ");
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5683&lon=126.977&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -391,12 +394,13 @@ public class WeatherFragment extends Fragment {
                                 }
                                 Log.d("onResponse", "onResponse_addData: ");
                                 //현재시간
+
                                 weatherData.setTime(CurrentTime);
                                 //평균 온도
                                 weatherData.setTemp(Main.getDouble("temp"));
                                 weatherData.setDescription(Weather.getString("description"));
-                                weatherData.setMinTemp(Main.getDouble("temp_min"));
-                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
+                                //weatherData.setMinTemp(Main.getDouble("temp_min"));
+                                //weatherData.setMaxTemp(Main.getDouble("temp_max"));
 
                                 ArrayWeatherData.add(weatherData);
                             }

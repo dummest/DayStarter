@@ -69,7 +69,6 @@ public class setting extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
