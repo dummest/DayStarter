@@ -1,6 +1,7 @@
 package com.example.daystarter.myClass;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -87,6 +88,24 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM PersonalScheduleTBL WHERE scheduleId = ?", new Object[]{scheduleId});
         db.close();
+    }
+
+    public ScheduleData getSchedule(int id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM PersonalScheduleTBL WHERE scheduleId = ?", new String[]{Integer.toString(id)});
+        while (cursor.moveToNext()){
+            int scheduleId = cursor.getInt(0);
+            String title = cursor.getString(1);
+            long startTime = cursor.getLong(2);
+            long endTime = cursor.getLong(3);
+            String memo = cursor.getString(4);
+            String address = cursor.getString(5);
+            String imgPath = cursor.getString(6);
+
+            ScheduleData scheduleData = new ScheduleData(scheduleId, title, startTime, endTime, memo, address, imgPath);
+            return scheduleData;
+        }
+        return null;
     }
 
     public ArrayList<ScheduleData> getScheduleList(long time){

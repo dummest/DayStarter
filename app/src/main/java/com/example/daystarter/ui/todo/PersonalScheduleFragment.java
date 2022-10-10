@@ -141,12 +141,6 @@ public class PersonalScheduleFragment extends Fragment {
                 ScheduleData data = adapter.getItem(position);
                 Intent intent = new Intent(context, WritablePersonalScheduleActivity.class);
                 intent.putExtra("scheduleId", data.getScheduleId());
-                intent.putExtra("title", data.getTitle());
-                intent.putExtra("beforeLong", data.getStartTime());
-                intent.putExtra("afterLong", data.getEndTime());
-                intent.putExtra("memo", data.getMemo());
-                intent.putExtra("address", data.getAddress());
-                intent.putExtra("imgPath", data.getImgPath());
                 context.startActivity(intent);
             }
         });
