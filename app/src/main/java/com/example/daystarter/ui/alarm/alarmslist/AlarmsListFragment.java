@@ -158,10 +158,10 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
             }
         });
 
-        alarmRecyclerViewAdapter.setOnItemClickListener(new AlarmRecyclerViewAdapter.OnItemClickListener() {
+        alarmRecyclerViewAdapter.setOnItemLongClickListener(new AlarmRecyclerViewAdapter.OnItemLongClickListener() {
             @Override
-            public void onItemClick(View v, int position) {
-                //Navigation.findNavController(v).navigate(R.id.action_nav_alarm_to_updateAlarmFragment);
+            public void onItemLongClick(View view, int position) {
+                //Navigation.findNavController(view).navigate(R.id.action_nav_alarm_to_updateAlarmFragment);
                 Log.d("ItemClick","item클릭시");
             }
         });

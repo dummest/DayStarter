@@ -15,7 +15,7 @@
             android:id="@+id/fragment_createalarm_scheduleAlarmHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Schedule Alarm"
+            android:text="알람"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0.4"
-                android:text="Alarm Time"
+                android:text="시간"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/fragment_createalarm_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Alarm Title"
+            android:hint="제목"
             app:layout_constraintTop_toBottomOf="@+id/fragment_createalarm_timePickerLayout" />
 
         <CheckBox
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Recurring Alarm"
+            android:text="요일 반복"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_createalarm_title" />
 
@@ -72,45 +72,51 @@
                 android:id="@+id/fragment_createalarm_checkMon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mon" />
+                android:text="월" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkTue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tue" />
+                android:text="화" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkWed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wed" />
+                android:text="수" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkThu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thu" />
+                android:text="목" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkFri"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fri" />
+                android:text="금" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkSat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sat" />
+                android:text="토" />
 
             <CheckBox
                 android:id="@+id/fragment_createalarm_checkSun"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sun" />
+                android:text="일" />
 
         </LinearLayout>
+        <SeekBar
+            android:id="@+id/alarm_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_createalarm_recurring_options"
+            tools:ignore="MissingConstraints" />
 
         <Button
             android:id="@+id/fragment_createalarm_scheduleAlarm"

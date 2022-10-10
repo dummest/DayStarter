@@ -1,5 +1,6 @@
 package com.example.daystarter.ui.alarm.alarmslist;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -38,7 +39,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View view) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    itemClickListener.onItemClick(itemView, position);
+                    itemLongClickListener.onItemLongClick(itemView, position);
+                    Log.d("AlarmViewHolder", "itemLongClick ");
                 }
             }
         });
