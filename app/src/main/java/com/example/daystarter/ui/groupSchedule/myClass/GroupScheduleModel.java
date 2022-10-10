@@ -1,11 +1,5 @@
 package com.example.daystarter.ui.groupSchedule.myClass;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Calendar;
 
 public class GroupScheduleModel {
     public String key;

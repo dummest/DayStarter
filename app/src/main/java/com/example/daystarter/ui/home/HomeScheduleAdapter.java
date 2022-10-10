@@ -3,6 +3,7 @@ package com.example.daystarter.ui.home;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +13,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.myClass.PersonalScheduleDBHelper;
 import com.example.daystarter.myClass.ScheduleData;
 import com.example.daystarter.ui.groupSchedule.GroupActivity;
+import com.example.daystarter.ui.groupSchedule.GroupSchedulePostActivity;
+import com.example.daystarter.ui.groupSchedule.HostFragment;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.home.myClass.HomeSchedule;
+import com.example.daystarter.ui.todo.WritablePersonalScheduleActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +38,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapter.HomeScheduleViewHolder> {
     ArrayList<HomeSchedule> homeScheduleArrayList;
     ArrayList<String> groupIdArrayList;
     Calendar startTime, endTime;
     Context context;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM월 dd일");
     public HomeScheduleAdapter(Context context){
         this.context = context;
         homeScheduleArrayList = new ArrayList<>();
@@ -66,23 +73,59 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
 
     @Override
     public void onBindViewHolder(@NonNull HomeScheduleViewHolder holder, int position) {
-        holder.titleTextView.setText(homeScheduleArrayList.get(position).title);
-        holder.startTimeTextView.setText("시작: " + simpleDateFormat.format(homeScheduleArrayList.get(position).startTime));
-        holder.endTimeTextView.setText("종료: " + simpleDateFormat.format(homeScheduleArrayList.get(position).endTime));
-        if(homeScheduleArrayList.get(position).groupCode == null) {
-            holder.categoryTextView.setText("개인 스케줄");
+        HomeSchedule homeSchedule = homeScheduleArrayList.get(position);
+
+        holder.titleTextView.setText(homeSchedule.title);
+        String startString, endString;
+        //
+        if(dateFormat.format(homeSchedule.startTime).equals(dateFormat.format(homeSchedule.endTime))) {
+            startString = "시작: " + timeFormat.format(homeSchedule.startTime);
+            endString = "종료: " + timeFormat.format(homeSchedule.endTime);
         }
         else{
+            startString = "시작: " + dateFormat.format(homeSchedule.startTime) + " " + timeFormat.format(homeSchedule.startTime);
+            endString = "종료: " + dateFormat.format(homeSchedule.endTime) + " " + timeFormat.format(homeSchedule.endTime);
+        }
+        holder.startTimeTextView.setText(startString);
+        holder.endTimeTextView.setText(endString);
+
+
+        //그룹 스케줄이 아닐 경우
+        if(homeSchedule.groupCode == null) {
+            holder.categoryTextView.setText("개인 스케줄");
+        }
+        //그룹 스케줄일 경우
+        else{
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups")
-                    .child(homeScheduleArrayList.get(position).groupCode).child("groupName");
+                    .child(homeSchedule.groupCode);
             dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    String groupName = task.getResult().getValue(String.class);
-                    holder.categoryTextView.setText(groupName);
+                    Group group = task.getResult().getValue(Group.class);
+                    holder.categoryTextView.setText(group.groupName);
+
+                    Glide.with(holder.itemView.getContext()).load(group.imagePath).circleCrop().error(R.drawable.ic_outline_group_24)
+                            .into((holder).circleImageView);
                 }
             });
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                if(homeSchedule.groupCode == null){
+                    intent = new Intent(context, WritablePersonalScheduleActivity.class);
+                    intent.putExtra("scheduleId", Integer.parseInt(homeSchedule.scheduleId));
+                    Log.d(TAG, "onClick: " + homeSchedule.scheduleId);
+                }
+                else{
+                    intent = new Intent(context, GroupSchedulePostActivity.class);
+                    intent.putExtra("key", homeSchedule.scheduleId);
+                    intent.putExtra("groupId", homeSchedule.groupCode);
+                }
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -148,7 +191,7 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
                     if(task.isSuccessful()){
                         for(DataSnapshot ds: task.getResult().getChildren()){
                             GroupScheduleModel gsm = ds.getValue(GroupScheduleModel.class);
-                            if(gsm.startTime >= startTime.getTimeInMillis() && gsm.endTime < endTime.getTimeInMillis()){
+                            if(gsm.startTime < endTime.getTimeInMillis() && gsm.endTime >= startTime.getTimeInMillis()){
                                 homeScheduleArrayList.add(new HomeSchedule(gsm.title, gsm.startTime, gsm.endTime,
                                         "groupSchedule", groupIdArrayList.get(index), gsm.key));
                             }
@@ -163,12 +206,14 @@ public class HomeScheduleAdapter extends RecyclerView.Adapter<HomeScheduleAdapte
 
     public class HomeScheduleViewHolder extends RecyclerView.ViewHolder{
         TextView titleTextView, startTimeTextView, endTimeTextView, categoryTextView;
+        CircleImageView circleImageView;
         public HomeScheduleViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.title_text_view);
             startTimeTextView = itemView.findViewById(R.id.start_time_text_view);
             endTimeTextView = itemView.findViewById(R.id.end_time_text_view);
             categoryTextView = itemView.findViewById(R.id.category_text_view);
+            circleImageView = itemView.findViewById(R.id.group_image_view);
         }
     }
 

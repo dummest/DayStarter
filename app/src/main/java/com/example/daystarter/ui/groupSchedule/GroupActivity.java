@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,47 +20,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
-import com.example.daystarter.adapter.ScheduleViewHolder;
 import com.example.daystarter.databinding.ActivityGroupBinding;
-import com.example.daystarter.databinding.ActivityWritingGroupScheduleBinding;
-import com.example.daystarter.myClass.PersonalScheduleDBHelper;
-import com.example.daystarter.ui.groupSchedule.adapter.GroupRecyclerViewAdapter;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
-import com.example.daystarter.ui.todo.WritablePersonalScheduleActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.threeten.bp.DayOfWeek;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class GroupActivity extends AppCompatActivity {
-    SimpleDateFormat sdf = new SimpleDateFormat("MM월 dd일 HH:mm", Locale.getDefault());
+    SimpleDateFormat dateSdf = new SimpleDateFormat("MM월 dd일 ", Locale.getDefault());
+    SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     ActivityGroupBinding binding;
     String groupId;
     GroupScheduleRecyclerViewAdapter adapter = new GroupScheduleRecyclerViewAdapter();
@@ -127,20 +118,28 @@ public class GroupActivity extends AppCompatActivity {
         binding.mcvViewGroup.calendar.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                adapter.loadGroupScheduleList(date.getYear(), date.getMonth()-1, date.getDay());
+                dateChange(date);
             }
         });
         binding.settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), GroupSettingActivity.class);
+                Intent intent = new Intent(GroupActivity.this, GroupSettingActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
             }
         });
-        CalendarDay today = CalendarDay.today();
-        binding.mcvViewGroup.calendar.setSelectedDate(today);
-        adapter.loadGroupScheduleList(today.getYear(), today.getMonth()-1, today.getDay());
+
+        binding.searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupActivity.this, ScheduleSearchActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
+
+        dateChange(CalendarDay.today());
     }
 
     void goWrite(){
@@ -170,6 +169,12 @@ public class GroupActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    void dateChange(CalendarDay date){
+        binding.mcvViewGroup.dateTextView.setText(dateSdf.format(new GregorianCalendar(date.getYear(), date.getMonth()-1, date.getDay()).getTimeInMillis()));
+        adapter.loadGroupScheduleList(date.getYear(), date.getMonth()-1, date.getDay());
+        binding.mcvViewGroup.calendar.setSelectedDate(date);
+    }
+
     private void showToast(String str){
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
@@ -189,10 +194,17 @@ public class GroupActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull GroupScheduleViewHolder holder, int position) {
-            holder.mainTextView.setText(scheduleList.get(position).title);
-            String start = sdf.format(scheduleList.get(position).startTime);
-            String end = sdf.format(scheduleList.get(position).endTime);
-            holder.subTextView.setText(start + " ~ " + end);
+            GroupScheduleModel gsm = scheduleList.get(position);
+
+            holder.mainTextView.setText(gsm.title);
+            String startDate = dateSdf.format(gsm.startTime);
+            String endDate = dateSdf.format(gsm.endTime);
+            String startTime = timeSdf.format(gsm.startTime);
+            String endTime = timeSdf.format(gsm.endTime);
+            if(startDate.equals(endDate))
+                holder.subTextView.setText(startTime + " ~ " + endTime);
+            else
+                holder.subTextView.setText(startDate + startTime + " ~ " + endDate + endTime);
             //holder.subTextView.setText(scheduleList.get(position).);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -209,7 +221,8 @@ public class GroupActivity extends AppCompatActivity {
             Calendar endTime = Calendar.getInstance();
             startTime.set(year, month, day, 0, 0, 0);
             endTime.setTimeInMillis(startTime.getTimeInMillis());
-            endTime.add(Calendar.DAY_OF_MONTH, 1);
+            endTime.add(Calendar.HOUR_OF_DAY, 23);
+            endTime.add(Calendar.MINUTE, 59);
 
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference scheduleRef = dbRef.child("schedules").child(groupId);
@@ -219,7 +232,8 @@ public class GroupActivity extends AppCompatActivity {
                     scheduleList.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         GroupScheduleModel model = ds.getValue(GroupScheduleModel.class);
-                        if (model.startTime >= startTime.getTimeInMillis() && model.endTime < endTime.getTimeInMillis()) {
+
+                        if (model.startTime < endTime.getTimeInMillis() && model.endTime >= startTime.getTimeInMillis()) {
                             scheduleList.add(model);
                             Log.d(TAG, "add: " + model.title);
                         }

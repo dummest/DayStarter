@@ -4,13 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/mcv_view_group">
+    android:id="@+id/mcv_view_group"
+    android:orientation="vertical">
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:mcv_tileHeight="30dp"
         app:mcv_calendarMode="month"
         app:mcv_dateTextAppearance="?android:attr/textColor"
         app:mcv_headerTextAppearance="?android:attr/textColor"
+        />
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/gray"
         />
 </LinearLayout>

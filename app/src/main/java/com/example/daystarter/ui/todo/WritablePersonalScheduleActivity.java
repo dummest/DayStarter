@@ -48,12 +48,26 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
     public void setFirst(){
         Intent intent = getIntent();
         scheduleId = intent.getIntExtra("scheduleId", -1);
-        binding.titleEditText.setText(intent.getStringExtra("title"));
-        beforeCalendar.setTimeInMillis(intent.getLongExtra("beforeLong", Calendar.getInstance().getTimeInMillis()));
-        afterCalendar.setTimeInMillis(intent.getLongExtra("afterLong", beforeCalendar.getTimeInMillis()));
-        setBeforeDate(beforeCalendar);
-        setAfterDate(afterCalendar);
-        binding.contentsEditText.setText(intent.getStringExtra("memo"));
+        Log.d(TAG, "schedule id = " + scheduleId);
+
+        if(scheduleId == -1){
+            beforeCalendar.setTimeInMillis(intent.getLongExtra("beforeLong", Calendar.getInstance().getTimeInMillis()));
+            afterCalendar.setTimeInMillis(intent.getLongExtra("afterLong", beforeCalendar.getTimeInMillis()));
+            setBeforeDate(beforeCalendar);
+            setAfterDate(afterCalendar);
+        }
+        else{
+            PersonalScheduleDBHelper dbHelper = new PersonalScheduleDBHelper(this);
+            ScheduleData scheduleData = dbHelper.getSchedule(scheduleId);
+
+            binding.titleEditText.setText(scheduleData.getTitle());
+            beforeCalendar.setTimeInMillis(scheduleData.getStartTime());
+            afterCalendar.setTimeInMillis(scheduleData.getEndTime());
+            setBeforeDate(beforeCalendar);
+            setAfterDate(afterCalendar);
+            binding.contentsEditText.setText(scheduleData.getMemo());
+        }
+
     }
 
     public void setBeforeDate(Calendar calendar) {
