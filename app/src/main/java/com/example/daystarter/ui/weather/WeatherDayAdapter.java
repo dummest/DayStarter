@@ -1,5 +1,6 @@
 package com.example.daystarter.ui.weather;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,10 @@ import java.util.Locale;
 
 public class WeatherDayAdapter  extends RecyclerView.Adapter {
     ArrayList<weatherData> ArrayWeatherData;
-
-    public WeatherDayAdapter(ArrayList<weatherData> arrayWeatherData, FragmentActivity activity) {
+    Context context;
+    public WeatherDayAdapter(ArrayList<weatherData> arrayWeatherData, Context context) {
         this.ArrayWeatherData =arrayWeatherData;
-
+        this.context = context;
     }
 
     @NonNull
@@ -39,8 +40,8 @@ public class WeatherDayAdapter  extends RecyclerView.Adapter {
 
        wv.weather_hour.setText(weatherData.getTime());
        wv.weather_temp.setText(String.format(Locale.getDefault(), "%.0f°C", weatherData.temp));
-        //wv.weather_temp_max.setText(String.format(Locale.getDefault(),"%.0f°C",weatherData.maxTemp));
-        //wv.weather_temp_min.setText(String.format(Locale.getDefault(),"%.0f°C",weatherData.minTemp));
+        wv.weather_temp_max.setText(String.format(Locale.getDefault(),"%.0f°C",weatherData.maxTemp));
+        wv.weather_temp_min.setText(String.format(Locale.getDefault(),"%.0f°C",weatherData.minTemp));
         //weather을 가져와 적절한 아이콘 집어넣기
         if(weatherData.getDescription().equals("haze")){
             wv.weather_img.setImageResource(R.drawable.weatehr_rain);
@@ -91,8 +92,8 @@ public class WeatherDayAdapter  extends RecyclerView.Adapter {
             weather_CardView =itemView.findViewById(R.id.weather_cardview);
             weather_hour = itemView.findViewById(R.id.weather_hour);
             weather_temp = itemView.findViewById(R.id.weather_temp);
-            //weather_temp_max= itemView.findViewById(R.id.weather_temp_max);
-            //weather_temp_min= itemView.findViewById(R.id.weather_temp_min);
+            weather_temp_max= itemView.findViewById(R.id.weather_temp_max);
+            weather_temp_min= itemView.findViewById(R.id.weather_temp_min);
             weather_img = itemView.findViewById(R.id.weatherDay_img);
         }
     }

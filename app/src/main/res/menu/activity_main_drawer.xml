@@ -38,5 +38,9 @@
             android:id="@+id/nav_alarm"
             android:icon="@drawable/baseline_alarm_on_24"
             android:title="@string/menu_alarm" />
+        <item
+            android:id="@+id/nav_weather_country"
+            android:title="Weather_Country"
+            android:icon="@drawable/outline_wb_sunny_24"/>
     </group>
 </menu>

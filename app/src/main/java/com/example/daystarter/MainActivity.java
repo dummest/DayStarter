@@ -186,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(R.anim.view_come_from_down, R.anim.none);
     }
-
+    //뒤로가기 클릭시 종료 버튼 활성화
     public void setOnBackPressedListener(OnBackPressedListener listener){
-        this.listener =listener;
+        //this.listener =listener;
     }
 
     @Override
