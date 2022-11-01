@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
     @BindView(R.id.iv_weather)ImageView home_weather;
     @BindView(R.id.tv_temp)TextView home_temp;
     @BindView(R.id.tv_description)TextView home_description;
-    @BindView(R.id.weather_humidity)TextView home_humidity;
+    //@BindView(R.id.weather_humidity)TextView home_humidity;
     @BindView(R.id.weather_wind)TextView home_wind;
     @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
     @BindView(R.id.home_schedule_recycler_view) RecyclerView homeScheduleRecyclerView;
@@ -196,7 +196,7 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         //tv_main.setText(model.getMain());
         home_description.setText(model.getDescription());
         home_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
-        home_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
+        //home_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
     }
 
 

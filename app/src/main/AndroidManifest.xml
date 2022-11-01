@@ -74,6 +74,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.news.ItemActivty" />
+        <activity android:name=".ui.weather.country.WeatherAreaActivity"/>
         <activity
             android:name=".LoginActivity"
             android:exported="false"

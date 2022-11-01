@@ -2,6 +2,7 @@ package com.example.daystarter.ui.news;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ public class NewAdapter extends RecyclerView.Adapter {
     private ArrayList<NewData> data;
     Context context;
     View itemView;
-
+    String TAG = "new";
     public NewAdapter(ArrayList<NewData> items, Context context) {
         this.data = items;
         this.context = context;
@@ -29,6 +30,7 @@ public class NewAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder: ");
         itemView= LayoutInflater.from(parent.getContext()).inflate(R.layout.row_news,parent,false);
         VH vh= new VH(itemView);
         return vh;

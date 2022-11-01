@@ -24,13 +24,13 @@
             android:padding="2dp"
             android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/tv_desc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="This is description"
-                android:textSize="10sp"
-                android:padding="2dp"/>
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="This is description"
+            android:textSize="10sp"
+            android:padding="2dp"/>
 
         <TextView
             android:id="@+id/tv_date"

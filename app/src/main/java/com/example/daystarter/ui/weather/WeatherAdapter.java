@@ -1,5 +1,6 @@
 package com.example.daystarter.ui.weather;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,10 @@ import java.util.Locale;
 
 public class WeatherAdapter extends RecyclerView.Adapter{
     ArrayList<WeatherWeekData> ArrayData;
-
-    public WeatherAdapter(ArrayList<WeatherWeekData> data, FragmentActivity activity){
+    Context context;
+    public WeatherAdapter(ArrayList<WeatherWeekData> data, Context context){
         this.ArrayData = data;
+        this.context = context;
     }
 
     @NonNull
