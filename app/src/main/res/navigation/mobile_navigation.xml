@@ -43,6 +43,12 @@
         android:label="@string/menu_weather"
         tools:layout="@layout/fragment_weather" />
     <fragment
+        android:id="@+id/nav_weather_country"
+        android:name="com.example.daystarter.ui.weather.country.WeatherCountry"
+        android:label="Weather_Country"
+        tools:layout="@layout/fragment_weather_country"/>
+
+    <fragment
         android:id="@+id/nav_alarm"
         android:name="com.example.daystarter.ui.alarm.alarmslist.AlarmsListFragment"
         android:label="Alarm"
