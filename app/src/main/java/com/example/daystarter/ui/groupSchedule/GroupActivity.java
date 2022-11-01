@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupBinding;
+import com.example.daystarter.ui.groupSchedule.groupChat.GroupChatActivity;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -134,6 +135,15 @@ public class GroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this, ScheduleSearchActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
+
+        binding.chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupActivity.this, GroupChatActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
             }
