@@ -20,12 +20,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
+import com.example.daystarter.ui.groupSchedule.cacheDBHelper.UnreadDBHelper;
 import com.example.daystarter.ui.groupSchedule.myClass.Group;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupInfo;
 
 import com.example.daystarter.ui.weather.ProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
@@ -85,9 +87,18 @@ public class ParticipantsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            int pos = holder.getAdapterPosition();
             Glide.with(holder.itemView.getContext()).load(groupList.get(position).imagePath).circleCrop().error(R.drawable.ic_outline_group_24)
                     .into(((GroupViewHolder)holder).imageView);
             ((GroupViewHolder)holder).textView.setText(groupList.get(position).groupName);
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
+                    .child("groups").child(groupList.get(pos).groupId).child("members");
+            dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    ((ParticipantsFragment.GroupViewHolder) holder).memberCountTextView.setText(task.getResult().getChildrenCount() + "명");
+                }
+            });
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,6 +108,15 @@ public class ParticipantsFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            Group group = groupList.get(pos);
+            UnreadDBHelper unreadDBHelper = new UnreadDBHelper(getContext());
+            if(!unreadDBHelper.searchGroup(group.groupId))
+                unreadDBHelper.insertGroup(group.groupId);
+
+            int count = unreadDBHelper.getUnreadChatCount(group.groupId) + unreadDBHelper.getUnreadScheduleCount(group.groupId);
+
+            ((ParticipantsFragment.GroupViewHolder) holder).unreadCountTextView.setText(count + "");
         }
 
         @Override
@@ -150,11 +170,15 @@ public class ParticipantsFragment extends Fragment {
 
     private class GroupViewHolder extends RecyclerView.ViewHolder{
         public ImageView imageView;
-        public TextView textView;
+        public TextView textView, memberCountTextView, unreadCountTextView;
+        public MaterialCardView cardView;
         public GroupViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.group_image_view);
             textView = itemView.findViewById(R.id.group_name);
+            cardView = itemView.findViewById(R.id.count_card_view);
+            memberCountTextView = itemView.findViewById(R.id.member_count_text_view);
+            unreadCountTextView = itemView.findViewById(R.id.unread_count_text_view);
         }
     }
 }

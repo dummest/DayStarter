@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
 import com.example.daystarter.ui.groupSchedule.GroupActivity;
+import com.example.daystarter.ui.groupSchedule.cacheDBHelper.UnreadDBHelper;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -148,6 +149,9 @@ public class GroupChatRecyclerViewAdapter extends RecyclerView.Adapter<GroupChat
                 notifyItemInserted(chatArrayList.size());
                 Log.d(TAG, "onChildAdded: ");
                 chatRecyclerView.scrollToPosition(chatArrayList.size()-1);
+
+                UnreadDBHelper unreadDBHelper = new UnreadDBHelper(context);
+                unreadDBHelper.chatCounterReset(groupId);
             }
 
             @Override

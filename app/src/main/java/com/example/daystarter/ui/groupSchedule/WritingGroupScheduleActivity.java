@@ -254,10 +254,12 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.data.title = binding.beforeDateTextView.getText().toString() + "에 새로운 일정이 등록되었습니다.";
         notificationModel.data.body = "'" + binding.titleEditText.getText().toString() + "'";
+        notificationModel.data.type = "group_schedule";
+        notificationModel.data.groupId = groupId;
         notificationModel.to = token;
         RequestBody requestBody = RequestBody.create(gson.toJson(notificationModel), MediaType.parse("application/json; charset=utf8"));
 
-        Request request =  new Request.Builder()
+        Request request = new Request.Builder()
                 .header("Content-Type", "application/json")
                 .addHeader("Authorization", "key=" + getString(R.string.server_key))
                 .url("https://fcm.googleapis.com/fcm/send")

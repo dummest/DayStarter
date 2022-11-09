@@ -24,7 +24,7 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
     private String query = "";
 
     public PersonalScheduleDBHelper(Context context){
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 3);
     }
 
     public void setQuery(String query) {
@@ -40,19 +40,16 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
                 "endTime INTEGER, " +
                 "memo TEXT, " +
                 "address TEXT, " +
+                "latitude DOUBLE, " +
+                "longitude DOUBLE, " +
                 "imgPath Text" + ");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS notiTBL;");
+        db.execSQL("DROP TABLE IF EXISTS PersonalScheduleTBL;");
+        Log.d(TAG, "onUpgrade");
         onCreate(db);
-    }
-
-    public void insertSchedule(String title, long startTime, long endTime, String memo, String address, String imgPath){
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("INSERT INTO PersonalScheduleTBL(title, startTime, endTime, memo, address, imgPath) VALUES(?, ?, ?, ?, ?, ?);", new Object[]{title, startTime, endTime, memo, address, imgPath});
-        db.close();
     }
 
     public void insertSchedule(ScheduleData data){
@@ -61,10 +58,13 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         long endTime = data.getEndTime();
         String memo = data.getMemo();
         String address = data.getAddress();
+        double latitude = data.getLatitude();
+        double longitude = data.getLongitude();
+
         String imgPath = data.getImgPath();
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("INSERT INTO PersonalScheduleTBL(title, startTime, endTime, memo, address, imgPath) VALUES(?, ?, ?, ?, ?, ?);",
-                new Object[]{title, startTime, endTime, memo, address, imgPath});
+        db.execSQL("INSERT INTO PersonalScheduleTBL(title, startTime, endTime, memo, address, latitude, longitude, imgPath) VALUES(?, ?, ?, ?, ?, ?, ?, ?);",
+                new Object[]{title, startTime, endTime, memo, address, latitude, longitude, imgPath});
         db.close();
         Date date = new Date(startTime);
     }
@@ -76,11 +76,13 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
         long endTime = data.getEndTime();
         String memo = data.getMemo();
         String address = data.getAddress();
+        double latitude = data.getLatitude();
+        double longitude = data.getLongitude();
         String imgPath = data.getImgPath();
 
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE PersonalScheduleTBL SET title = ?, startTime = ?, endTime = ?, memo = ?, address = ?, imgPath = ? WHERE scheduleId = ?",
-                new Object[]{title, startTime, endTime, memo, address, imgPath, scheduleId});
+        db.execSQL("UPDATE PersonalScheduleTBL SET title = ?, startTime = ?, endTime = ?, memo = ?, address = ?, latitude = ?, longitude = ?, imgPath = ? WHERE scheduleId = ?",
+                new Object[]{title, startTime, endTime, memo, address, latitude, longitude, imgPath, scheduleId});
         db.close();
     }
 
@@ -100,9 +102,11 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
             long endTime = cursor.getLong(3);
             String memo = cursor.getString(4);
             String address = cursor.getString(5);
-            String imgPath = cursor.getString(6);
+            double latitude = cursor.getDouble(6);
+            double longitude = cursor.getDouble(7);
+            String imgPath = cursor.getString(8);
 
-            ScheduleData scheduleData = new ScheduleData(scheduleId, title, startTime, endTime, memo, address, imgPath);
+            ScheduleData scheduleData = new ScheduleData(scheduleId, title, startTime, endTime, memo, address, latitude, longitude, imgPath);
             return scheduleData;
         }
         return null;
@@ -126,9 +130,11 @@ public class PersonalScheduleDBHelper extends SQLiteOpenHelper {
             long endTime = cursor.getLong(3);
             String memo = cursor.getString(4);
             String address = cursor.getString(5);
-            String imgPath = cursor.getString(6);
+            double latitude = cursor.getDouble(6);
+            double longitude = cursor.getDouble(7);
+            String imgPath = cursor.getString(8);
 
-            ScheduleData scheduleData = new ScheduleData(id, title, startTime, endTime, memo, address, imgPath);
+            ScheduleData scheduleData = new ScheduleData(id, title, startTime, endTime, memo, address, latitude, longitude, imgPath);
             dataList.add(scheduleData);
         }
         return dataList;
