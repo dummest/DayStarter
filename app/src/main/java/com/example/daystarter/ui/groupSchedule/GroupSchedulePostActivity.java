@@ -277,8 +277,10 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     void sendNotification(String token){
         Gson gson = new Gson();
         NotificationModel notificationModel = new NotificationModel();
+        notificationModel.data.groupId = groupId;
         notificationModel.data.title = binding.startTimeTextView.getText().toString() + "의 일정이 삭제되었습니다";
         notificationModel.data.body = "'" + binding.titleTextView.getText().toString() + "'";
+        notificationModel.data.type = "group_schedule";
         notificationModel.to = token;
         RequestBody requestBody = RequestBody.create(gson.toJson(notificationModel), MediaType.parse("application/json; charset=utf8"));
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupBinding;
+import com.example.daystarter.ui.groupSchedule.cacheDBHelper.UnreadDBHelper;
 import com.example.daystarter.ui.groupSchedule.groupChat.GroupChatActivity;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
@@ -73,6 +74,7 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        resetCount(groupId);
         validation();
     }
 
@@ -88,8 +90,18 @@ public class GroupActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
     private void init(){
+        binding.memberListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GroupActivity.this, MemberListActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
+
         binding.mcvViewGroup.calendar.addDecorators(
                 new SundayDecorator(),
                 new SaturdayDecorator(),
@@ -183,6 +195,11 @@ public class GroupActivity extends AppCompatActivity {
         binding.mcvViewGroup.dateTextView.setText(dateSdf.format(new GregorianCalendar(date.getYear(), date.getMonth()-1, date.getDay()).getTimeInMillis()));
         adapter.loadGroupScheduleList(date.getYear(), date.getMonth()-1, date.getDay());
         binding.mcvViewGroup.calendar.setSelectedDate(date);
+    }
+
+    void resetCount(String groupId){
+        UnreadDBHelper unreadDBHelper = new UnreadDBHelper(getBaseContext());
+        unreadDBHelper.scheduleCounterReset(groupId);
     }
 
     private void showToast(String str){

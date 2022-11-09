@@ -73,10 +73,11 @@ public class MemberListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
+            int pos = holder.getAdapterPosition();
             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference()
-                    .child("groups").child(groupId).child("members").child(memberArrayList.get(position).uid).child("status");
+                    .child("groups").child(groupId).child("members").child(memberArrayList.get(pos).uid).child("status");
 
-            switch (memberArrayList.get(position).status){
+            switch (memberArrayList.get(pos).status){
                 case "host":
                     holder.statusSwitch.setVisibility(View.GONE);
                     holder.banButton.setVisibility(View.GONE);
@@ -87,7 +88,7 @@ public class MemberListActivity extends AppCompatActivity {
                     holder.statusSwitch.setText("쓰기");
                     holder.statusSwitch.setChecked(true);
 
-                    if(!memberArrayList.get(position).status.equals("host")) {
+                    if(!memberArrayList.get(pos).status.equals("host")) {
                         holder.statusSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -102,11 +103,11 @@ public class MemberListActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 progressDialog.show();
                                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("groups")
-                                        .child(groupId).child("members").child(memberArrayList.get(holder.getAdapterPosition()).uid);
+                                        .child(groupId).child("members").child(memberArrayList.get(pos).uid);
                                 while (dbRef.removeValue().isComplete()){}
 
                                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users")
-                                        .child(memberArrayList.get(holder.getAdapterPosition()).uid);
+                                        .child(memberArrayList.get(pos).uid);
                                 while(userRef.child("participatingGroups").child(groupId).removeValue().isComplete()){}
                                 progressDialog.dismiss();
                                 loadMemberList();
@@ -136,10 +137,10 @@ public class MemberListActivity extends AppCompatActivity {
 
                 }
             });
-            Glide.with(holder.itemView.getContext()).load(userArrayList.get(position).profileImgPath)
+            Glide.with(holder.itemView.getContext()).load(userArrayList.get(pos).profileImgPath)
                     .circleCrop().error(R.drawable.ic_baseline_person_24).into(holder.profileImageView);
-            holder.nameTextView.setText(memberArrayList.get(position).name);
-            holder.emailTextView.setText(memberArrayList.get(position).email);
+            holder.nameTextView.setText(memberArrayList.get(pos).name);
+            holder.emailTextView.setText(memberArrayList.get(pos).email);
         }
 
         @Override

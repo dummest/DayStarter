@@ -9,26 +9,32 @@ public class ScheduleData {
     private long endTime;
     private String memo;
     private String address;
+    private double latitude;
+    private double longitude;
     private String imgPath;
 
     public ScheduleData(){}
 
-    public ScheduleData(String title, long startTime, long endTime, String memo, String address, String imgPath) {
+    public ScheduleData(String title, long startTime, long endTime, String memo, String address, double latitude, double longitude, String imgPath) {
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
         this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.imgPath = imgPath;
     }
 
-    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo, String address, String imgPath) {
+    public ScheduleData(int scheduleId, String title, long startTime, long endTime, String memo, String address, double latitude, double longitude, String imgPath) {
         this.scheduleId = scheduleId;
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.memo = memo;
         this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.imgPath = imgPath;
     }
 
@@ -66,9 +72,29 @@ public class ScheduleData {
         this.memo = memo;
     }
 
-    public String getAddress() { return address; }
+    public String getAddress() {
+        return address;
+    }
 
-    public void setAddress(String address) { this.address = address; }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 
     public String getImgPath() {
         return imgPath;

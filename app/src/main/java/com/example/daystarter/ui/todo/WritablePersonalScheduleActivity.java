@@ -131,6 +131,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
             finish();
         }
 
+        ///////////////////////////////////////////////
         else if(view.getId() == R.id.save_button){
             ScheduleData data = new ScheduleData(
                     scheduleId,
@@ -138,8 +139,11 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                     beforeCalendar.getTimeInMillis(),
                     afterCalendar.getTimeInMillis(),
                     binding.contentsEditText.getText().toString(),
-                    null,
+                    "",//주소 입력
+                    0.0, // 위도
+                    0.0, // 경도
                     null);
+        //////////////////////////////////////////////
 
             if(data.getScheduleId() == -1) //id로 편집인지 생성인지 판단
                 saveNewSchedule(data);

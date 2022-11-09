@@ -24,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayStarter"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".ui.groupSchedule.groupChat.GroupChatActivity"
             android:exported="false" />
@@ -74,7 +75,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.news.ItemActivty" />
-        <activity android:name=".ui.weather.country.WeatherAreaActivity"/>
+        <activity android:name=".ui.weather.country.WeatherAreaActivity" />
         <activity
             android:name=".LoginActivity"
             android:exported="false"
