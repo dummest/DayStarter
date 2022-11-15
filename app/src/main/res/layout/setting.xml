@@ -58,6 +58,14 @@
         tools:ignore="MissingConstraints"
         app:layout_constraintTop_toBottomOf="@+id/alarmsound"/>
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/lock_screen_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="잠금화면 설정"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_seekbar"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
     <Button
         android:id="@+id/setting_close"
         android:layout_width="match_parent"
@@ -66,8 +74,4 @@
         android:text="닫기"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="133dp" />
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

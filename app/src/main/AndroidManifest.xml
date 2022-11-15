@@ -24,7 +24,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayStarter"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".lockScreen.LockScreenService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.SYSTEM_ALERT_WINDOW">
+        </service>
 
+        <receiver
+            android:name=".lockScreen.ScreenLockReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
+
+        <activity
+            android:name=".lockScreen.LockScreenActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DayStarter.NoActionBar"/>
         <activity
             android:name=".ui.groupSchedule.groupChat.GroupChatActivity"
             android:exported="false" />
