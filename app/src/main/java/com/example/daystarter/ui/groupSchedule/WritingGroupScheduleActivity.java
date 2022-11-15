@@ -9,6 +9,8 @@ import androidx.room.Database;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityWritingGroupScheduleBinding;
 import com.example.daystarter.model.NotificationModel;
+import com.example.daystarter.myClass.ScheduleData;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +41,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Call;
@@ -152,10 +156,45 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         long afterTime = afterCalendar.getTimeInMillis();
         String contents = binding.contentsEditText.getText().toString().trim();
 
+        Geocoder geocoder = new Geocoder(this);
+        double latitude = 0, longitude = 0;
+        List<Address> list = null;
+        String area = binding.weatherEditText.getText().toString();
+        try {
+            list = geocoder.getFromLocationName(area, 10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (list != null) {
+            if (list.size() == 0) {
+                Toast.makeText(getApplicationContext(), "해당 주소 정보를 가져 오지 못했습니다.", Toast.LENGTH_SHORT).show();
+            } else {
+                Address address = list.get(0);
+                latitude = address.getLatitude();
+                longitude = address.getLongitude();
+                Toast.makeText(getApplicationContext(), area + "의 위도는 " + latitude + "이고 경도는 " + longitude + "이다", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        //////////////////////////////////////////////
+        Log.d(TAG, "onClick_data: 위도: " + latitude + " 경도: " + longitude);
+
+
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
         String key = dbRef.child("schedules").child(groupId).push().getKey();
 
-        GroupScheduleModel gsm = new GroupScheduleModel(key, FirebaseAuth.getInstance().getUid(), Calendar.getInstance().getTimeInMillis(), title, beforeTime, afterTime, contents);
+        GroupScheduleModel gsm = new GroupScheduleModel(
+                key,
+                FirebaseAuth.getInstance().getUid(),
+                Calendar.getInstance().getTimeInMillis(),
+                title,
+                beforeTime,
+                afterTime,
+                contents,
+                area,
+                latitude,
+                longitude);
+
         dbRef.child("schedules").child(groupId).child(key).setValue(gsm).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
