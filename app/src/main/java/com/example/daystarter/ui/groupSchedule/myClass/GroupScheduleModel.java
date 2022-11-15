@@ -9,15 +9,15 @@ public class GroupScheduleModel {
     public long startTime;
     public long endTime;
     public String contents;
-    public String imagePath;
+    public String address;
+    public double latitude;
+    public double longitude;
 
     public GroupScheduleModel(){
 
     }
 
-
-
-    public GroupScheduleModel(String key, String writerUid, long writingTime, String title, long startTime, long endTime, String contents, String imagePath) {
+    public GroupScheduleModel(String key, String writerUid, long writingTime, String title, long startTime, long endTime, String contents, String address, double latitude, double longitude) {
         this.key = key;
         this.writerUid = writerUid;
         this.writingTime = writingTime;
@@ -25,16 +25,8 @@ public class GroupScheduleModel {
         this.startTime = startTime;
         this.endTime = endTime;
         this.contents = contents;
-        this.imagePath = imagePath;
-    }
-
-    public GroupScheduleModel(String key, String writerUid, long writingTime, String title, long startTime, long endTime, String contents) {
-        this.key = key;
-        this.writerUid = writerUid;
-        this.writingTime = writingTime;
-        this.title = title;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.contents = contents;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

@@ -125,8 +125,15 @@
                 android:background="@drawable/primary_round_layout"
                 android:layout_marginBottom="@dimen/layout_margin"
                 />
-
-
+            <EditText
+                android:id="@+id/weather_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:hint="지역을 입력해주세요"
+                android:background="@drawable/primary_round_layout"/>
         </LinearLayout>
     </ScrollView>
     <LinearLayout

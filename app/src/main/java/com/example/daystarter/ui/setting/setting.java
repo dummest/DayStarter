@@ -104,6 +104,7 @@ public class setting extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(!Settings.canDrawOverlays(getApplicationContext())){
+                    compoundButton.setChecked(false);
                     Intent overlayIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             Uri.parse("package:" + getPackageName()));
                     startActivity(overlayIntent);
