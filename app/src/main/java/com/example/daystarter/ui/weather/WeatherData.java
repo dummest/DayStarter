@@ -1,15 +1,21 @@
 package com.example.daystarter.ui.weather;
 
-public class weatherData {
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "weather_table")
+public class WeatherData {
+    @PrimaryKey
+    @NonNull
+    String area;
+
     String name = "";  //도시이름
     String icon = "";  //나라
     String country = "";  //아이콘
     double temp;  //온도
     String main = "";  //날씨
     String description;  //상세설명
-    double wind = 0.0;  //바람
-    double clouds = 0.0;  //구름
-    double humidity = 0.0;  //습도
 
     double maxTemp;
     double minTemp;
@@ -87,27 +93,12 @@ public class weatherData {
         this.description = description;
     }
 
-    public double getWind() {
-        return wind;
+    @NonNull
+    public String getArea() {
+        return area;
     }
 
-    public void setWind(double wind) {
-        this.wind = wind;
-    }
-
-    public double getClouds() {
-        return clouds;
-    }
-
-    public void setClouds(double clouds) {
-        this.clouds = clouds;
-    }
-
-    public double getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
+    public void setArea(@NonNull String area) {
+        this.area = area;
     }
 }
