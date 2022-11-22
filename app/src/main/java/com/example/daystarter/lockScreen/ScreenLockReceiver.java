@@ -11,10 +11,13 @@ public class ScreenLockReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
-        Intent in = new Intent(context, LockScreenActivity.class);
-        in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        in.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(in);
-        Log.d("스크린락서비스", "리시버 액티비티 시작");
+
+        if(LockScreenActivity.activity == null) {
+            Intent in = new Intent(context, LockScreenActivity.class);
+            in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            in.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            context.startActivity(in);
+            Log.d("스크린락서비스", "리시버 액티비티 시작");
+        }
     }
 }
