@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,11 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daystarter.R;
-import com.example.daystarter.ui.alarm.alarmslist.AlarmRecyclerViewAdapter;
-import com.example.daystarter.ui.alarm.alarmslist.AlarmsListViewModel;
-import com.example.daystarter.ui.alarm.createalarm.CreateAlarmViewModel;
-import com.example.daystarter.ui.alarm.data.Alarm;
-import com.example.daystarter.ui.weather.country.data.WeatherRepository;
+import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.country.data.WeatherViewModel;
 
 import java.util.ArrayList;
@@ -40,54 +38,52 @@ public class WeatherCountry extends Fragment {
     @BindView(R.id.editText_Weather) EditText edit;
     @BindView(R.id.search_weather_button) Button button;
     //@BindView(R.id.weather_area_recycler_view) RecyclerView weatherRecyclerView;
-    /*
-    @BindView(R.id.weather_area_weather)ImageView weather_area_weather;
+    @BindView(R.id.weather_area_weather) ImageView weather_area_weather;
     @BindView(R.id.weather_area_textview)TextView weather_area_textview;
     @BindView(R.id.weather_area_temp)TextView weather_area_temp;
-   @BindView(R.id.weather_area_description)TextView weather_area_description;
-     */
+   @BindView(R.id.weather_area_description) TextView weather_area_description;
+    //@BindView(R.id.weather_area_recycler_view)RecyclerView recyclerView;
+
     private  Context context;
     private static final String TAG = "WeatherCountry";
     private WeatherViewModel weatherViewModel;
-    private ArrayList<WeatherAreaData> ArrayWeatherData = new ArrayList<WeatherAreaData>();
+    private ArrayList<WeatherData> ArrayWeatherData = new ArrayList<WeatherData>();
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     WeatherAreaAdapter weatherAreaAdapter;
+    RecyclerView recyclerView;
     //NetworkTask networkTask = null;
 
     double lat;
     double lng;
     String  area,areas;
-    RecyclerView recyclerView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weatherAreaAdapter = new  WeatherAreaAdapter(ArrayWeatherData,context);
-
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
-        weatherViewModel.getWeatherLiveData().observe(this, new Observer<List<WeatherAreaData>>() {
+        weatherViewModel.getWeatherLiveData().observe(this, new Observer<List<WeatherData>>() {
             @Override
-            public void onChanged(List<WeatherAreaData> weatherAreaData) {
-                    weatherAreaAdapter.setWeathers(weatherAreaData);
-                    recyclerView.startLayoutAnimation();
-
+            public void onChanged(List<WeatherData> weatherData) {
+                weatherAreaAdapter.setWeathers(weatherData);
+                recyclerView.startLayoutAnimation();
             }
         });
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        Log.d(TAG, "onCreateView: ");
         View v = inflater.inflate(R.layout.fragment_weather_country, container, false);
         ButterKnife.bind(this, v);
         recyclerView=v.findViewById(R.id.weather_area_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(weatherAreaAdapter);
-        Log.d(TAG, "onCreateView: ");
 
         //Location location = new Location("");
         Geocoder geocoder = new Geocoder(context);
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +91,6 @@ public class WeatherCountry extends Fragment {
                 List<Address> list = null;
                 area = edit.getText().toString(); //지역
                 areas=edit.getText().toString();
-
-
 
                 try {
                     list = geocoder.getFromLocationName(area,10);
@@ -112,18 +106,9 @@ public class WeatherCountry extends Fragment {
                         lat=address.getLatitude();
                         lng = address.getLongitude();
                         area=changeName(area);
-                        int WeatherId = new Random().nextInt(Integer.MAX_VALUE);
-                        WeatherAreaData weatherAreaData = new WeatherAreaData(
-                                WeatherId,
-                                area,
-                                areas,
-                                lat,
-                                lng
-                        );
-                        WeatherAreaData data =new WeatherAreaData(WeatherId,area,areas,lat,lng);
-                        ArrayWeatherData.add(data);
-                        weatherAreaAdapter.notifyItemInserted(ArrayWeatherData.size());
-                        weatherViewModel.insert(weatherAreaData);
+
+                        //WeatherAreaData data =new WeatherAreaData(WeatherId,area,areas,lat,lng);
+
 
                         Log.d(TAG, "weatherAreaAdapter.notifyItemInserted ");
                         //location.setLatitude(lat);
@@ -144,11 +129,31 @@ public class WeatherCountry extends Fragment {
         this.context= context;
     }
 
+
+
     public String changeName(String name){
         if(name.contains("서울"))
-            return "Seoul";
+                return "Seoul";
+        else if(name.contains("강남"))
+            return "Gangnam-gu";
+        else if(name.contains("강북"))
+            return "Gangbuk-gu";
+        else if(name.contains("구로"))
+            return "Guro-gu";
+        else if(name.contains("용산"))
+            return "Yongsan-gu";
+        else if(name.contains("영등포"))
+            return "Yeongdeungpo-gu";
+
         else if(name.contains("인천"))
-            return "Incheon";
+                return "Incheon";
+        else if(name.contains("부평"))
+            return "Bupyeong-gu";
+        else if(name.contains("계양구"))
+            return "Gyeyang-gu";
+        else if(name.contains("남구"))
+
+            return "Nam-gu";
         else if(name.contains("대구"))
             return "Daegu";
         else if(name.contains("제주도"))

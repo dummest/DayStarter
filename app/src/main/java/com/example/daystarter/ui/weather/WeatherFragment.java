@@ -1,7 +1,6 @@
 package com.example.daystarter.ui.weather;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -46,7 +45,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,14 +61,14 @@ public class WeatherFragment extends Fragment {
     Context context;
 
     TextView tv_wind, tv_cloud, tv_humidity,tv_name, tv_country;
-    ArrayList<weatherData> ArrayWeatherData = new ArrayList<>();
+    public ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
     ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
     ArrayList<WeatherAreaData>ArrayWeatherAreaData = new ArrayList<>();
 
     WeatherAreaData weatherAreaData;
 
-    WeatherAdapter weatherAdapter;
-    WeatherDayAdapter weatherDayAdapter;
+    public WeatherAdapter weatherAdapter;
+    public WeatherDayAdapter weatherDayAdapter;
     LocationManager locationManager;
     ProgressDialog progressDialog;
     Location location;
@@ -87,7 +85,7 @@ public class WeatherFragment extends Fragment {
         View v;
         v = inflater.inflate(R.layout.fragment_weather, container, false);
         ButterKnife.bind(this, v);
-        weatherDayAdapter = new WeatherDayAdapter(ArrayWeatherData, getActivity());
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, getActivity());
         DayRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
         DayRecyclerView.setAdapter(weatherDayAdapter);
 
@@ -109,8 +107,8 @@ public class WeatherFragment extends Fragment {
         Log.d("위도 경도", "위도 경도 "+lng+lat);
         //MyLocation();
 
-        DayWeather();
-        getLocation();
+        DayWeather(lat,lng);
+        getLocation(lat,lng);
 
         //tv_name = (TextView) v.findViewById(R.id.tv_name);
         //tv_country = (TextView) v.findViewById(R.id.tv_country);
@@ -136,34 +134,7 @@ public class WeatherFragment extends Fragment {
         //주별 날씨
         return v ;
     }
-    private Location MyLocation(){
 
-        String Fine_location=Manifest.permission.ACCESS_FINE_LOCATION;
-        String Coarse_location= Manifest.permission.ACCESS_COARSE_LOCATION;
-        //위치 정보 권한
-        if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
-            Log.d("get GPS", "Return MyLocation ");
-        }
-        else{
-            locationManager =(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-            String locationProvider=LocationManager.NETWORK_PROVIDER;
-            location= locationManager.getLastKnownLocation(locationProvider);
-            if(location !=null) {
-                //날씨는 권한 받을 동시에 값이 변경되는 동기식으로 구현됨
-                //location(위치)값이 null로 받아와져서 위도 경도가 0으로 표시되어있음 이걸 수정하는걸 목표
-                //검색을 추가하여 gecode로 도시을 입력시 위도 경도 값이 가져와짐
-                //버튼 클릭시 위도 경도가 수정이 되어 날씨가 변경되도록 만들기
-                //추가사항 날씨 아래로 한칸 추가하여 검색엔진으로 만들기 or 그냥 날씨 맨 윗칸에 검색기능 추가
-
-                lng = location.getLongitude(); //경도
-                lat = location.getLatitude(); //위도
-                Log.d("Don't gps", "return gps ");
-            }
-        }
-        return location;
-    }
 
 
     /* NetworkTask 를 요청하기 위한 메소드 */
@@ -225,7 +196,7 @@ public class WeatherFragment extends Fragment {
                 JsonObject jsonObjectWind = (JsonObject) jp.parse(jsonObject.get("wind").getAsJsonObject().toString());
                 JsonObject jsonObjectClouds = (JsonObject) jp.parse(jsonObject.get("clouds").getAsJsonObject().toString());
 
-                weatherData model = new weatherData();
+                WeatherData model = new WeatherData();
                 //날씨등을 한글로 표시
                 String description = jsonObjectWeather.get("description").toString().replaceAll("\"", "");
                 description = transferWeather(description);
@@ -236,9 +207,6 @@ public class WeatherFragment extends Fragment {
                 model.setTemp(jsonObjectMain.get("temp").getAsDouble() - 273.15);
                 model.setMain(jsonObjectWeather.get("main").toString().replaceAll("\"", ""));
                 model.setDescription(description);
-                model.setWind(jsonObjectWind.get("speed").getAsDouble());
-                model.setClouds(jsonObjectClouds.get("all").getAsDouble());
-                model.setHumidity(jsonObjectMain.get("humidity").getAsDouble());
 
                 setWeatherData(model);  //UI 업데이트
 
@@ -255,7 +223,7 @@ public class WeatherFragment extends Fragment {
     }  //NetworkTask End
 
     /* 통신하여 받아온 날씨 데이터를 통해 UI 업데이트 메소드 */
-    private void setWeatherData(weatherData model) {
+    private void setWeatherData(WeatherData model) {
         Log.d("Weather", "setWeatherData");
         //tv_name.setText(model.getName());
         //tv_country.setText(model.getCountry());
@@ -323,7 +291,7 @@ public class WeatherFragment extends Fragment {
         return "비";
     }
 
-    private void getLocation() {
+    public void getLocation(double lat,double lng) {
         Log.d("getLocation", "getLocation: ");
         //https://api.openweathermap.org/data/2.5/onecall?lat=37.5683&lon=126.977&exclude=current,minutely,hourly,alerts&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
         requestNetwork();
@@ -362,7 +330,7 @@ public class WeatherFragment extends Fragment {
                                 data.setMinTemp(jsonObjectOne.getDouble("min"));
                                 data.setMaxTemp(jsonObjectOne.getDouble("max"));
 
-                                Log.d("weatherData", "addData: ");
+                                Log.d("WeatherData", "addData: ");
                                 weatherWeekData.add(data);
                             }
                             weatherAdapter.notifyDataSetChanged();
@@ -379,16 +347,16 @@ public class WeatherFragment extends Fragment {
                 });
     }
 
-    private void setWeekWeatherData(weatherData model) {
+    private void setWeekWeatherData(WeatherData model) {
         Log.d("Weather", "setWeatherData");
         tv_name.setText(model.getName());
         tv_country.setText(model.getCountry());
 
     }
 
-    private void DayWeather() {
+    public void DayWeather(double latitude,double longitude) {
         Log.d("DayWeather", "DayWeather: ");
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -398,7 +366,7 @@ public class WeatherFragment extends Fragment {
                             Log.d("weather_onResponse", "onResponse_success: ");
                             JSONArray jsonArray = response.getJSONArray("list");
                             for(int i =0;i<6;i++){
-                                weatherData weatherData = new weatherData();
+                                WeatherData weatherData = new WeatherData();
                                 JSONObject list = jsonArray.getJSONObject(i);
                                 JSONObject Main = list.getJSONObject("main");
                                 JSONArray MainArray = list.getJSONArray("weather");
@@ -424,7 +392,7 @@ public class WeatherFragment extends Fragment {
                                 weatherData.setMinTemp(Main.getDouble("temp_min"));
                                 weatherData.setMaxTemp(Main.getDouble("temp_max"));
 
-                                ArrayWeatherData.add(weatherData);
+                                arrayWeatherData.add(weatherData);
                             }
                             weatherDayAdapter.notifyDataSetChanged();
 

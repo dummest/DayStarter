@@ -1,12 +1,10 @@
 package com.example.daystarter.ui.weather.country;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -14,18 +12,12 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,10 +31,9 @@ import com.example.daystarter.R;
 import com.example.daystarter.ui.weather.ProgressDialog;
 import com.example.daystarter.ui.weather.RequestHttpUrlConnection;
 import com.example.daystarter.ui.weather.WeatherAdapter;
+import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.WeatherDayAdapter;
-import com.example.daystarter.ui.weather.WeatherFragment;
 import com.example.daystarter.ui.weather.WeatherWeekData;
-import com.example.daystarter.ui.weather.weatherData;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -72,7 +63,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
         Context context;
 
         TextView tv_wind, tv_cloud, tv_humidity,tv_name, tv_country;
-        ArrayList<weatherData> ArrayWeatherData = new ArrayList<>();
+        ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
         ArrayList<WeatherWeekData> weatherWeekData = new ArrayList<>();
         ArrayList<WeatherAreaData>ArrayWeatherAreaData = new ArrayList<>();
 
@@ -98,9 +89,9 @@ public class WeatherAreaActivity extends AppCompatActivity {
         area = weatherIntent.getStringExtra("area");
         lat = weatherIntent.getDoubleExtra("lat",37.5683);
         lng = weatherIntent.getDoubleExtra("lng",126.977);
-        Log.d("weatherData", "area = "+area+"lat="+lat+"lng="+lng);
+        Log.d("WeatherData", "area = "+area+"lat="+lat+"lng="+lng);
         ButterKnife.bind(this);
-        weatherDayAdapter = new WeatherDayAdapter(ArrayWeatherData, context);
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, context);
         DayRecyclerView.setLayoutManager(new LinearLayoutManager(context,RecyclerView.HORIZONTAL,false));
         DayRecyclerView.setAdapter(weatherDayAdapter);
 
@@ -108,7 +99,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(weatherAdapter);
 
-        DayWeather();
+        DayWeather(lat,lng);
         getLocation();
         progressDialog = new ProgressDialog(WeatherAreaActivity.this);
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -176,7 +167,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
                     JsonObject jsonObjectWind = (JsonObject) jp.parse(jsonObject.get("wind").getAsJsonObject().toString());
                     JsonObject jsonObjectClouds = (JsonObject) jp.parse(jsonObject.get("clouds").getAsJsonObject().toString());
 
-                    weatherData model = new weatherData();
+                    WeatherData model = new WeatherData();
                     //날씨등을 한글로 표시
                     String description = jsonObjectWeather.get("description").toString().replaceAll("\"", "");
                     description = transferWeather(description);
@@ -187,9 +178,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
                     model.setTemp(jsonObjectMain.get("temp").getAsDouble() - 273.15);
                     model.setMain(jsonObjectWeather.get("main").toString().replaceAll("\"", ""));
                     model.setDescription(description);
-                    model.setWind(jsonObjectWind.get("speed").getAsDouble());
-                    model.setClouds(jsonObjectClouds.get("all").getAsDouble());
-                    model.setHumidity(jsonObjectMain.get("humidity").getAsDouble());
+
 
                     setWeatherData(model);  //UI 업데이트
 
@@ -206,7 +195,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
         }  //NetworkTask End
 
         /* 통신하여 받아온 날씨 데이터를 통해 UI 업데이트 메소드 */
-        private void setWeatherData(weatherData model) {
+        private void setWeatherData(WeatherData model) {
             Log.d("Weather", "setWeatherData");
             //tv_name.setText(model.getName());
             //tv_country.setText(model.getCountry());
@@ -315,7 +304,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
                                     data.setMinTemp(jsonObjectOne.getDouble("min"));
                                     data.setMaxTemp(jsonObjectOne.getDouble("max"));
 
-                                    Log.d("weatherData", "addData: ");
+                                    Log.d("WeatherData", "addData: ");
                                     weatherWeekData.add(data);
                                 }
                                 weatherAdapter.notifyDataSetChanged();
@@ -332,14 +321,14 @@ public class WeatherAreaActivity extends AppCompatActivity {
                     });
         }
 
-        private void setWeekWeatherData(weatherData model) {
+        private void setWeekWeatherData(WeatherData model) {
             Log.d("Weather", "setWeatherData");
             tv_name.setText(model.getName());
             tv_country.setText(model.getCountry());
 
         }
 
-        private void DayWeather() {
+        public void DayWeather(double latitude,double longitude) {
             Log.d("DayWeather", "DayWeather: ");
             //https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
             AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lng+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
@@ -352,7 +341,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
                                 Log.d("weather_onResponse", "onResponse_success: ");
                                 JSONArray jsonArray = response.getJSONArray("list");
                                 for(int i =0;i<6;i++){
-                                    weatherData weatherData = new weatherData();
+                                    WeatherData weatherData = new WeatherData();
                                     JSONObject list = jsonArray.getJSONObject(i);
                                     JSONObject Main = list.getJSONObject("main");
                                     JSONArray MainArray = list.getJSONArray("weather");
@@ -378,7 +367,7 @@ public class WeatherAreaActivity extends AppCompatActivity {
                                     weatherData.setMinTemp(Main.getDouble("temp_min"));
                                     weatherData.setMaxTemp(Main.getDouble("temp_max"));
 
-                                    ArrayWeatherData.add(weatherData);
+                                    arrayWeatherData.add(weatherData);
                                 }
                                 weatherDayAdapter.notifyDataSetChanged();
 
