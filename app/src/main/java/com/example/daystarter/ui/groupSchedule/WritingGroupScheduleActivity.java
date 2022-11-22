@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Database;
 
 import android.app.DatePickerDialog;
@@ -18,12 +20,18 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityWritingGroupScheduleBinding;
 import com.example.daystarter.model.NotificationModel;
 import com.example.daystarter.myClass.ScheduleData;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
+import com.example.daystarter.ui.weather.WeatherData;
+import com.example.daystarter.ui.weather.WeatherDayAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,14 +40,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -60,6 +73,9 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH시 mm분", Locale.getDefault());
     long finishCount;
     long currentCount = 0;
+    double latitude = 0, longitude = 0;
+    public ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
+    WeatherDayAdapter weatherDayAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +90,12 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         binding.beforeTimeTextView.setOnClickListener(this);
         binding.afterDateTextView.setOnClickListener(this);
         binding.afterTimeTextView.setOnClickListener(this);
+        binding.showWeatherButton.setOnClickListener(this);
 
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, getApplicationContext());
+        binding.weatherdayRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL,false));
+        binding.weatherdayRecyclerview.setAdapter(weatherDayAdapter);
+        binding.weatherdayRecyclerview.setVisibility(View.GONE);
     }
 
     @Override
@@ -114,6 +135,9 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
                     setAfterDate(new GregorianCalendar(afterCalendar.get(Calendar.YEAR), afterCalendar.get(Calendar.MONTH), afterCalendar.get(Calendar.DAY_OF_MONTH), i, i1));
                 }
             }, afterCalendar.get(Calendar.HOUR_OF_DAY), afterCalendar.get(Calendar.MINUTE), false).show();
+        }
+        else if(id==binding.showWeatherButton.getId()){
+            binding.weatherdayRecyclerview.setVisibility(View.VISIBLE);
         }
 
         //작성 권한 확인 후 저장 or 종료
@@ -157,7 +181,6 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         String contents = binding.contentsEditText.getText().toString().trim();
 
         Geocoder geocoder = new Geocoder(this);
-        double latitude = 0, longitude = 0;
         List<Address> list = null;
         String area = binding.weatherEditText.getText().toString();
         try {
@@ -241,6 +264,12 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         afterCalendar.setTimeInMillis(intent.getLongExtra("afterLong", beforeCalendar.getTimeInMillis()));
         setBeforeDate(beforeCalendar);
         setAfterDate(afterCalendar);
+        /* 지역이랑,위도 경도 가져오는 부분해결만 하면 됨
+        binding.weatherEditText.setText(intent.getStringExtra("area"));
+        latitude=intent.getDoubleExtra("latitude");
+        longitude=intent.getDoubleExtra("longitude");
+        DayWeather();
+        */
     }
 
 
@@ -325,4 +354,65 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         if(currentCount == finishCount)
             finish();
     }
+
+    public void DayWeather(double latitude,double longitude) {
+        Log.d("DayWeather", "DayWeather의 위도는: "+latitude+"경도는 :"+longitude);
+        //https:api.openweathermap.org/data/2.5/forecast?lat=37.2635727&lon=127.0286009&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("weather_onResponse", "onResponse_success: ");
+                            JSONArray jsonArray = response.getJSONArray("list");
+                            /*
+                            시작시간으로 잡아보기 for(int i =0 ; i
+
+                             */
+                            for(int i =0;i<6;i++){
+                                WeatherData weatherData = new WeatherData();
+                                JSONObject list = jsonArray.getJSONObject(i);
+                                JSONObject Main = list.getJSONObject("main");
+                                JSONArray MainArray = list.getJSONArray("weather");
+                                JSONObject Weather = MainArray.getJSONObject(0);
+                                String CurrentTime = list.getString("dt_txt");
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
+
+                                try{
+                                    Date time = format.parse(CurrentTime);
+                                    CurrentTime =formatTime.format(time);
+                                }
+                                catch (ParseException e){
+                                    e.printStackTrace();
+                                }
+                                Log.d("onResponse", "onResponse_addData: ");
+                                //현재시간
+
+                                weatherData.setTime(CurrentTime);
+                                //평균 온도
+                                weatherData.setTemp(Main.getDouble("temp"));
+                                weatherData.setDescription(Weather.getString("description"));
+                                weatherData.setMinTemp(Main.getDouble("temp_min"));
+                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
+
+                                arrayWeatherData.add(weatherData);
+                            }
+                            weatherDayAdapter.notifyDataSetChanged();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+    }
+
 }

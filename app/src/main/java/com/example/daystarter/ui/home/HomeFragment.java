@@ -1,43 +1,42 @@
 package com.example.daystarter.ui.home;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
-import com.example.daystarter.LoginActivity;
 import com.example.daystarter.MainActivity;
 import com.example.daystarter.R;
-import com.example.daystarter.SignUpActivity;
-import com.example.daystarter.ui.groupSchedule.GroupActivity;
-import com.example.daystarter.ui.news.NewAdapter;
 import com.example.daystarter.ui.news.NewData;
-import com.example.daystarter.ui.news.NewsFragment;
 import com.example.daystarter.ui.weather.RequestHttpUrlConnection;
-import com.example.daystarter.ui.weather.WeatherFragment;
-import com.example.daystarter.ui.weather.WeatherWeekData;
-import com.example.daystarter.ui.weather.weatherData;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.example.daystarter.ui.weather.WeatherData;
+import com.example.daystarter.ui.weather.WeatherDayAdapter;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -52,43 +51,41 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kotlin.jvm.internal.Intrinsics;
 
 public class HomeFragment extends Fragment implements  OnBackPressedListener{
-    @BindView(R.id.iv_weather)ImageView home_weather;
-    @BindView(R.id.tv_temp)TextView home_temp;
-    @BindView(R.id.tv_description)TextView home_description;
-    //@BindView(R.id.weather_humidity)TextView home_humidity;
-    @BindView(R.id.weather_wind)TextView home_wind;
     @BindView(R.id.new_recyclerview) RecyclerView recyclerView;
     @BindView(R.id.home_schedule_recycler_view) RecyclerView homeScheduleRecyclerView;
+    @BindView(R.id.weatherday_recyclerview) RecyclerView WeatherRecyclerView;
 
     private HomeNewAdapter newAdapter;
+    WeatherDayAdapter weatherDayAdapter;
     ArrayList<NewData> items = new ArrayList<>();
-    String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
-    NetworkTask networkTask = null;
-    Context context;
+    ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
+
     MainActivity mainActivity;
+    LocationManager locationManager;
+    private static final int REQUEST_CODE_LOCATION = 2;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        //LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,v);
         setHomeScheduleRecyclerView();
-        newAdapter = new HomeNewAdapter(items,getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(newAdapter);
+        setWeatherRecyclerView();
+        setNewRecyclerView();
         mainActivity = (MainActivity) getActivity();
-        requestNetwork();
+        locationManager =(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        MyLocation();
+
         return v;
     }
 
@@ -98,166 +95,9 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         readRss();
     }
 
-    /* NetworkTask 를 요청하기 위한 메소드 */
-    private void requestNetwork() {
-        ContentValues values = new ContentValues();
-        //기본값 =서울날씨(바꾸고 싶으면 여기서 교채하면된다.)
-        values.put("q", "Seoul");
-        values.put("appid", getString(R.string.weather_app_id));
-
-        networkTask = new NetworkTask(context, strUrl, values);
-        networkTask.execute();
-    }
-
-
-    /* 비동기 처리를 위해 AsyncTask 상속한 NetworkTask 클래스 */
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
-        Context context;
-        String url = "";
-        ContentValues values;
-
-        public NetworkTask(Context context, String url, ContentValues values) {
-            this.context = context;
-            this.url = url;
-            this.values = values;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result = "";
-
-            RequestHttpUrlConnection requestHttpUrlConnection = new RequestHttpUrlConnection();
-            result = requestHttpUrlConnection.request(url, values, "GET");  //HttpURLConnection 통신 요청
-
-            Log.d("weather", "NetworkTask" + result);
-            return result;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("weather", "onPostExecute()" + result);
-
-            if (result != null && !result.equals("")) {
-                //파싱
-                JsonParser jp = new JsonParser();
-                JsonObject jsonObject = (JsonObject) jp.parse(result);
-                JsonObject jsonObjectSys = (JsonObject) jp.parse(jsonObject.get("sys").getAsJsonObject().toString());
-                JsonObject jsonObjectWeather = (JsonObject) jp.parse(jsonObject.get("weather").getAsJsonArray().get(0).toString());
-                JsonObject jsonObjectMain = (JsonObject) jp.parse(jsonObject.get("main").getAsJsonObject().toString());
-                JsonObject jsonObjectWind = (JsonObject) jp.parse(jsonObject.get("wind").getAsJsonObject().toString());
-                JsonObject jsonObjectClouds = (JsonObject) jp.parse(jsonObject.get("clouds").getAsJsonObject().toString());
-
-                weatherData model = new weatherData();
-                //날씨등을 한글로 표시
-                String description = jsonObjectWeather.get("description").toString().replaceAll("\"", "");
-                description = transferWeather(description);
-                model.setName(jsonObject.get("name").toString().replaceAll("\"", ""));
-                model.setCountry(jsonObjectSys.get("country").toString().replaceAll("\"", ""));
-                Log.d("Icon", "Icon: " + getString(R.string.weather_url) + "img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"", "") + ".png");
-                model.setIcon(getString(R.string.weather_url) + "img/w/" + jsonObjectWeather.get("icon").toString().replaceAll("\"", "") + ".png");
-                model.setTemp(jsonObjectMain.get("temp").getAsDouble() - 273.15);
-                model.setMain(jsonObjectWeather.get("main").toString().replaceAll("\"", ""));
-                model.setDescription(description);
-                model.setWind(jsonObjectWind.get("speed").getAsDouble());
-                model.setClouds(jsonObjectClouds.get("all").getAsDouble());
-                model.setHumidity(jsonObjectMain.get("humidity").getAsDouble());
-
-                setWeatherData(model);  //UI 업데이트
-
-            } else {
-                showFailPop();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-    }  //NetworkTask End
-
-    /* 통신하여 받아온 날씨 데이터를 통해 UI 업데이트 메소드 */
-    private void setWeatherData(weatherData model) {
-        Log.d("Weather", "setWeatherData");
-        //tv_name.setText(model.getName());
-        //tv_country.setText(model.getCountry());
-        Glide.with(this).load(model.getIcon())  //Glide 라이브러리를 이용하여 ImageView 에 url 로 이미지 지정
-                .into(home_weather);
-        home_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
-        //tv_main.setText(model.getMain());
-        home_description.setText(model.getDescription());
-        home_wind.setText(doubleToStrFormat(2, model.getWind()) + " m/s");
-        //home_humidity.setText(doubleToStrFormat(2, model.getHumidity()) + " %");
-    }
-
-
-    /* 통신 실패시 AlertDialog 표시하는 메소드 */
-    private void showFailPop() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Title").setMessage("통신실패");
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getActivity(), "OK Click", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getActivity(), "Cancel Click", Toast.LENGTH_SHORT).show();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-
-    /* 소수점 n번째 자리까지 반올림하기 */
-    private String doubleToStrFormat(int n, double value) {
-        return String.format("%." + n + "f", value);
-    }
-
-    private String transferWeather(String weather) {
-        weather = weather.toLowerCase();
-        if (weather.equals("haze"))
-            return "안개";
-        else if (weather.equals("fog"))
-            return "안개";
-        else if (weather.equals("clouds"))
-            return "구름";
-        else if (weather.equals("few clouds"))
-            return "구름 조금";
-        else if (weather.equals("scattered clouds"))
-            return "구름 낌";
-        else if (weather.equals("broken clouds"))
-            return "구름 많음";
-        else if (weather.equals("overcast clouds"))
-            return "구름 많음";
-        else if (weather.equals("clear sky"))
-            return "맑음";
-        else if(weather.equals("moderate rain"))
-            return  "비";
-        return "비";
-    }
-
-
-
     void readRss() {
         Log.d("Rss", "startRSS");
         try {
-            //url 주소, http은 보안성 사용x
-
             //URL url = new URL("https://rss.joins.com/sonagi/joins_sonagi_total_list.xml");
             URL url = new URL("https://rss.donga.com/total.xml");
 
@@ -267,21 +107,16 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
     }
 
     //Thread class
     class RssFeedTask extends AsyncTask<URL, Void, String> {
-
         @Override
         protected String doInBackground(URL... urls) {
             Log.d("Thread", "thread");
             URL url = urls[0];
-
-            //해임달(URL)에게 무지개로드(Stream) 열도록..
             try {
                 InputStream is = url.openStream();
-
                 //파싱해주는 객체 생성
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 XmlPullParser xpp = factory.newPullParser();
@@ -298,10 +133,8 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
                         case XmlPullParser.START_DOCUMENT:
                             break;
                         case XmlPullParser.START_TAG:
-
                             tagName = xpp.getName();
                             Log.d("TAG", tagName);
-
                             if (tagName.equals("item")) {
                                 item = new NewData();
                             } else if (tagName.equals("title")) {
@@ -367,14 +200,12 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
             //ui 변경시 여기서 작업
-
             newAdapter.notifyItemInserted(items.size());//새로 추가한 것은 마지막에 추가하는 내용
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
         }
     }
     @Override
@@ -389,7 +220,6 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         builder.setPositiveButton("아니오", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
             }
         });
         builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
@@ -412,5 +242,117 @@ public class HomeFragment extends Fragment implements  OnBackPressedListener{
         manager.setOrientation(RecyclerView.HORIZONTAL);
         homeScheduleRecyclerView.setLayoutManager(manager);
         homeScheduleRecyclerView.setAdapter(adapter);
+    }
+
+    public void setWeatherRecyclerView(){
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, getContext());
+        LinearLayoutManager manger = new LinearLayoutManager(getLayoutInflater().getContext());
+        manger.setOrientation(RecyclerView.HORIZONTAL);
+        WeatherRecyclerView.setLayoutManager(manger);
+        WeatherRecyclerView.setAdapter(weatherDayAdapter);
+    }
+    public void setNewRecyclerView(){
+        newAdapter = new HomeNewAdapter(items,getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(newAdapter);
+    }
+
+    private void MyLocation(){
+        String Fine_location= Manifest.permission.ACCESS_FINE_LOCATION;
+        String Coarse_location= Manifest.permission.ACCESS_COARSE_LOCATION;
+        //위치 정보 권한
+        if(ActivityCompat.checkSelfPermission(getActivity(), Fine_location)!= PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(),Coarse_location)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},this.REQUEST_CODE_LOCATION);
+            Log.d("get GPS", "Return MyLocation ");
+        }
+        else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                double longitude = location.getLongitude(); //경도
+                double latitude = location.getLatitude(); //위도
+                DayWeather(latitude,longitude);
+                Log.d("location", "위도: "+longitude+" 경도: "+latitude);
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    1000,
+                    1,
+                    gpsLocationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    1000,
+                    1,
+                    gpsLocationListener);
+        }
+    }
+    final LocationListener gpsLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            // 위치 리스너는 위치정보를 전달할 때 호출되므로 onLocationChanged()메소드 안에 위지청보를 처리를 작업을 구현 해야합니다.
+            double longitude = location.getLongitude(); // 위도
+            double latitude = location.getLatitude(); // 경도
+            DayWeather(latitude,longitude);
+            Log.d("onLocationChanger", "위도 경도 교체 위도: "+ latitude +"경도 :"+ longitude);
+            //txtResult.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도 : " + altitude);
+        } public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        } public void onProviderEnabled(String provider) {
+
+        } public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    public void DayWeather(double latitude,double longitude) {
+        Log.d("DayWeather", "DayWeather의 위도는: "+latitude+"경도는 :"+longitude);
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("weather_onResponse", "onResponse_success: ");
+                            JSONArray jsonArray = response.getJSONArray("list");
+                            /*
+                            시작시간으로 잡아보기 for(int i =0 ; i
+
+                             */
+                            for(int i =0;i<6;i++){
+                                WeatherData weatherData = new WeatherData();
+                                JSONObject list = jsonArray.getJSONObject(i);
+                                JSONObject Main = list.getJSONObject("main");
+                                JSONArray MainArray = list.getJSONArray("weather");
+                                JSONObject Weather = MainArray.getJSONObject(0);
+                                String CurrentTime = list.getString("dt_txt");
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
+
+                                try{
+                                    Date time = format.parse(CurrentTime);
+                                    CurrentTime =formatTime.format(time);
+                                }
+                                catch (ParseException e){
+                                    e.printStackTrace();
+                                }
+                                Log.d("onResponse", "onResponse_addData: ");
+                                //현재시간
+
+                                weatherData.setTime(CurrentTime);
+                                //평균 온도
+                                weatherData.setTemp(Main.getDouble("temp"));
+                                weatherData.setDescription(Weather.getString("description"));
+                                weatherData.setMinTemp(Main.getDouble("temp_min"));
+                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
+
+                                arrayWeatherData.add(weatherData);
+                            }
+                            weatherDayAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onError(ANError anError) {
+                    }
+                });
     }
 }

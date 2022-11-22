@@ -111,6 +111,8 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                     binding.endTimeTextView.setText(changeLongToSdf(post.endTime));
                     binding.contentsTextView.setText(post.contents);
                     binding.addressTextView.setText(post.address);
+                    double latitude = post.latitude;
+                    double longitude = post.longitude;
                     loadProfileImage(post.writerUid);
                     loadName(post.writerUid);
                     GroupSchedulePostActivity.this.post = post;
