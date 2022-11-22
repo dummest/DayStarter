@@ -10,17 +10,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.daystarter.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class WeatherDayAdapter  extends RecyclerView.Adapter {
-    ArrayList<weatherData> ArrayWeatherData;
+    ArrayList<WeatherData> arrayWeatherData;
     Context context;
-    public WeatherDayAdapter(ArrayList<weatherData> arrayWeatherData, Context context) {
-        this.ArrayWeatherData =arrayWeatherData;
+    public WeatherDayAdapter(ArrayList<WeatherData> arrayWeatherData, Context context) {
+        this.arrayWeatherData =arrayWeatherData;
         this.context = context;
     }
 
@@ -35,7 +34,7 @@ public class WeatherDayAdapter  extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.d("WeatherDayAdapter", "onBindViewHolder: ");
-        weatherData weatherData = ArrayWeatherData.get(position);
+        WeatherData weatherData = arrayWeatherData.get(position);
         WeatherDayViewHolder wv = (WeatherDayViewHolder)holder;
 
        wv.weather_hour.setText(weatherData.getTime());
@@ -78,7 +77,7 @@ public class WeatherDayAdapter  extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return ArrayWeatherData.size();
+        return arrayWeatherData.size();
     }
 
 

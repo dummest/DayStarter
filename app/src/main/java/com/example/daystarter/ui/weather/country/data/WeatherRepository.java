@@ -4,13 +4,14 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.country.WeatherAreaData;
 
 import java.util.List;
 
 public class WeatherRepository {
     private WeatherDao weatherDao;
-    private LiveData<List<WeatherAreaData>> weatherLiveData;
+    private LiveData<List<WeatherData>> weatherLiveData;
 
 
     public WeatherRepository(Application application) {
@@ -19,17 +20,17 @@ public class WeatherRepository {
         weatherLiveData = weatherDao.getWeather();
     }
 
-    public void insert(WeatherAreaData weatherAreaData) {
+    public void insert(WeatherData weatherData) {
         WeatherDatabase.databaseWriteExecutor.execute(() -> {
-            weatherDao.insert(weatherAreaData);
+            weatherDao.insert(weatherData);
         });
     }
 
-    public void delete(WeatherAreaData weatherAreaData) {
+    public void delete(WeatherData weatherData) {
         WeatherDatabase.databaseWriteExecutor.execute(() -> {
-            weatherDao.delete(weatherAreaData);
+            weatherDao.delete(weatherData);
         });
     }
 
-    public LiveData<List<WeatherAreaData>> getWeatherLiveData(){return weatherLiveData;}
+    public LiveData<List<WeatherData>> getWeatherLiveData(){return weatherLiveData;}
 }
