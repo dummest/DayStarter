@@ -38,6 +38,12 @@ public class ScheduleData {
         this.imgPath = imgPath;
     }
 
+
+
+
+
+
+
     public int getScheduleId() { return scheduleId; }
 
     public String getTitle() {
