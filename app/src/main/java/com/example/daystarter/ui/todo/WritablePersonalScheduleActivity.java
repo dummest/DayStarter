@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -27,13 +24,10 @@ import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityWritablePersonalScheduleBinding;
 import com.example.daystarter.myClass.PersonalScheduleDBHelper;
 import com.example.daystarter.myClass.ScheduleData;
-import com.example.daystarter.ui.weather.ProgressDialog;
-import com.example.daystarter.ui.weather.WeatherAdapter;
+import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.WeatherDayAdapter;
 import com.example.daystarter.ui.weather.WeatherFragment;
-import com.example.daystarter.ui.weather.WeatherWeekData;
 import com.example.daystarter.ui.weather.country.WeatherAreaActivity;
-import com.example.daystarter.ui.weather.weatherData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +50,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
     int scheduleId = -1;
     double latitude,longitude;
     WeatherFragment weatherFragment;
-    public ArrayList<weatherData> ArrayWeatherData = new ArrayList<>();
+    public ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
     WeatherDayAdapter weatherDayAdapter;
 
 
@@ -74,15 +68,17 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
         binding.afterTimeTextView.setOnClickListener(this);
         binding.cancelButton.setOnClickListener(this);
         binding.saveButton.setOnClickListener(this);
+        binding.showWeatherButton.setOnClickListener(this);
 
-        weatherDayAdapter = new WeatherDayAdapter(ArrayWeatherData, getApplicationContext());
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, getApplicationContext());
         binding.weatherdayRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL,false));
         binding.weatherdayRecyclerview.setAdapter(weatherDayAdapter);
+        binding.weatherdayRecyclerview.setVisibility(View.GONE);
 
 
 
         /*
-        weatherFragment.weatherDayAdapter = new WeatherDayAdapter(weatherFragment.ArrayWeatherData, getApplicationContext());
+        weatherFragment.weatherDayAdapter = new WeatherDayAdapter(weatherFragment.arrayWeatherData, getApplicationContext());
         binding.weatherdayRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         binding.weatherdayRecyclerview.setAdapter(weatherFragment.weatherDayAdapter);
          */
@@ -194,7 +190,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                     Address address = list.get(0);
                     latitude = address.getLatitude();
                     longitude = address.getLongitude();
-                    Toast.makeText(getApplicationContext(), area + "의 위도는 " + latitude + "이고 경도는 " + longitude + "이다", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), area + "의 위도는 " + latitude + "이고 경도는 " + longitude + "이다", Toast.LENGTH_SHORT).show();
                 }
             }
             ScheduleData data = new ScheduleData(
@@ -216,6 +212,9 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                 editSchedule(data);
             }
         }
+        else if(view.getId() ==R.id.show_weather_button){
+            binding.weatherdayRecyclerview.setVisibility(View.VISIBLE);
+        }
     }
 
     public void saveNewSchedule(ScheduleData data){
@@ -230,9 +229,10 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
         finish();
     }
 
+
     public void DayWeather(double latitude,double longitude) {
         Log.d("DayWeather", "DayWeather의 위도는: "+latitude+"경도는 :"+longitude);
-        https://api.openweathermap.org/data/2.5/forecast?lat=37.2635727&lon=127.0286009&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
+        //https:api.openweathermap.org/data/2.5/forecast?lat=37.2635727&lon=127.0286009&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
         AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -243,7 +243,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                             Log.d("weather_onResponse", "onResponse_success: ");
                             JSONArray jsonArray = response.getJSONArray("list");
                             for(int i =0;i<6;i++){
-                                weatherData weatherData = new weatherData();
+                                WeatherData weatherData = new WeatherData();
                                 JSONObject list = jsonArray.getJSONObject(i);
                                 JSONObject Main = list.getJSONObject("main");
                                 JSONArray MainArray = list.getJSONArray("weather");
@@ -269,7 +269,7 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
                                 weatherData.setMinTemp(Main.getDouble("temp_min"));
                                 weatherData.setMaxTemp(Main.getDouble("temp_max"));
 
-                                ArrayWeatherData.add(weatherData);
+                                arrayWeatherData.add(weatherData);
                             }
                             weatherDayAdapter.notifyDataSetChanged();
 
@@ -284,9 +284,5 @@ public class WritablePersonalScheduleActivity extends AppCompatActivity implemen
 
                     }
                 });
-    }
-
-
-
-
+}
 }
