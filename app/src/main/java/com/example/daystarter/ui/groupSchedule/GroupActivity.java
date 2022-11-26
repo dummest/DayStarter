@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.daystarter.R;
 import com.example.daystarter.databinding.ActivityGroupBinding;
+import com.example.daystarter.model.NotificationModel;
 import com.example.daystarter.ui.groupSchedule.cacheDBHelper.UnreadDBHelper;
 import com.example.daystarter.ui.groupSchedule.groupChat.GroupChatActivity;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
@@ -93,6 +95,16 @@ public class GroupActivity extends AppCompatActivity {
 
     }
     private void init(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef.child("groups").child(groupId).child("groupName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    getSupportActionBar().setTitle(task.getResult().getValue(String.class));
+                }
+            }
+        });
+
         binding.memberListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

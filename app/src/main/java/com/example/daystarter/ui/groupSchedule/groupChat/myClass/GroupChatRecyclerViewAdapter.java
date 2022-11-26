@@ -3,6 +3,7 @@ package com.example.daystarter.ui.groupSchedule.groupChat.myClass;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,12 +84,17 @@ public class GroupChatRecyclerViewAdapter extends RecyclerView.Adapter<GroupChat
 
         if(member.uid.equals(FirebaseAuth.getInstance().getUid())){
             holder.chatBodyLayout.setGravity(Gravity.END);
+            holder.nameTextView.setText("");
             holder.materialCardView.setCardBackgroundColor(context.getResources().getColor(R.color.teal_500, context.getTheme()));
             holder.textView.setTextColor(context.getResources().getColor(R.color.white, context.getTheme()));
+            holder.profileImageView.setVisibility(View.GONE);
         }
         else{
             holder.chatBodyLayout.setGravity(Gravity.START);
             holder.nameTextView.setText(member.name);
+            holder.materialCardView.setCardBackgroundColor(context.getTheme().getResources().getColor(R.color.blue, context.getTheme()));
+            holder.textView.setTextColor(context.getResources().getColor(R.color.white, context.getTheme()));
+            holder.profileImageView.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext()).load(user.profileImgPath)
                     .circleCrop().error(R.drawable.ic_baseline_person_24).into(holder.profileImageView);
         }
