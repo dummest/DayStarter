@@ -1,6 +1,7 @@
 package com.example.daystarter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -17,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.daystarter.lockScreen.LockScreenService;
+import com.example.daystarter.lockScreen.ScreenLockReceiver;
 import com.example.daystarter.ui.EditUserInfoActivity;
 import com.example.daystarter.ui.groupSchedule.myClass.User;
 import com.example.daystarter.ui.home.OnBackPressedListener;
@@ -80,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
 
+        SharedPreferences preferences = getSharedPreferences("lockScreenServiceRunning", MODE_PRIVATE);
+        if(preferences.getString("lockScreenServiceRunning", "N").equals("Y")) {
+            Intent intent = new Intent(this, LockScreenService.class);
+            startForegroundService(intent);
+        }
 
         DrawerLayout drawer = binding.drawerLayout; //drawer = 메뉴
         navigationView = binding.navView; //navigation = 메뉴 내부 선택지들

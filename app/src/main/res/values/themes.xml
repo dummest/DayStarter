@@ -27,6 +27,7 @@
 
         <item name="appBarLayoutStyle">@style/Theme.DayStarter.AppBar</item>
         <item name="actionBarStyle">@style/Theme.DayStarter.ActionBar</item>
+        <item name="toolbarStyle">@style/Theme.DayStarter.ToolBar</item>
     </style>
 
     <!--drawer theme-->
@@ -46,11 +47,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.DayStarter.ActionBar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="background">@color/white</item>
-    </style>
 
-    <style name="Theme.DayStarter.AppBar" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+<!--    <style name="Theme.DayStarter.ActionBar" parent="Widget.MaterialComponents.ActionBar.Primary">-->
+<!--        <item name="background">@color/red</item>-->
+<!--    </style>-->
+
+<!--    <style name="Theme.DayStarter.AppBar" parent="Widget.MaterialComponents.AppBarLayout.Primary">-->
+<!--        <item name="android:background">@color/blue</item>-->
+<!--    </style>-->
+
+    <style name="Theme.DayStarter.ToolBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/white</item>
     </style>
 

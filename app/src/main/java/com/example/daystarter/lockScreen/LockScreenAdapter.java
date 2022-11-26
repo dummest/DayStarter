@@ -150,6 +150,23 @@ public class LockScreenAdapter extends RecyclerView.Adapter<LockScreenAdapter.Lo
         holder.titleTextView.setText(hs.title);
         holder.addressTextView.setText(hs.address);
         holder.temperatureTextView.setText("lat: " + hs.latitude + ", long: " + hs.longitude);
+
+        String startTime, endTime;
+        if(dateFormat.format(hs.startTime).equals(dateFormat.format(Calendar.getInstance().getTimeInMillis()))){
+            startTime = timeFormat.format(hs.startTime);
+        }
+        else{
+            startTime = dateFormat.format(hs.startTime) + timeFormat.format(hs.startTime);
+        }
+        if(dateFormat.format(hs.endTime).equals(dateFormat.format(Calendar.getInstance().getTimeInMillis()))){
+            endTime = timeFormat.format(hs.startTime);
+        }
+        else{
+            endTime = dateFormat.format(hs.endTime) + timeFormat.format(hs.endTime);
+        }
+
+        holder.timeTextView.setText(startTime + " ~ " + endTime);
+
     }
 
     @Override
