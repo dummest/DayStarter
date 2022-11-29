@@ -7,7 +7,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.country.WeatherAreaData;
 
 import java.util.List;
@@ -15,17 +14,17 @@ import java.util.List;
 @Dao
 public interface WeatherDao {
     @Insert
-    void insert(WeatherData weatherData);
+    void insert(WeatherAreaData weatherAreaData);
 
     @Query("DELETE FROM weather_table")
     void deleteAll();
 
-    @Query("SELECT * FROM weather_table ")
-    LiveData<List<WeatherData>> getWeather();
+    @Query("SELECT * FROM weather_table ORDER BY weatherId ASC")
+    LiveData<List<WeatherAreaData>> getWeather();
 
     @Update
-    void update(WeatherData weatherAreaData);
+    void update(WeatherAreaData weatherAreaData);
 
     @Delete
-    void delete(WeatherData weatherAreaData);
+    void delete(WeatherAreaData weatherAreaData);
 }

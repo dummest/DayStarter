@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+@Entity(tableName = "weather_table")
 public class WeatherAreaData {
-
+    @PrimaryKey
+    @NonNull
     int weatherId;
+
     String area;
     String areas;
     double lat;

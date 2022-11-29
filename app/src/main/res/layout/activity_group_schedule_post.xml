@@ -98,18 +98,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:weightSum="10"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="위치: "
+                    android:layout_weight="1"
                     android:textSize="16sp"/>
                 <TextView
                     android:id="@+id/address_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="8"
                     android:textSize="16sp"/>
+
+                <ImageView
+                    android:id="@+id/show_weather_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_baseline_add_box_24"/>
             </LinearLayout>
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/ll_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/weatherDay_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="137dp" />
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
             <!--
             <View
                 android:layout_width="match_parent"

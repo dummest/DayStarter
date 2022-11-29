@@ -32,7 +32,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_name" >
 
             <ImageView
-                android:id="@+id/weather_area_weather"
+                android:id="@+id/weather_imgPath"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="30" />

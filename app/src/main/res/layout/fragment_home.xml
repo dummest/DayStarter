@@ -14,7 +14,7 @@
         android:layout_height="40dp"
         android:elevation="10dp"
         android:gravity="center"
-        android:text="주간 날씨"
+        android:text="시간별 날씨"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ll_name"

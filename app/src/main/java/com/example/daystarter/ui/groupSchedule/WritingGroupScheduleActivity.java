@@ -195,7 +195,7 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
                 Address address = list.get(0);
                 latitude = address.getLatitude();
                 longitude = address.getLongitude();
-                Toast.makeText(getApplicationContext(), area + "의 위도는 " + latitude + "이고 경도는 " + longitude + "이다", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), area + "의 위도는 " + latitude + "이고 경도는 " + longitude + "이다", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -353,66 +353,6 @@ public class WritingGroupScheduleActivity extends AppCompatActivity  implements 
         currentCount++;
         if(currentCount == finishCount)
             finish();
-    }
-
-    public void DayWeather(double latitude,double longitude) {
-        Log.d("DayWeather", "DayWeather의 위도는: "+latitude+"경도는 :"+longitude);
-        //https:api.openweathermap.org/data/2.5/forecast?lat=37.2635727&lon=127.0286009&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
-        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.d("weather_onResponse", "onResponse_success: ");
-                            JSONArray jsonArray = response.getJSONArray("list");
-                            /*
-                            시작시간으로 잡아보기 for(int i =0 ; i
-
-                             */
-                            for(int i =0;i<6;i++){
-                                WeatherData weatherData = new WeatherData();
-                                JSONObject list = jsonArray.getJSONObject(i);
-                                JSONObject Main = list.getJSONObject("main");
-                                JSONArray MainArray = list.getJSONArray("weather");
-                                JSONObject Weather = MainArray.getJSONObject(0);
-                                String CurrentTime = list.getString("dt_txt");
-                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
-
-                                try{
-                                    Date time = format.parse(CurrentTime);
-                                    CurrentTime =formatTime.format(time);
-                                }
-                                catch (ParseException e){
-                                    e.printStackTrace();
-                                }
-                                Log.d("onResponse", "onResponse_addData: ");
-                                //현재시간
-
-                                weatherData.setTime(CurrentTime);
-                                //평균 온도
-                                weatherData.setTemp(Main.getDouble("temp"));
-                                weatherData.setDescription(Weather.getString("description"));
-                                weatherData.setMinTemp(Main.getDouble("temp_min"));
-                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
-
-                                arrayWeatherData.add(weatherData);
-                            }
-                            weatherDayAdapter.notifyDataSetChanged();
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
     }
 
 }

@@ -6,13 +6,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.daystarter.ui.weather.WeatherData;
 import com.example.daystarter.ui.weather.country.WeatherAreaData;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {WeatherData.class}, version = 2, exportSchema = false)
+@Database(entities = {WeatherAreaData.class}, version = 2, exportSchema = false)
 public abstract class WeatherDatabase extends RoomDatabase {
     public abstract WeatherDao weatherDao();
     private static volatile WeatherDatabase weatherDatabase;
