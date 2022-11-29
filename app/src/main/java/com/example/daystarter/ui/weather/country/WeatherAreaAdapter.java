@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +13,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
+import com.example.daystarter.ui.alarm.data.Alarm;
+import com.example.daystarter.ui.news.ItemActivty;
 import com.example.daystarter.ui.weather.RequestHttpUrlConnection;
 import com.example.daystarter.ui.weather.WeatherData;
-import com.example.daystarter.ui.weather.country.data.WeatherViewModel;
+import com.example.daystarter.ui.weather.WeatherFragment;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -29,24 +35,21 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
     String strUrl = "https://api.openweathermap.org/data/2.5/weather";  //통신할 URL
     Context context;
     NetworkTask networkTask = null;
-    ArrayList<WeatherData> ArrayWeatherData;
-    WeatherData weatherData;
-    WeatherAreaData weatherAreaData;
+    ArrayList<WeatherAreaData> ArrayWeatherData;
+    WeatherAreaData weatherData;
     WeatherAreaViewHolder wv;
-    WeatherViewModel weatherViewModel;
-    List<WeatherData>  ListWeatherAreaData =new ArrayList<WeatherData>();
-
+    List<WeatherAreaData>  weatherAreaData =new ArrayList<WeatherAreaData>();
     String  area,areas;
     String TAG="WeatherAreaAdapter";
     double lat,lng;
     Intent intent;
 
-    public WeatherAreaAdapter(ArrayList<WeatherData> arrayWeatherData, Context context) {
+    public WeatherAreaAdapter(ArrayList<WeatherAreaData> arrayWeatherData, Context context) {
         this.ArrayWeatherData = arrayWeatherData;
         this.context=context;
     }
 
-    public void add(WeatherData data){
+    public void add(WeatherAreaData data){
         ArrayWeatherData.add(data);
         notifyDataSetChanged();
     }
@@ -64,10 +67,9 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         weatherData = ArrayWeatherData.get(position);
-        requestNetwork();
-         wv= (WeatherAreaViewHolder)holder;
+        wv= (WeatherAreaViewHolder)holder;
         Log.d(TAG, "onBindViewHolder: ");
-
+        requestNetwork();
     }
     @Override
     public int getItemCount() {
@@ -83,7 +85,7 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
             weather_area_description=itemView.findViewById(R.id.weather_area_description);
             weather_area_textview =itemView.findViewById(R.id.weather_area_textview);
             weather_area_temp =itemView.findViewById(R.id.weather_area_temp);
-            weather_area_weather =itemView.findViewById(R.id.weather_area_weather);
+            weather_area_weather =itemView.findViewById(R.id.weather_imgPath);
 
             //아이템 클릭시 선택한 뉴스로 이동(
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -112,10 +114,10 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
         ContentValues values = new ContentValues();
         //기본값 =서울날씨(바꾸고 싶으면 여기서 교채하면된다.)
         //area=changeName(area);
-        lat =weatherAreaData.getLat();
-        lng=weatherAreaData.getLng();
-        area=weatherAreaData.getArea();
-        areas=weatherAreaData.getAreas();
+        lat =weatherData.getLat();
+        lng=weatherData.getLng();
+        area=weatherData.getArea();
+        areas=weatherData.getAreas();
         Log.d(TAG, "requestNetworks: "+lat +lng);
         values.put("q", area);
         //values.put("q", "Seoul");  //여기에 지역 넣기
@@ -203,15 +205,16 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
     /* 통신하여 받아온 날씨 데이터를 통해 UI 업데이트 메소드 */
     private void setWeatherData(WeatherData model) {
         Log.d("Weather", "setWeatherData");
-        wv.weather_area_textview.setText(areas);
-                wv.weather_area_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
-                wv.weather_area_description.setText(model.getDescription());
         Glide.with(wv.itemView.getContext()).load(model.getIcon())  //Glide 라이브러리를 이용하여 ImageView 에 url 로 이미지 지정
                 //.placeholder(R.drawable.icon_image)
                 //.error(R.drawable.icon_image)
                 .into(wv.weather_area_weather);
+        Log.d(TAG, "날씨 사진: "+wv.weather_area_weather);
+        wv.weather_area_temp.setText(doubleToStrFormat(2, model.getTemp()) + " 'C");  //소수점 2번째 자리까지 반올림하기
+        //tv_main.setText(model.getMain());
+        wv.weather_area_description.setText(model.getDescription());
+        wv.weather_area_textview.setText(areas);
         Log.d("weatherArea", " "+areas);
-
     }
 
 
@@ -246,8 +249,8 @@ public class WeatherAreaAdapter extends RecyclerView.Adapter {
         return "비";
     }
 
-    public void setWeathers(List<WeatherData> weatherAreaData) {
-        this.ListWeatherAreaData = weatherAreaData;
+    public void setWeathers(List<WeatherAreaData> weatherAreaData) {
+        this.weatherAreaData = weatherAreaData;
         notifyDataSetChanged();
     }
 }

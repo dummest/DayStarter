@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.model.Progress;
 import com.bumptech.glide.Glide;
 import com.example.daystarter.R;
@@ -28,6 +32,8 @@ import com.example.daystarter.ui.groupSchedule.myClass.Comment;
 import com.example.daystarter.ui.groupSchedule.myClass.GroupScheduleModel;
 import com.example.daystarter.ui.groupSchedule.myClass.Member;
 import com.example.daystarter.ui.weather.ProgressDialog;
+import com.example.daystarter.ui.weather.WeatherData;
+import com.example.daystarter.ui.weather.WeatherDayAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +42,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,9 +66,11 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
     String scheduleKey;
     String groupId;
     CommentsRecyclerViewAdapter adapter;
+    WeatherDayAdapter weatherDayAdapter;
     InputMethodManager imm;
     ProgressDialog progressDialog;
     GroupScheduleModel post;
+    ArrayList<WeatherData> arrayWeatherData = new ArrayList<>();
     long finishCount;
     long currentCount = 0;
 
@@ -71,6 +84,12 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
 
         binding.commentsRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         binding.commentsRecyclerView.setAdapter(adapter);
+
+        //오류시 adapter 땡겨오기
+        weatherDayAdapter = new WeatherDayAdapter(arrayWeatherData, getApplicationContext());
+        binding.weatherDayRecyclerview.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL,false));
+        binding.weatherDayRecyclerview.setAdapter(weatherDayAdapter);
+        binding.weatherDayRecyclerview.setVisibility(View.GONE);
     }
     void init(){
         progressDialog.show();
@@ -96,6 +115,12 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                 makeScheduleDeleteDialog();
             }
         });
+        binding.showWeatherImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.weatherDayRecyclerview.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     void loadPost(){
@@ -117,6 +142,7 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
                     loadName(post.writerUid);
                     GroupSchedulePostActivity.this.post = post;
                     progressDialog.dismiss();
+                    DayWeather(latitude,longitude);
                 }
                 else{
                     showToast("Data load fail");
@@ -441,4 +467,65 @@ public class GroupSchedulePostActivity extends AppCompatActivity {
             builder.create().show();
         }
     }
+
+    public void DayWeather(double latitude,double longitude) {
+        Log.d("DayWeather", "DayWeather의 위도는: "+latitude+"경도는 :"+longitude);
+        //https:api.openweathermap.org/data/2.5/forecast?lat=37.2635727&lon=127.0286009&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448
+        AndroidNetworking.get("https://api.openweathermap.org/data/2.5/forecast?lat="+latitude+"&lon="+longitude+"&units=metric&appid=7e818b3bfae91bb6fcbe3d382b6c3448")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("weather_onResponse", "onResponse_success: ");
+                            JSONArray jsonArray = response.getJSONArray("list");
+                            /*
+                            시작시간으로 잡아보기 for(int i =0 ; i
+
+                             */
+                            for(int i =0;i<6;i++){
+                                WeatherData weatherData = new WeatherData();
+                                JSONObject list = jsonArray.getJSONObject(i);
+                                JSONObject Main = list.getJSONObject("main");
+                                JSONArray MainArray = list.getJSONArray("weather");
+                                JSONObject Weather = MainArray.getJSONObject(0);
+                                String CurrentTime = list.getString("dt_txt");
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat formatTime = new SimpleDateFormat("kk:mm");
+
+                                try{
+                                    Date time = format.parse(CurrentTime);
+                                    CurrentTime =formatTime.format(time);
+                                }
+                                catch (ParseException e){
+                                    e.printStackTrace();
+                                }
+                                Log.d("onResponse", "onResponse_addData: ");
+                                //현재시간
+
+                                weatherData.setTime(CurrentTime);
+                                //평균 온도
+                                weatherData.setTemp(Main.getDouble("temp"));
+                                weatherData.setDescription(Weather.getString("description"));
+                                weatherData.setMinTemp(Main.getDouble("temp_min"));
+                                weatherData.setMaxTemp(Main.getDouble("temp_max"));
+
+                                arrayWeatherData.add(weatherData);
+                            }
+                            weatherDayAdapter.notifyDataSetChanged();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+    }
+
 }
